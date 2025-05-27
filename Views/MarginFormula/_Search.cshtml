@@ -1,0 +1,152 @@
+﻿@* @model IEnumerable<MarginViewModel> *@
+@model MVCWebApp.Helper.PaginatedList<MarginFormulaViewModel>
+
+@{
+    ViewBag.Title = "Manage Margin Formula";
+    int currentPageSize = ViewData["CurrentPageSize"] as int? ?? Model.PageSize;
+}
+
+@if (Model != null && Model.Any())
+{
+    <div class="table-responsive">
+        <table id="myDataTable" class="table table-striped table-bordered table-hover">
+            <thead>
+                <tr>
+                    <th>Margin Type</th>
+                    <th>Margin Formula</th>
+                    <th>CreatedBy</th>
+                    <th>CreatedAt</th>
+                    <th>ModifiedBy</th>
+                    <th>ModifiedAt</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model)
+                {
+                    <tr>
+                        @* <td>@item.ID</td> *@
+                        <td>@item.MarginType</td>
+                        <td>@item.MarginFormula</td>
+                        <td>@item.CreatedBy</td>
+                        <td>@item.CreatedAt</td>
+                        <td>@item.ModifiedBy</td>
+                        <td>@item.ModifiedAt</td>
+                        <td class="text-right">
+                            <button class="btn btn-sm btn-warning btn-edit" data-id="@item.ID">Edit</button>
+                            <button class="btn btn-sm btn-info btn-detail" data-id="@item.ID">Details</button>
+                            <button class="btn btn-sm btn-danger btn-delete" data-id="@item.ID">Delete</button>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+
+        <!-- Pagination Links -->
+        <ul>
+            <li>Total Pages: <input style="width: 70px;" type="number" id="pageIndexNew" value="@Model.PageIndex" />/@Model.TotalPages
+                <button id="btnGo" class="btn btn-sm btn-warning">Go</button>
+                @if (Model.HasPreviousPage)
+                {
+                    <button id="btnPrevious" class="btn btn-sm btn-primary">Previous</button>
+                }
+                @if (Model.HasNextPage)
+                {
+                    <button id="btnNext" class="btn btn-sm btn-primary">Next</button>
+                }
+            </li>
+            <li>Total Items: @Model.TotalItems</li>
+        </ul>
+    </div>
+}
+else
+{
+    <div class="alert alert-info">
+        <strong>No Items Found</strong>
+        <p>There are no items to display.</p>
+    </div>
+}
+
+<!-- Edit Modal Container -->
+<div class="modal fade" id="editModal" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+        </div>
+    </div>
+</div>
+
+<!-- Detail Modal Container -->
+<div class="modal fade" id="detailModal" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+        </div>
+    </div>
+</div>
+
+<!-- Delete Modal Container -->
+<div class="modal fade" id="deleteModal" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+        </div>
+    </div>
+</div>
+
+
+@* Include DataTables CSS and JS (CDN) *@
+@section scripts {
+    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/v/bs5/dt-1.13.8/datatables.min.css" />
+    <script type="text/javascript" src="https://cdn.datatables.net/v/bs5/dt-1.13.8/datatables.min.js"></script>
+
+    <!-- jQuery -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+    <!-- jQuery Validation -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.19.3/jquery.validate.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.19.3/additional-methods.min.js"></script>
+
+    <script>
+        $(document).ready(function () {
+
+            /*========================================== DataTable*/
+            var table = $('#myDataTable').DataTable({
+                "columns": [
+                    // { "data": "id" },
+                    { "data": "marginType" },
+                    { "data": "marginFormula" },
+                    { "data": "createdBy" },
+                    { "data": "createdAt" },
+                    { "data": "modifiedBy" },
+                    { "data": "modifiedAt" },
+                    { "data": "actionString" },
+                    //{}
+                ],
+                "ordering": true, // Enable sorting
+                "searching": true,  // Enable searching
+                "language": {
+                    "emptyTable": "No data available in table",
+                    "info": "Showing _START_ to _END_ of _TOTAL_ entries",
+                    "infoEmpty": "Showing 0 to 0 of 0 entries",
+                    "infoFiltered": "(filtered from _MAX_ total entries)",
+                    "infoPostFix": "",
+                    "thousands": ",",
+                    "loadingRecords": "Loading...",
+                    "processing": "Processing...",
+                    "search": "Search:",
+                    "zeroRecords": "No matching records found",
+                    "aria": {
+                        "sortAscending": ": activate to sort column ascending",
+                        "sortDescending": ": activate to sort column descending"
+                    },
+                    "select": {
+                        "rows": {
+                            "_": "Selected %d rows",
+                            "0": "Click a row to select it",
+                            "1": "Selected 1 row"
+                        }
+                    }
+                }
+            });
+        });
+    </script>
+}
+

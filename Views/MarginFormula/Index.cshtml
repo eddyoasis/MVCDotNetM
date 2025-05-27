@@ -1,0 +1,351 @@
+﻿@* @model IEnumerable<MarginViewModel> *@
+@model MVCWebApp.Models.Req.MarginFormulaSearchReq
+
+@{
+    ViewBag.Title = "Manage Margin Formula";
+}
+
+@section scripts {
+    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/v/bs5/dt-1.13.8/datatables.min.css" />
+    <script type="text/javascript" src="https://cdn.datatables.net/v/bs5/dt-1.13.8/datatables.min.js"></script>
+
+    <!-- jQuery & Bootstrap -->
+    <link rel="stylesheet" href="https://code.jquery.com/ui/1.13.2/themes/smoothness/jquery-ui.css">
+    <script src="https://code.jquery.com/ui/1.13.2/jquery-ui.js"></script>
+
+    <!-- jQuery -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+    <!-- jQuery Validation -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.19.3/jquery.validate.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.19.3/additional-methods.min.js"></script>
+}
+
+<div class="container">
+    <h2>@ViewBag.Title</h2>
+
+@*     <p>
+        <div class="text-end">
+            Login: @ViewBag.Username
+        </div>
+        <div class="text-end mt-2">
+            @Html.ActionLink("Sign Out", "Logout", "Margin", null, new { @class = "btn btn-danger" })
+        </div>
+    </p> *@
+
+    <!-- Search Section -->
+    <section id="searchSection" class="p-4 border rounded bg-light shadow-sm">
+        <h4>Search Margin Formula</h4>
+
+        <div class="d-flex gap-1">
+            <div class="form-group">
+                <label for="MarginType">MarginType</label>
+                <input type="text" name="MarginType" id="MarginType" class="form-control" value="@Model?.MarginType" placeholder="Enter Margin Type">
+            </div>
+            <div class="form-group">
+                <label for="MarginFormula">MarginFormula</label>
+                <input type="text" name="MarginFormula" id="MarginFormula" class="form-control" value="@Model?.MarginFormula" placeholder="Enter Margin Formula">
+            </div>
+            <div class="form-group">
+                <label for="CreatedBy">CreatedBy</label>
+                <input type="text" name="CreatedBy" id="CreatedBy" class="form-control" value="@Model?.CreatedBy" placeholder="Enter CreatedBy">
+            </div>
+        </div>
+
+        <div class="d-flex gap-1 mt-2">
+            <div class="form-group">
+                <label>Select Date Type</label>
+                <div class="d-flex gap-1">
+                    <div class="form-check">
+                        <input class="form-check-input" type="radio" id="createdDate" name="dateType" value="CreatedDate" checked>
+                        <label class="form-check-label" for="createdDate">Created Date</label>
+                    </div>
+                    <div class="form-check">
+                        <input class="form-check-input" type="radio" id="modifiedDate" name="dateType" value="ModifiedDate">
+                        <label class="form-check-label" for="modifiedDate">Modified Date</label>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="d-flex gap-1 mt-2">
+            <div class="form-group">
+                <label>From Date</label>
+                <input type="date" id="dateTimeFrom" class="form-control">
+            </div>
+            <div class="form-group">
+                <label>To Date</label>
+                <input type="date" id="dateTimeTo" class="form-control">
+            </div>
+        </div>
+
+        <div class="d-flex gap-1 mt-2">
+            <div>
+                <label for="pageSize" class="mr-2">Items per page</label>
+                <select id="optionPageSize" class="form-control">
+                    @if (@Model.PageSize == 5)
+                    {
+                        <option value="5" selected>5</option>
+                    }
+                    else
+                    {
+                        <option value="5">5</option>
+                    }
+
+                    @if (@Model.PageSize == 10)
+                    {
+                        <option value="10" selected>10</option>
+                    }
+                    else
+                    {
+                        <option value="10">10</option>
+                    }
+
+                    @if (@Model.PageSize == 20)
+                    {
+                        <option value="20" selected>20</option>
+                    }
+                    else
+                    {
+                        <option value="20">20</option>
+                    }
+
+                    @if (@Model.PageSize == 50)
+                    {
+                        <option value="50" selected>50</option>
+                    }
+                    else
+                    {
+                        <option value="50">50</option>
+                    }
+                </select>
+
+                <input type="hidden" id="pageIndex" value="@Model.PageNumber" />
+                <input type="hidden" id="pageSize" value="@Model.PageSize" />
+            </div>
+        </div>
+
+        <br />
+
+        <div class="d-flex gap-2 mt-2">
+            <button id="btnSearch" type="submit" class="btn btn-primary">Search</button>
+            <button id="btnClear" class="btn btn-dark">Clear</button>
+            <button type="button" class="btn btn-success" id="btnCreate">Create</button>
+        </div>
+
+        <!-- Modal Container -->
+        <div class="modal fade" id="createModal" tabindex="-1" role="dialog" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                </div>
+            </div>
+        </div>
+
+    </section>
+
+    <hr> <!-- Divider -->
+
+    <section id="results" class="p-4 border rounded bg-white shadow-sm">
+        <div id="results">
+        </div>
+    </section>
+
+    <script>
+        $(document).ready(function () {
+
+            /* ====================================================Init*/
+            $("#dateTimeFrom").val(new Date().toISOString().split("T")[0])
+            $("#dateTimeTo").val(new Date().toISOString().split("T")[0])
+
+            $("#btnSearch").click(function (e) {
+                event.preventDefault(); // Prevent full page reload
+
+                postSearchMarginFormulas(1)
+            });
+
+            /*=================================================== Pagination*/
+            $(document).on("click", "#btnGo", function (e) {
+                //$("#btnCreate").click(function (e) {
+                event.preventDefault(); // Prevent full page reload
+
+                var pageNumber = +$("#pageIndexNew").val()
+
+                postSearchMarginFormulas(pageNumber)
+            });
+
+            $(document).on("click", "#btnNext", function (e) {
+                //$("#btnCreate").click(function (e) {
+                event.preventDefault(); // Prevent full page reload
+
+                var pageNumber = +$("#pageIndex").val() + 1
+
+                postSearchMarginFormulas(pageNumber)
+
+            });
+
+            $(document).on("click", "#btnPrevious", function (e) {
+                //$("#btnCreate").click(function (e) {
+                event.preventDefault(); // Prevent full page reload
+
+                var pageNumber = +$("#pageIndex").val() - 1
+
+                postSearchMarginFormulas(pageNumber)
+            });
+
+            $(document).on("change", "#optionPageSize", function (e) {
+                event.preventDefault(); // Prevent full page reload
+
+                postSearchMarginFormulas(1)
+            });
+
+            function postSearchMarginFormulas(pageNumber) {
+
+                //var selectedValue = $("input[name='dateType']:checked").val();
+
+                var requestData = {
+                    Username: $("#MarginType").val(),
+                    Username: $("#MarginFormula").val(),
+                    PageNumber: pageNumber, // Default to first page
+                    PageSize: +$("#optionPageSize").val()
+                };
+
+                $.ajax({
+                    url: "/MarginFormula/SearchMarginFormulas",
+                    type: "POST",
+                    contentType: "application/json",
+                    data: JSON.stringify(requestData),
+                    success: function (data) {
+                        $("#pageIndex").val(pageNumber)
+                        $("#results").html(data); // Update results dynamically
+                    },
+                    error: function (jqXHR) {
+                        console.error("Error:", jqXHR.status);
+                        alert("Search failed. Please try again.");
+                    }
+                });
+            }
+
+            /*-------------------------- Create */
+
+            $(document).on("click", "#btnCreate", function (e) {
+                e.preventDefault();
+                $.get("/MarginFormula/Create")
+                    .done(function (data, textStatus, jqXHR) {
+                        console.log("Success:", jqXHR.status); // Logs HTTP status code (e.g., 200)
+                        $("#createModal .modal-content").html(data);
+                        $("#createModal").modal("show");
+                    })
+                    .fail(function (jqXHR, textStatus, errorThrown) {
+                        console.log("Error:", jqXHR.status);  // Logs error status (e.g., 404, 500)
+                        alert("Failed to load. Status: " + jqXHR.status);
+                        window.location.href = "/Login/Index";
+                    });
+            });
+
+            $(document).on("submit", "#createForm", function (e) {
+                e.preventDefault();
+
+                var form = $(this);
+                $.ajax({
+                    url: form.attr("action"),
+                    type: form.attr("method"),
+                    data: form.serialize(),
+                    success: function (result) {
+                        if (result.success) {
+                            console.log(result);
+                            $("#createModal").modal("hide");
+                      
+                            alert('success create');
+                            postSearchMarginFormulas(1);
+                        } else {
+                            $("#createModal .modal-content").html(result);
+                        }
+                    },
+                    error: function (xhr, status, error) {
+                        console.error("Submission error: " + error);
+                        alert("Failed to load. Status: " + xhr.status);
+                        window.location.href = "/Login/Index";
+                    }
+                });
+            });
+
+            /*-------------------------- Edit */
+            $(document).on("click", ".btn-edit", function (e) {
+                e.preventDefault();
+                var entityId = $(this).data("id");
+
+                $.get("/MarginFormula/Edit", { id: entityId }, function (data) {
+                    $("#editModal .modal-content").html(data);
+                    $("#editModal").modal("show");
+                });
+            });
+
+            $(document).on("submit", "#editForm", function (e) {
+                e.preventDefault();
+                var form = $(this);
+                $.ajax({
+                    url: form.attr("action"),
+                    type: form.attr("method"),
+                    data: form.serialize(),
+                    success: function (result) {
+                        if (result.success) {
+                            $("#editModal").modal("hide");
+                            alert('success edit');
+                            postSearchMarginFormulas(1);
+
+                        } else {
+                            // Re-render the form with validation errors when needed
+                            $("#editModal .modal-content").html(result);
+                        }
+                    },
+                    error: function (xhr, status, error) {
+                        console.error("Error updating the entity: " + error);
+                    }
+                });
+            });
+
+            /*-------------------------- Detail */
+            $(document).on("click", ".btn-detail", function (e) {
+                e.preventDefault();
+                var entityId = $(this).data("id");
+                $.get("/MarginFormula/Details", { id: entityId }, function (data) {
+                    $("#detailModal .modal-content").html(data);
+                    $("#detailModal").modal("show");
+                });
+            });
+
+            /*-------------------------- Delete */
+            $(document).on("click", ".btn-delete", function (e) {
+                e.preventDefault();
+                var entityId = $(this).data("id");
+                $.get("/MarginFormula/Delete", { id: entityId }, function (data) {
+                    $("#deleteModal .modal-content").html(data);
+                    $("#deleteModal").modal("show");
+                });
+            });
+
+            // Delegate the form submission inside the modal; using a dynamic event handler
+            $(document).on("submit", "#deleteForm", function (e) {
+                e.preventDefault();
+                var form = $(this);
+                $.ajax({
+                    url: form.attr("action"),
+                    type: form.attr("method"),
+                    data: form.serialize(),
+                    success: function (result) {
+                        if (result.success) {
+                            $("#deleteModal").modal("hide");
+                            alert('success delete');
+                            postSearchMarginFormulas(1);
+                        } else {
+                            $("#deleteModal .modal-content").html(result);
+                        }
+                    },
+                    error: function (xhr, status, error) {
+                        console.error("Error updating the entity: " + error);
+                    }
+                });
+            });
+        });
+    </script>
+</div>

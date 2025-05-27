@@ -1,0 +1,89 @@
+﻿@model MarginCallViewModel
+
+<div class="modal-header">
+    <h5 class="modal-title">Details Margin Call</h5>
+    <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
+        <span>&times;</span>
+    </button>
+</div>
+<div class="modal-body">
+    <div class="form-group">
+        <label asp-for="ClientCode" class="control-label"></label>
+        <div class="col-md-10">
+            <input asp-for="ClientCode" class="form-control" disabled />
+            <span asp-validation-for="ClientCode" class="text-danger"></span>
+        </div>
+    </div>
+    <div class="form-group mt-3">
+        <label asp-for="LedgerBal" class="control-label"></label>
+        <div class="col-md-10">
+            <input asp-for="LedgerBal" class="form-control" disabled />
+            <span asp-validation-for="LedgerBal" class="text-danger"></span>
+        </div>
+    </div>
+    <div class="form-group mt-3">
+        <label asp-for="TNE" class="control-label"></label>
+        <div class="col-md-10">
+            <input asp-for="TNE" class="form-control" disabled />
+            <span asp-validation-for="TNE" class="text-danger"></span>
+        </div>
+    </div>
+    <div class="form-group mt-3">
+        <label asp-for="IM" class="control-label"></label>
+        <div class="col-md-10">
+            <input type="text" asp-for="IM" class="form-control" disabled />
+            <span asp-validation-for="IM" class="text-danger"></span>
+        </div>
+    </div>
+    <div class="form-group mt-3">
+        <label asp-for="Percentages" class="control-label"></label>
+        <div class="col-md-10">
+            <input asp-for="Percentages" class="form-control" disabled />
+            <span asp-validation-for="Percentages" class="text-danger"></span>
+        </div>
+    </div>
+    <div class="form-group mt-3">
+        <label asp-for="CcyCode" class="control-label"></label>
+        <div class="col-md-10">
+            <input type="text" asp-for="CcyCode" class="form-control" disabled />
+            <span asp-validation-for="CcyCode" class="text-danger"></span>
+        </div>
+    </div>
+    <div class="form-group mt-3">
+        <label asp-for="TypeOfMarginCall" class="control-label"></label>
+        <div class="col-md-10">
+            <input type="text" asp-for="TypeOfMarginCall" class="form-control" disabled />
+            <span asp-validation-for="TypeOfMarginCall" class="text-danger"></span>
+        </div>
+    </div>
+    <div class="form-group mt-3">
+        <label asp-for="OrderDetails" class="control-label"></label>
+        <div class="col-md-10">
+            <input type="text" asp-for="OrderDetails" class="form-control" disabled />
+            <span asp-validation-for="OrderDetails" class="text-danger"></span>
+        </div>
+    </div>
+    <div class="form-group mt-3">
+        <label asp-for="TimeStemp" class="control-label"></label>
+        <div class="col-md-10">
+            <input type="text" asp-for="TimeStemp" class="form-control" disabled />
+            <span asp-validation-for="TimeStemp" class="text-danger"></span>
+        </div>
+    </div>
+    <div class="form-group mt-3">
+        <label asp-for="Status" class="control-label"></label>
+        <div class="col-md-10">
+            <input type="text" asp-for="Status" class="form-control" disabled />
+            <span asp-validation-for="Status" class="text-danger"></span>
+        </div>
+    </div>
+</div>
+<div class="modal-footer">
+    <button type="button" class="btn btn-info" data-bs-dismiss="modal">Close</button>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}
