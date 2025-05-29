@@ -1,5 +1,4 @@
-﻿@* @model IEnumerable<MarginViewModel> *@
-@model MVCWebApp.Helper.PaginatedList<MVCWebApp.ViewModels.MarginFormulaViewModel>
+﻿@model PaginatedList<MarginFormulaViewModel>
 
 @{
     ViewBag.Title = "Manage Margin Formula";
@@ -27,7 +26,7 @@
                     <tr>
                         @* <td>@item.ID</td> *@
                         <td>@item.MarginType</td>
-                        <td>@item.MarginFormula</td>
+                        <td>@item.Formula</td>
                         <td>@item.CreatedBy</td>
                         <td>@item.CreatedAt</td>
                         <td>@item.ModifiedBy</td>

@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using MVCWebApp.Helper.Mapper;
+using MVCWebApp.Models;
 
 namespace MVCWebApp.Helper
 {
@@ -36,19 +37,31 @@ namespace MVCWebApp.Helper
 
         public static async Task<PaginatedList<TDestination>> CreateAsync<TSource, TDestination>(
             IQueryable<TSource> source,
-            int pageIndex,
-            int pageSize,
-            IMapModel mapper)
+            IMapModel mapper,
+            BaseSearchReq req = null) where TSource : ISetUserInfo
         {
+            if(!req.IsNullOrEmpty())
+            {
+                source = source.Where(x =>
+                    
+                    ((req.DateFrom == DateTime.MinValue || req.DateTo == DateTime.MinValue) || 
+                        (req.IsSearchByCreatedDate ?
+                                x.CreatedAt >= req.DateFrom && x.CreatedAt < req.DateTo.AddDays(1) :
+                                x.ModifiedAt >= req.DateFrom && x.ModifiedAt < req.DateTo.AddDays(1))) &&
+                    (req.CreatedBy.IsNullOrEmpty() || x.CreatedBy.ToLower().Contains(req.CreatedBy.ToLower())) &&
+                    (req.ModifiedBy.IsNullOrEmpty() || x.ModifiedBy.ToLower().Contains(req.ModifiedBy.ToLower()))
+                );
+            }
+
             var count = await source.CountAsync();
 
-            var items = await source.Skip((pageIndex - 1) * pageSize)
-                                    .Take(pageSize)
+            var items = await source.Skip((req.PageNumber - 1) * req.PageSize)
+                                    .Take(req.PageSize)
                                     .ToListAsync();
 
             var mappedItems = mapper.MapDto<List<TDestination>>(items); ;
 
-            return new PaginatedList<TDestination>(mappedItems, count, pageIndex, pageSize);
+            return new PaginatedList<TDestination>(mappedItems, count, req.PageNumber, req.PageSize);
         }
 
         public static PaginatedList<T> CreateAsync(IEnumerable<T> source, int pageIndex, int pageSize)

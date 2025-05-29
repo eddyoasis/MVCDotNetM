@@ -40,6 +40,10 @@
                 <label for="CreatedBy">CreatedBy</label>
                 <input type="text" name="CreatedBy" id="CreatedBy" class="form-control" value="@Model?.CreatedBy" placeholder="Enter CreatedBy">
             </div>
+            <div class="form-group">
+                <label for="ModifiedBy">ModifiedBy</label>
+                <input type="text" name="ModifiedBy" id="ModifiedBy" class="form-control" value="@Model?.ModifiedBy" placeholder="Enter ModifiedBy">
+            </div>
         </div>
 
         <div class="d-flex gap-1 mt-2">
@@ -193,8 +197,14 @@
                 //var selectedValue = $("input[name='dateType']:checked").val();
 
                 var requestData = {
-                    Username: $("#MarginType").val(),
-                    Username: $("#EmailTemplate").val(),
+                    MarginType: $("#MarginType").val(),
+                    EmailTemplate: $("#EmailTemplate").val(),
+
+                    CreatedBy: $("#CreatedBy").val(),
+                    ModifiedBy: $("#ModifiedBy").val(),
+                    IsSearchByCreatedDate: $('input[name="dateType"]:checked').val() == 'CreatedDate',
+                    DateFrom: $("#dateTimeFrom").val(),
+                    DateTo: $("#dateTimeTo").val(),
                     PageNumber: pageNumber, // Default to first page
                     PageSize: +$("#optionPageSize").val()
                 };
@@ -315,7 +325,6 @@
                 });
             });
 
-            // Delegate the form submission inside the modal; using a dynamic event handler
             $(document).on("submit", "#deleteForm", function (e) {
                 e.preventDefault();
                 var form = $(this);
@@ -337,6 +346,25 @@
                     }
                 });
             });
+
+            /*-------------------------- Clear */
+            $(document).on("click", "#btnClear", function (e) {
+                e.preventDefault();
+                clearSearchFields();
+            });
+
+            function clearSearchFields() {
+
+                $("#MarginType").val('');
+                $("#EmailTemplate").val('');
+                $("#CreatedBy").val('');
+                $("#ModifiedBy").val('');
+
+                $('#createdDate').prop('checked', true);
+
+                $("#dateTimeFrom").val(new Date().toISOString().split("T")[0]);
+                $("#dateTimeTo").val(new Date().toISOString().split("T")[0]);
+            }
         });
     </script>
 </div>

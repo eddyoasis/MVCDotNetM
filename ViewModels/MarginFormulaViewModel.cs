@@ -10,7 +10,7 @@ namespace MVCWebApp.ViewModels
         public string MarginType { get; set; }
 
         [Display(Name = "Margin Formula")]
-        public string MarginFormula { get; set; }
+        public string Formula { get; set; }
 
         [Display(Name = "Created By")]
         public string CreatedBy { get; set; }

@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace MVCWebApp.Models.Req
+namespace MVCWebApp.Models.MarginFormulas
 {
     public class MarginFormulaAddReq
     {
@@ -10,6 +10,6 @@ namespace MVCWebApp.Models.Req
 
         [Required]
         [Display(Name = "Margin Formula")]
-        public string MarginFormula { get; set; }
+        public string Formula { get; set; }
     }
 }

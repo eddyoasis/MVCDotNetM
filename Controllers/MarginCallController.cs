@@ -90,13 +90,13 @@ namespace MVCWebApp.Controllers
         [HttpPost]
         public async Task<IActionResult> SearchMarginCalls([FromBody] MarginCallSearchReq req)
         {
-            int pageNumber = req.PageNumber ?? 1;
-            int pageSize = req.PageSize ?? 10;
+            //int pageNumber = req.PageNumber ?? 1;
+            //int pageSize = req.PageSize ?? 10;
 
             var paginatedResult = PaginatedList<MarginCallViewModel>.CreateAsync(
                 _marginCall,
-                pageNumber,
-                pageSize);
+                1,
+                5);
 
             return PartialView("_Search", paginatedResult);
         }

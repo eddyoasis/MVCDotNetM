@@ -1,4 +1,4 @@
-﻿@model MVCWebApp.Models.Req.MarginFormulaAddReq
+﻿@model MarginFormulaAddReq
 
 @using (Html.BeginForm("Create", "MarginFormula", FormMethod.Post, new { id = "createForm" }))
 {
@@ -21,10 +21,10 @@
 
         <br />
         <div class="form-group">
-            <label asp-for="MarginFormula" class="control-label"></label>
+            <label asp-for="Formula" class="control-label"></label>
             <div class="col-md-10">
-                <input asp-for="MarginFormula" class="form-control" />
-                <span asp-validation-for="MarginFormula" class="text-danger"></span>
+                <input asp-for="Formula" class="form-control" />
+                <span asp-validation-for="Formula" class="text-danger"></span>
             </div>
         </div>
     </div>

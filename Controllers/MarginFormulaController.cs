@@ -1,43 +1,17 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using MVCWebApp.Helper;
-using MVCWebApp.Models.Req;
+using MVCWebApp.Helper.Mapper;
+using MVCWebApp.Models.MarginFormulas;
+using MVCWebApp.Services;
 using MVCWebApp.ViewModels;
 
 namespace MVCWebApp.Controllers
 {
-    public class MarginFormulaController: ControllerBase
+    public class MarginFormulaController(
+        IMarginFormulaService _marginFormulaService,
+        IMapModel _mapper
+        ) : ControllerBase
     {
-        List<MarginFormulaViewModel> _marginFormula =
-            [
-                new MarginFormulaViewModel
-                {
-                    ID = 1,
-                    MarginFormula = "MarginFormula1",
-                    MarginType = "MarginType1",
-                    CreatedAt = DateTime.Now,
-                    CreatedBy = "Admin123",
-                },
-            new MarginFormulaViewModel
-                {
-                    ID = 2,
-                    MarginFormula = "MarginFormula2",
-                    MarginType = "MarginType2",
-                    CreatedAt = DateTime.Now.AddHours(-5),
-                    CreatedBy = "Admin123",
-                     ModifiedAt = DateTime.Now,
-                      ModifiedBy = "Admin123"
-                },
-            new MarginFormulaViewModel
-                {
-                    ID = 3,
-                    MarginFormula = "MarginFormula3",
-                    MarginType = "MarginType3",
-                    CreatedAt = DateTime.Now,
-                    CreatedBy = "Admin123",
-                }
-            ];
-
         public async Task<IActionResult> Index()
         {
             return View(new MarginFormulaSearchReq { PageNumber = 1, PageSize = 5 });
@@ -46,13 +20,7 @@ namespace MVCWebApp.Controllers
         [HttpPost]
         public async Task<IActionResult> SearchMarginFormulas([FromBody] MarginFormulaSearchReq req)
         {
-            int pageNumber = req.PageNumber ?? 1;
-            int pageSize = req.PageSize ?? 10;
-
-            var paginatedResult = PaginatedList<MarginFormulaViewModel>.CreateAsync(
-                _marginFormula,
-                pageNumber,
-                pageSize);
+            var paginatedResult = await _marginFormulaService.GetAllAsync(req);
 
             return PartialView("_Search", paginatedResult);
         }
@@ -65,43 +33,49 @@ namespace MVCWebApp.Controllers
         [HttpPost]
         [Authorize]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create(MarginFormulaAddReq entity)
+        public async Task<IActionResult> Create(MarginFormulaAddReq req)
         {
             if (ModelState.IsValid)
             {
+                await _marginFormulaService.AddAsync(req);
+
                 return Json(new { success = true });
             }
-            return PartialView("_CreatePartial", entity);
+            return PartialView("_CreatePartial", req);
         }
 
         [Authorize]
-        public IActionResult Edit(int id)
+        public async Task<IActionResult> Edit(int id)
         {
-            var entity = _marginFormula.FirstOrDefault(x => x.ID == id);
+            var entity = await _marginFormulaService.GetByEntityIdAsync(id);
             if (entity == null)
             {
                 return NotFound();
             }
 
-            var res = new MarginFormulaEditReq
-            {
-                ID = entity.ID,
-                MarginType = entity.MarginType,
-                MarginFormula = entity.MarginFormula
-            };
+            var req = _mapper.MapDto<MarginFormulaEditReq>(entity);
 
-            return PartialView("_EditPartial", res);
+
+            return PartialView("_EditPartial", req);
         }
 
         [HttpPost]
         [Authorize]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(MarginFormulaEditReq entity)
+        public async Task<IActionResult> Edit(MarginFormulaEditReq req)
         {
             if (ModelState.IsValid)
             {
                 try
                 {
+                    var entity = await _marginFormulaService.GetByEntityIdAsync(req.ID);
+                    if (entity == null)
+                    {
+                        return NotFound();
+                    }
+
+                    await _marginFormulaService.UpdateAsync(req, entity);
+
                     return Json(new { success = true });
                 }
                 catch (Exception ex)
@@ -109,18 +83,13 @@ namespace MVCWebApp.Controllers
                     ModelState.AddModelError("", "Error updating record: " + ex.Message);
                 }
             }
-            return PartialView("_EditPartial", entity);
+            return PartialView("_EditPartial", req);
         }
 
         [Authorize]
-        public IActionResult Details(int? id)
+        public async Task<IActionResult> Details(int id)
         {
-            if (id == null)
-            {
-                return NotFound();
-            }
-
-            var entity = _marginFormula.FirstOrDefault(x => x.ID == id);
+            var entity = await _marginFormulaService.GetByIdAsync(id);
             if (entity == null)
             {
                 return NotFound();
@@ -130,35 +99,32 @@ namespace MVCWebApp.Controllers
         }
 
         [Authorize]
-        public IActionResult Delete(int? id)
+        public async Task<IActionResult> Delete(int id)
         {
-            if (id == null)
+            var entity = await _marginFormulaService.GetByIdAsync(id);
+            if (entity == null)
             {
                 return NotFound();
             }
 
-            var margin = _marginFormula.FirstOrDefault(x => x.ID == id);
-            if (margin == null)
-            {
-                return NotFound();
-            }
-
-            return PartialView("_DeletePartial", margin);
+            return PartialView("_DeletePartial", entity);
         }
 
         [HttpPost]
         [Authorize]
         [ValidateAntiForgeryToken]
-        public IActionResult Delete(int id, MarginFormulaViewModel entity)
+        public async Task<IActionResult> Delete(int id, MarginFormulaViewModel viewModel)
         {
-            var margin = _marginFormula.FirstOrDefault(x => x.ID == id);
-            if (margin == null)
+            var entity = await _marginFormulaService.GetByEntityIdAsync(id);
+            if (entity == null)
             {
                 return NotFound();
             }
 
             try
             {
+                await _marginFormulaService.DeleteAsync(entity);
+
                 return Json(new { success = true });
             }
             catch (Exception ex)
@@ -166,7 +132,7 @@ namespace MVCWebApp.Controllers
                 ModelState.AddModelError("", "Error deleting record: " + ex.Message);
             }
 
-            return PartialView("_DeletePartial", margin);
+            return PartialView("_DeletePartial", viewModel);
         }
     }
 }

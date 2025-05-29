@@ -1,6 +1,6 @@
-﻿using AutoMapper;
-using MVCWebApp.Helper;
+﻿using MVCWebApp.Helper;
 using MVCWebApp.Helper.Mapper;
+using MVCWebApp.Models;
 using MVCWebApp.Models.EmailNotifications;
 using MVCWebApp.Repositories;
 using MVCWebApp.ViewModels;
@@ -19,22 +19,25 @@ namespace MVCWebApp.Services
 
     public class EmailNotificationService(
         IEmailNotificationRepository emailNotificationRepository,
-        IMapModel mapper
+        IMapModel _mapper
         ) : BaseService, IEmailNotificationService
     {
         public async Task<IEnumerable<EmailNotificationViewModel>> GetAllAsync(EmailNotificationSearchReq req)
         {
             var emailNotifications = emailNotificationRepository.GetAllQueryable();
 
-            int pageNumber = req.PageNumber ?? 1;
-            int pageSize = req.PageSize ?? 10;
+            emailNotifications = emailNotifications.Where(x =>
+                (req.MarginType.IsNullOrEmpty() || x.MarginType.ToLower().Contains(req.MarginType.ToLower())) &&
+                (req.EmailTemplate.IsNullOrEmpty() || x.EmailTemplate.ToLower().Contains(req.EmailTemplate.ToLower()))
+            );
+
+            var searchReq = _mapper.MapDto<EmailNotificationSearchReq, BaseSearchReq>(req);
 
             var paginatedResult = await PaginatedList<EmailNotificationViewModel>.
                     CreateAsync<EmailNotification, EmailNotificationViewModel>(
                         emailNotifications,
-                        pageNumber,
-                        pageSize,
-                        mapper);
+                        _mapper,
+                        searchReq);
 
             return paginatedResult;
         }
@@ -47,20 +50,20 @@ namespace MVCWebApp.Services
         public async Task<EmailNotificationViewModel?> GetByIdAsync(int id)
         {
             var emailNotificationEntity = await emailNotificationRepository.GetByIdAsync(id);
-            return mapper.MapDto<EmailNotificationViewModel>(emailNotificationEntity);
+            return _mapper.MapDto<EmailNotificationViewModel>(emailNotificationEntity);
         }
 
         public async Task AddAsync(EmailNotificationAddReq req)
         {
-            var entity = mapper.MapDtoCreateSetUsername<EmailNotificationAddReq, EmailNotification>(req, Username);
+            var entity = _mapper.MapDtoCreateSetUsername<EmailNotificationAddReq, EmailNotification>(req, Username);
             await emailNotificationRepository.AddAsync(entity);
         }
 
-        public void Update(EmailNotificationEditReq req, EmailNotification emailNotification)
+        public void Update(EmailNotificationEditReq req, EmailNotification entity)
         {
-            mapper.Map(req, emailNotification, Username);
+            _mapper.Map(req, entity, Username);
 
-            emailNotificationRepository.Update(emailNotification);
+            emailNotificationRepository.Update(entity);
         }
 
         public void Delete(EmailNotification emailNotification) =>

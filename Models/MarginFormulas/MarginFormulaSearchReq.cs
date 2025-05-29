@@ -1,4 +1,4 @@
-﻿namespace MVCWebApp.Models.Req
+﻿namespace MVCWebApp.Models.MarginFormulas
 {
     public class MarginFormulaSearchReq : BaseSearchReq
     {

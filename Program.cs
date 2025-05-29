@@ -37,6 +37,7 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
 /*------------- DI */
 builder.Services.AddAutoMapper(typeof(MappingProfile));
 builder.Services.AddSingleton<IMapModel, MapModel>();
+builder.Services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepository<>));
 
 builder.Services.AddScoped<IApiService, ApiService>();
 builder.Services.AddScoped<IAuthService, AuthService>();
@@ -44,7 +45,10 @@ builder.Services.AddScoped<IJwtTokenService, JwtTokenService>();
 builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 
 builder.Services.AddScoped<IEmailNotificationRepository, EmailNotificationRepository>();
+builder.Services.AddScoped<IMarginFormulaRepository, MarginFormulaRepository>();
+
 builder.Services.AddScoped<IEmailNotificationService, EmailNotificationService>();
+builder.Services.AddScoped<IMarginFormulaService, MarginFormulaService>();
 
 /*------------- Background Services */
 builder.Services.AddSingleton<IBackgroundTaskQueue, BackgroundTaskQueue>();

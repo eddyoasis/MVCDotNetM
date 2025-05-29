@@ -1,8 +1,7 @@
-﻿using AutoMapper.Execution;
-using AutoMapper;
-using System.ComponentModel;
-using System.Security.Principal;
+﻿using AutoMapper;
+using MVCWebApp.Models;
 using MVCWebApp.Models.EmailNotifications;
+using MVCWebApp.Models.MarginFormulas;
 using MVCWebApp.ViewModels;
 
 namespace MVCWebApp.Helper.Mapper
@@ -13,8 +12,14 @@ namespace MVCWebApp.Helper.Mapper
         {
             CreateMap<EmailNotificationAddReq, EmailNotification>();
             CreateMap<EmailNotification, EmailNotificationViewModel>();
-            //CreateMap<EmailNotificationViewModel, EmailNotification>();
-            CreateMap<EmailNotification, EmailNotificationEditReq>(); 
+            CreateMap<EmailNotification, EmailNotificationEditReq>();
+
+            CreateMap<MarginFormula, MarginFormulaViewModel>();
+            CreateMap<MarginFormulaAddReq, MarginFormula>();
+            CreateMap<MarginFormula, MarginFormulaEditReq>();
+
+            CreateMap<MarginFormulaSearchReq, BaseSearchReq>();
+            CreateMap<EmailNotificationSearchReq, BaseSearchReq>();
         }
     }
 }

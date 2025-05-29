@@ -1,7 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using MVCWebApp.Data;
 using MVCWebApp.Models.EmailNotifications;
-using System.Linq;
 
 namespace MVCWebApp.Repositories
 {
@@ -15,35 +14,35 @@ namespace MVCWebApp.Repositories
         void Delete(EmailNotification emailNotification);
     }
 
-    public class EmailNotificationRepository(ApplicationDbContext context) : IEmailNotificationRepository
+    public class EmailNotificationRepository(ApplicationDbContext _context) : IEmailNotificationRepository
     {
         public async Task<IEnumerable<EmailNotification>> GetAllAsync() =>
-            await context.EmailNotifications.ToListAsync();
+            await _context.EmailNotifications.ToListAsync();
 
         public IQueryable<EmailNotification> GetAllQueryable()
         {
-            return context.EmailNotifications.AsQueryable();
+            return _context.EmailNotifications.AsQueryable();
         }
 
         public async Task<EmailNotification?> GetByIdAsync(int id) =>
-            await context.EmailNotifications.FindAsync(id);
+            await _context.EmailNotifications.FindAsync(id);
 
-        public async Task AddAsync(EmailNotification emailNotification)
+        public async Task AddAsync(EmailNotification entity)
         {
-            await context.EmailNotifications.AddAsync(emailNotification);
-            await context.SaveChangesAsync();
+            await _context.EmailNotifications.AddAsync(entity);
+            await _context.SaveChangesAsync();
         }
 
-        public void Update(EmailNotification emailNotification)
+        public void Update(EmailNotification entity)
         {
-            context.EmailNotifications.Update(emailNotification);
-            context.SaveChanges();
+            _context.EmailNotifications.Update(entity);
+            _context.SaveChanges();
         }
 
-        public void Delete(EmailNotification emailNotification)
+        public void Delete(EmailNotification entity)
         {
-            context.EmailNotifications.Remove(emailNotification);
-            context.SaveChanges();
+            _context.EmailNotifications.Remove(entity);
+            _context.SaveChanges();
         }
     }
 }
