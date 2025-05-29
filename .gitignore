@@ -482,3 +482,6 @@ $RECYCLE.BIN/
 
 # Vim temporary swap files
 *.swp
+/autoMargin.db
+/autoMargin.db-shm
+/autoMargin.db-wal

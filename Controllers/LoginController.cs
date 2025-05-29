@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using MVCWebApp.Models;
 using MVCWebApp.Services;
+using MVCWebApp.ViewModels;
 using System.DirectoryServices.AccountManagement;
 
 namespace MVCWebApp.Controllers
@@ -42,9 +42,9 @@ namespace MVCWebApp.Controllers
             return context.ValidateCredentials(username, password);
         }
 
-        public ActionResult Logout()
+        public async Task<IActionResult> Logout()
         {
-            //FormsAuthentication.SignOut();
+            Response.Cookies.Delete("AuthToken");
             return RedirectToAction("Index", "Login");
         }
     }

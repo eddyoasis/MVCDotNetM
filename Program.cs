@@ -1,13 +1,15 @@
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.AspNetCore.ResponseCompression;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using MVCWebApp.BackgroundServices;
+using MVCWebApp.Data;
 using MVCWebApp.Filters;
+using MVCWebApp.Helper.Mapper;
 using MVCWebApp.Middlewares;
+using MVCWebApp.Repositories;
 using MVCWebApp.Services;
 using Serilog;
-using System.IO.Compression;
 using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -15,7 +17,7 @@ var builder = WebApplication.CreateBuilder(args);
 // Configure Serilog
 Log.Logger = new LoggerConfiguration()
     .Enrich.WithProperty("Application", "MyAspNetCoreApp")
-    .MinimumLevel.Debug()
+    .MinimumLevel.Information()
     .WriteTo.Console()
     .WriteTo.File("Logs/log.txt", rollingInterval: RollingInterval.Day)
     .CreateLogger();
@@ -28,16 +30,31 @@ builder.Services.AddControllersWithViews();
 
 builder.Services.AddHttpClient(); // Registers IHttpClientFactory
 
+/*------------- DB Connection */
+builder.Services.AddDbContext<ApplicationDbContext>(options =>
+    options.UseSqlite(builder.Configuration.GetConnectionString("DefaultConnection")));
+
 /*------------- DI */
+builder.Services.AddAutoMapper(typeof(MappingProfile));
+builder.Services.AddSingleton<IMapModel, MapModel>();
+
 builder.Services.AddScoped<IApiService, ApiService>();
 builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddScoped<IJwtTokenService, JwtTokenService>();
+builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
+
+builder.Services.AddScoped<IEmailNotificationRepository, EmailNotificationRepository>();
+builder.Services.AddScoped<IEmailNotificationService, EmailNotificationService>();
 
 /*------------- Background Services */
 builder.Services.AddSingleton<IBackgroundTaskQueue, BackgroundTaskQueue>();
 builder.Services.AddHostedService<QueuedHostedService>();
 
 //builder.Services.AddScoped<AuthFilter>();
+builder.Services.AddControllers(options =>
+{
+    options.Filters.Add<GlobalExceptionFilter>();
+});
 
 builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
 .AddCookie(options =>

@@ -1,5 +1,4 @@
-﻿@* @model IEnumerable<MarginViewModel> *@
-@model MVCWebApp.Models.Req.EmailNotificationSearchReq
+﻿@model EmailNotificationSearchReq
 
 @{
     ViewBag.Title = "Manage Email Notifications";
@@ -23,7 +22,7 @@
 
 <div class="container">
     <h2>@ViewBag.Title</h2>
-    
+
     <!-- Search Section -->
     <section id="searchSection" class="p-4 border rounded bg-light shadow-sm">
         <h4>Search Email Notifications</h4>
@@ -245,7 +244,7 @@
                         if (result.success) {
                             console.log(result);
                             $("#createModal").modal("hide");
-                      
+
                             alert('success create');
                             postSearchEmailNotifications(1);
                         } else {
@@ -255,7 +254,8 @@
                     error: function (xhr, status, error) {
                         console.error("Submission error: " + error);
                         alert("Failed to load. Status: " + xhr.status);
-                        window.location.href = "/Login/Index";
+                        if (xhr.status == 401)
+                            window.location.href = "/Login/Index";
                     }
                 });
             });

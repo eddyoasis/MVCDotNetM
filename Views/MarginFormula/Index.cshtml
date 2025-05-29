@@ -24,15 +24,6 @@
 <div class="container">
     <h2>@ViewBag.Title</h2>
 
-@*     <p>
-        <div class="text-end">
-            Login: @ViewBag.Username
-        </div>
-        <div class="text-end mt-2">
-            @Html.ActionLink("Sign Out", "Logout", "Margin", null, new { @class = "btn btn-danger" })
-        </div>
-    </p> *@
-
     <!-- Search Section -->
     <section id="searchSection" class="p-4 border rounded bg-light shadow-sm">
         <h4>Search Margin Formula</h4>
@@ -165,7 +156,6 @@
 
             /*=================================================== Pagination*/
             $(document).on("click", "#btnGo", function (e) {
-                //$("#btnCreate").click(function (e) {
                 event.preventDefault(); // Prevent full page reload
 
                 var pageNumber = +$("#pageIndexNew").val()
@@ -174,17 +164,14 @@
             });
 
             $(document).on("click", "#btnNext", function (e) {
-                //$("#btnCreate").click(function (e) {
                 event.preventDefault(); // Prevent full page reload
 
                 var pageNumber = +$("#pageIndex").val() + 1
 
                 postSearchMarginFormulas(pageNumber)
-
             });
 
             $(document).on("click", "#btnPrevious", function (e) {
-                //$("#btnCreate").click(function (e) {
                 event.preventDefault(); // Prevent full page reload
 
                 var pageNumber = +$("#pageIndex").val() - 1
@@ -199,8 +186,6 @@
             });
 
             function postSearchMarginFormulas(pageNumber) {
-
-                //var selectedValue = $("input[name='dateType']:checked").val();
 
                 var requestData = {
                     Username: $("#MarginType").val(),

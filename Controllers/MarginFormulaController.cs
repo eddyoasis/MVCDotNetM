@@ -1,8 +1,8 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using MVCWebApp.Helper;
-using MVCWebApp.Models;
 using MVCWebApp.Models.Req;
+using MVCWebApp.ViewModels;
 
 namespace MVCWebApp.Controllers
 {
@@ -40,8 +40,6 @@ namespace MVCWebApp.Controllers
 
         public async Task<IActionResult> Index()
         {
-            ViewBag.Username = Username;
-
             return View(new MarginFormulaSearchReq { PageNumber = 1, PageSize = 5 });
         }
 

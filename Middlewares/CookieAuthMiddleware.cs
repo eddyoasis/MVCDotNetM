@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Authentication.Cookies;
 using MVCWebApp.Helper;
-using MVCWebApp.Controllers;
+using MVCWebApp.Services;
 using System.Security.Claims;
 
 namespace MVCWebApp.Middlewares
@@ -13,9 +13,6 @@ namespace MVCWebApp.Middlewares
             "/Margin/Logout",
             "/Login",
             "/Login/Login"];
-
-        List<string> _whiteListCreate =
-            ["/Margin/Create"];
 
         public async Task Invoke(HttpContext context)
         {
@@ -45,6 +42,8 @@ namespace MVCWebApp.Middlewares
                         var identity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
                         var principal = new ClaimsPrincipal(identity);
                         context.User = principal;
+
+                        BaseService.Username = username;
                     }
 
                     await next(context);

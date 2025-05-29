@@ -5,8 +5,8 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using MVCWebApp.BackgroundServices;
 using MVCWebApp.Enums;
 using MVCWebApp.Helper;
-using MVCWebApp.Models;
 using MVCWebApp.Models.Req;
+using MVCWebApp.ViewModels;
 
 namespace MVCWebApp.Controllers
 {
@@ -72,7 +72,8 @@ namespace MVCWebApp.Controllers
 
         public async Task<IActionResult> Index()
         {
-            ViewBag.Username = Username;
+            var sss = User.Identity.Name;
+            //ViewBag.Username = Username;
 
             var currencySearchEnum = ConverterHelper.ToSelectList<CurrencySearchEnum>();
             var marginCallSearchStatusEnum = ConverterHelper.ToSelectList<MarginCallSearchStatusEnum>();

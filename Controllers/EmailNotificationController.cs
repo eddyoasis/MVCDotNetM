@@ -1,12 +1,16 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using MVCWebApp.Helper;
-using MVCWebApp.Models.Req;
-using MVCWebApp.Models;
-using Microsoft.AspNetCore.Authorization;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
+using MVCWebApp.Helper.Mapper;
+using MVCWebApp.Models.EmailNotifications;
+using MVCWebApp.Services;
+using MVCWebApp.ViewModels;
 
 namespace MVCWebApp.Controllers
 {
-    public class EmailNotificationController : ControllerBase
+    public class EmailNotificationController(
+        IEmailNotificationService _emailNotificationService,
+        IMapModel mapper
+        ) : ControllerBase
     {
         private List<EmailNotificationViewModel> _emailNotifications = new List<EmailNotificationViewModel>
             {
@@ -76,21 +80,13 @@ namespace MVCWebApp.Controllers
 
         public async Task<IActionResult> Index()
         {
-            ViewBag.Username = Username;
-
             return View(new EmailNotificationSearchReq { PageNumber = 1, PageSize = 5 });
         }
 
         [HttpPost]
         public async Task<IActionResult> SearchEmailNotifications([FromBody] EmailNotificationSearchReq req)
         {
-            int pageNumber = req.PageNumber ?? 1;
-            int pageSize = req.PageSize ?? 10;
-
-            var paginatedResult = PaginatedList<EmailNotificationViewModel>.CreateAsync(
-                _emailNotifications,
-                pageNumber,
-                pageSize);
+            var paginatedResult = await _emailNotificationService.GetAllAsync(req);
 
             return PartialView("_Search", paginatedResult);
         }
@@ -103,43 +99,48 @@ namespace MVCWebApp.Controllers
         [HttpPost]
         [Authorize]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create(EmailNotificationAddReq entity)
+        public async Task<IActionResult> Create(EmailNotificationAddReq req)
         {
             if (ModelState.IsValid)
             {
+                await _emailNotificationService.AddAsync(req);
+
                 return Json(new { success = true });
             }
-            return PartialView("_CreatePartial", entity);
+            return PartialView("_CreatePartial", req);
         }
 
         [Authorize]
-        public IActionResult Edit(int id)
+        public async Task<IActionResult> Edit(int id)
         {
-            var entity = _emailNotifications.FirstOrDefault(x => x.ID == id);
+            var entity = await _emailNotificationService.GetByEntityIdAsync(id);
             if (entity == null)
             {
                 return NotFound();
             }
 
-            var res = new EmailNotificationEditReq
-            {
-                ID = entity.ID,
-                MarginType = entity.MarginType,
-                EmailTemplate = entity.EmailTemplate
-            };
+            var req = mapper.MapDto<EmailNotificationEditReq>(entity);
 
-            return PartialView("_EditPartial", res);
+            return PartialView("_EditPartial", req);
         }
 
         [HttpPost]
         [Authorize]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(EmailNotificationEditReq entity)
+        public async Task<IActionResult> Edit(EmailNotificationEditReq req)
         {
             if (ModelState.IsValid)
             {
                 try
                 {
+                    var entity = await _emailNotificationService.GetByEntityIdAsync(req.ID);
+                    if (entity == null)
+                    {
+                        return NotFound();
+                    }
+
+                    _emailNotificationService.Update(req, entity);
+
                     return Json(new { success = true });
                 }
                 catch (Exception ex)
@@ -147,18 +148,13 @@ namespace MVCWebApp.Controllers
                     ModelState.AddModelError("", "Error updating record: " + ex.Message);
                 }
             }
-            return PartialView("_EditPartial", entity);
+            return PartialView("_EditPartial", req);
         }
 
         [Authorize]
-        public IActionResult Details(int? id)
+        public async Task<IActionResult> Details(int id)
         {
-            if (id == null)
-            {
-                return NotFound();
-            }
-
-            var entity = _emailNotifications.FirstOrDefault(x => x.ID == id);
+            var entity = await _emailNotificationService.GetByIdAsync(id);
             if (entity == null)
             {
                 return NotFound();
@@ -168,35 +164,32 @@ namespace MVCWebApp.Controllers
         }
 
         [Authorize]
-        public IActionResult Delete(int? id)
+        public async Task<IActionResult> Delete(int id)
         {
-            if (id == null)
+            var entity = await _emailNotificationService.GetByIdAsync(id);
+            if (entity == null)
             {
                 return NotFound();
             }
 
-            var margin = _emailNotifications.FirstOrDefault(x => x.ID == id);
-            if (margin == null)
-            {
-                return NotFound();
-            }
-
-            return PartialView("_DeletePartial", margin);
+            return PartialView("_DeletePartial", entity);
         }
 
         [HttpPost]
         [Authorize]
         [ValidateAntiForgeryToken]
-        public IActionResult Delete(int id, EmailNotificationViewModel entity)
+        public async Task<IActionResult> Delete(int id, EmailNotificationViewModel viewModel)
         {
-            var margin = _emailNotifications.FirstOrDefault(x => x.ID == id);
-            if (margin == null)
+            var entity = await _emailNotificationService.GetByEntityIdAsync(id);
+            if (entity == null)
             {
                 return NotFound();
             }
 
             try
             {
+                _emailNotificationService.Delete(entity);
+
                 return Json(new { success = true });
             }
             catch (Exception ex)
@@ -204,7 +197,7 @@ namespace MVCWebApp.Controllers
                 ModelState.AddModelError("", "Error deleting record: " + ex.Message);
             }
 
-            return PartialView("_DeletePartial", margin);
+            return PartialView("_DeletePartial", viewModel);
         }
     }
 }

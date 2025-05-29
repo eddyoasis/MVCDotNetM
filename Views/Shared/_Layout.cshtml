@@ -22,63 +22,36 @@
 </head>
 <body>
     <header>
-        @* @Html.ActionLink("Sign Out", "Logout", "Margin", null, new { @class = "btn btn-danger" }) *@
-       @* <br /> *@
-
-       @*  <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
-            <div class="container-fluid">
-                <a class="navbar-brand" asp-area="" asp-controller="MarginCall" asp-action="Index">Margin Web</a>
-                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent"
-                        aria-expanded="false" aria-label="Toggle navigation">
-                    <span class="navbar-toggler-icon"></span>
-                </button>
-                <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
-                    <ul class="navbar-nav flex-grow-1">
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="MarginCall" asp-action="Index">Margin Call</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="MarginFormula" asp-action="Index">Margin Formula</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="EmailNotification" asp-action="Index">Email Notification</a>
-                        </li>
-                    </ul>
-                </div>
-            </div>
-        </nav> *@
         <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
-            <div class="container-fluid">
-                <a class="navbar-brand" asp-area="" asp-controller="MarginCall" asp-action="Index">Margin Web</a>
-                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent"
-                        aria-expanded="false" aria-label="Toggle navigation">
-                    <span class="navbar-toggler-icon"></span>
-                </button>
-                <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
-                    <ul class="navbar-nav flex-grow-1">
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="MarginCall" asp-action="Index">Margin Call</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="MarginFormula" asp-action="Index">Margin Formula</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="EmailNotification" asp-action="Index">Email Notification</a>
-                        </li>
-                    </ul>
+            @if (User.Identity.IsAuthenticated)
+            {
+                <div class="container-fluid">
+                    <a class="navbar-brand" asp-area="" asp-controller="MarginCall" asp-action="Index">Margin Web</a>
+                    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent"
+                            aria-expanded="false" aria-label="Toggle navigation">
+                        <span class="navbar-toggler-icon"></span>
+                    </button>
+                    <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
+                        <ul class="navbar-nav flex-grow-1">
+                            <li class="nav-item">
+                                <a class="nav-link text-dark" asp-area="" asp-controller="MarginCall" asp-action="Index">Margin Call</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link text-dark" asp-area="" asp-controller="MarginFormula" asp-action="Index">Margin Formula</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link text-dark" asp-area="" asp-controller="EmailNotification" asp-action="Index">Email Notification</a>
+                            </li>
+                        </ul>
+                    </div>
                 </div>
-            </div>
-            <div class="container-fluid justify-content-end">
-                <div>
-                    <span>Login: @ViewData["Username"]</span>
-                    @Html.ActionLink("Sign Out", "Logout", "Margin", null, new { @class = "btn btn-danger text-nowrap" })
+                <div class="container-fluid justify-content-end">
+                    <div>
+                        <span>Login: @User.Identity.Name</span>
+                        @Html.ActionLink("Sign Out", "Logout", "Login", null, new { @class = "btn btn-danger text-nowrap" })
+                    </div>
                 </div>
-                
-                @* <div class="d-flex gap-2 justify-content-end">
-                    <span>Login: asdasdasd</span>
-                    @Html.ActionLink("Sign Out", "Logout", "Margin", null, new { @class = "btn btn-danger text-nowrap" })
-                </div> *@
-            </div>
+            }
         </nav>
     </header>
     <div class="container">

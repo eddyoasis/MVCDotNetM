@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using MVCWebApp.Helper.Mapper;
 
 namespace MVCWebApp.Helper
 {
@@ -22,13 +23,10 @@ namespace MVCWebApp.Helper
 
         public bool HasNextPage => PageIndex < TotalPages;
 
-        // CreateAsync builds the paginated list by executing the skip/take operations on the IQueryable source.
         public static async Task<PaginatedList<T>> CreateAsync(IQueryable<T> source, int pageIndex, int pageSize)
         {
-            // Get the total count of records
             var count = await source.CountAsync();
 
-            // Fetch only the items for the current page
             var items = await source.Skip((pageIndex - 1) * pageSize)
                                     .Take(pageSize)
                                     .ToListAsync();
@@ -36,12 +34,27 @@ namespace MVCWebApp.Helper
             return new PaginatedList<T>(items, count, pageIndex, pageSize);
         }
 
+        public static async Task<PaginatedList<TDestination>> CreateAsync<TSource, TDestination>(
+            IQueryable<TSource> source,
+            int pageIndex,
+            int pageSize,
+            IMapModel mapper)
+        {
+            var count = await source.CountAsync();
+
+            var items = await source.Skip((pageIndex - 1) * pageSize)
+                                    .Take(pageSize)
+                                    .ToListAsync();
+
+            var mappedItems = mapper.MapDto<List<TDestination>>(items); ;
+
+            return new PaginatedList<TDestination>(mappedItems, count, pageIndex, pageSize);
+        }
+
         public static PaginatedList<T> CreateAsync(IEnumerable<T> source, int pageIndex, int pageSize)
         {
-            // Get the total count of records
             var count = source.Count();
 
-            // Fetch only the items for the current page
             var items = source.Skip((pageIndex - 1) * pageSize)
                                     .Take(pageSize)
                                     .ToList();
