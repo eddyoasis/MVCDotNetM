@@ -3,7 +3,7 @@ using MVCWebApp.Models.MarginFormulas;
 
 namespace MVCWebApp.Repositories
 {
-    public interface IMarginFormulaRepository: IGenericRepository<MarginFormula>
+    public interface IMarginFormulaRepository : IGenericRepository<MarginFormula>
     {
         IQueryable<MarginFormula> GetAllQueryable();
     }

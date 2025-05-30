@@ -34,7 +34,7 @@ namespace MVCWebApp.Services
             var searchReq = _mapper.MapDto<MarginFormulaSearchReq, BaseSearchReq>(req);
 
             var paginatedResult = await PaginatedList<MarginFormulaViewModel>.
-                    CreateAsync<MarginFormula, MarginFormulaViewModel>(
+                    GetByPagesAndBaseAsync<MarginFormula, MarginFormulaViewModel>(
                         marginFormulas,
                         _mapper,
                         searchReq);

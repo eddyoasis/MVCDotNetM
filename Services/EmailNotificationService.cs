@@ -34,7 +34,7 @@ namespace MVCWebApp.Services
             var searchReq = _mapper.MapDto<EmailNotificationSearchReq, BaseSearchReq>(req);
 
             var paginatedResult = await PaginatedList<EmailNotificationViewModel>.
-                    CreateAsync<EmailNotification, EmailNotificationViewModel>(
+                    GetByPagesAndBaseAsync<EmailNotification, EmailNotificationViewModel>(
                         emailNotifications,
                         _mapper,
                         searchReq);

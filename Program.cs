@@ -46,9 +46,11 @@ builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 
 builder.Services.AddScoped<IEmailNotificationRepository, EmailNotificationRepository>();
 builder.Services.AddScoped<IMarginFormulaRepository, MarginFormulaRepository>();
+builder.Services.AddScoped<IMarginCallRepository, MarginCallRepository>();
 
 builder.Services.AddScoped<IEmailNotificationService, EmailNotificationService>();
 builder.Services.AddScoped<IMarginFormulaService, MarginFormulaService>();
+builder.Services.AddScoped<IMarginCallService, MarginCallService>();
 
 /*------------- Background Services */
 builder.Services.AddSingleton<IBackgroundTaskQueue, BackgroundTaskQueue>();

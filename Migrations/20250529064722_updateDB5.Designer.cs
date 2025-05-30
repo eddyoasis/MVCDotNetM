@@ -3,6 +3,7 @@ using System;
 using MVCWebApp.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -10,9 +11,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace MVCWebApp.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250529064722_updateDB5")]
+    partial class updateDB5
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder.HasAnnotation("ProductVersion", "9.0.5");
@@ -47,53 +50,6 @@ namespace MVCWebApp.Migrations
                     b.HasKey("ID");
 
                     b.ToTable("EmailNotifications");
-                });
-
-            modelBuilder.Entity("MVCWebApp.Models.MarginCalls.MarginCall", b =>
-                {
-                    b.Property<int>("ID")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("INTEGER");
-
-                    b.Property<int>("CcyCode")
-                        .HasColumnType("INTEGER");
-
-                    b.Property<string>("ClientCode")
-                        .IsRequired()
-                        .HasColumnType("TEXT");
-
-                    b.Property<string>("IM")
-                        .IsRequired()
-                        .HasColumnType("TEXT");
-
-                    b.Property<string>("LedgerBal")
-                        .IsRequired()
-                        .HasColumnType("TEXT");
-
-                    b.Property<string>("OrderDetails")
-                        .IsRequired()
-                        .HasColumnType("TEXT");
-
-                    b.Property<int>("Percentages")
-                        .HasColumnType("INTEGER");
-
-                    b.Property<int>("Status")
-                        .HasColumnType("INTEGER");
-
-                    b.Property<string>("TNE")
-                        .IsRequired()
-                        .HasColumnType("TEXT");
-
-                    b.Property<DateTime>("TimeStemp")
-                        .HasColumnType("TEXT");
-
-                    b.Property<string>("TypeOfMarginCall")
-                        .IsRequired()
-                        .HasColumnType("TEXT");
-
-                    b.HasKey("ID");
-
-                    b.ToTable("MarginCall");
                 });
 
             modelBuilder.Entity("MVCWebApp.Models.MarginFormulas.MarginFormula", b =>

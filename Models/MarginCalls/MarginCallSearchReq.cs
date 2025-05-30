@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc.Rendering;
 
-namespace MVCWebApp.Models.Req
+namespace MVCWebApp.Models.MarginCalls
 {
     public class MarginCallSearchReq : BaseSearchReq
     {

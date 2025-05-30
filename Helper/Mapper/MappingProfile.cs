@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using MVCWebApp.Models;
 using MVCWebApp.Models.EmailNotifications;
+using MVCWebApp.Models.MarginCalls;
 using MVCWebApp.Models.MarginFormulas;
 using MVCWebApp.ViewModels;
 
@@ -18,8 +19,11 @@ namespace MVCWebApp.Helper.Mapper
             CreateMap<MarginFormulaAddReq, MarginFormula>();
             CreateMap<MarginFormula, MarginFormulaEditReq>();
 
+            CreateMap<MarginCall, MarginCallViewModel>();
+
             CreateMap<MarginFormulaSearchReq, BaseSearchReq>();
             CreateMap<EmailNotificationSearchReq, BaseSearchReq>();
+            CreateMap<MarginCallSearchReq, BaseSearchReq>();
         }
     }
 }

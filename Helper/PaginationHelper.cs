@@ -35,7 +35,7 @@ namespace MVCWebApp.Helper
             return new PaginatedList<T>(items, count, pageIndex, pageSize);
         }
 
-        public static async Task<PaginatedList<TDestination>> CreateAsync<TSource, TDestination>(
+        public static async Task<PaginatedList<TDestination>> GetByPagesAndBaseAsync<TSource, TDestination>(
             IQueryable<TSource> source,
             IMapModel mapper,
             BaseSearchReq req = null) where TSource : ISetUserInfo
@@ -53,6 +53,22 @@ namespace MVCWebApp.Helper
                 );
             }
 
+            var count = await source.CountAsync();
+
+            var items = await source.Skip((req.PageNumber - 1) * req.PageSize)
+                                    .Take(req.PageSize)
+                                    .ToListAsync();
+
+            var mappedItems = mapper.MapDto<List<TDestination>>(items); ;
+
+            return new PaginatedList<TDestination>(mappedItems, count, req.PageNumber, req.PageSize);
+        }
+
+        public static async Task<PaginatedList<TDestination>> GetByPagesAsync<TSource, TDestination>(
+            IQueryable<TSource> source,
+            IMapModel mapper,
+            BaseSearchReq req = null)
+        {
             var count = await source.CountAsync();
 
             var items = await source.Skip((req.PageNumber - 1) * req.PageSize)

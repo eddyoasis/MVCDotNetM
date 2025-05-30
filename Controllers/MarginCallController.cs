@@ -1,16 +1,20 @@
 ﻿using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Rendering;
 using MVCWebApp.BackgroundServices;
 using MVCWebApp.Enums;
 using MVCWebApp.Helper;
-using MVCWebApp.Models.Req;
+using MVCWebApp.Helper.Mapper;
+using MVCWebApp.Models.MarginCalls;
+using MVCWebApp.Services;
 using MVCWebApp.ViewModels;
 
 namespace MVCWebApp.Controllers
 {
-    public class MarginCallController(IBackgroundTaskQueue taskQueue) : ControllerBase
+    public class MarginCallController(
+        IBackgroundTaskQueue taskQueue,
+        IMarginCallService _marginCallService,
+        IMapModel _mapper
+        ) : ControllerBase
     {
 
         private List<MarginCallViewModel> _marginCall =
@@ -72,9 +76,6 @@ namespace MVCWebApp.Controllers
 
         public async Task<IActionResult> Index()
         {
-            var sss = User.Identity.Name;
-            //ViewBag.Username = Username;
-
             var currencySearchEnum = ConverterHelper.ToSelectList<CurrencySearchEnum>();
             var marginCallSearchStatusEnum = ConverterHelper.ToSelectList<MarginCallSearchStatusEnum>();
 
@@ -90,26 +91,15 @@ namespace MVCWebApp.Controllers
         [HttpPost]
         public async Task<IActionResult> SearchMarginCalls([FromBody] MarginCallSearchReq req)
         {
-            //int pageNumber = req.PageNumber ?? 1;
-            //int pageSize = req.PageSize ?? 10;
-
-            var paginatedResult = PaginatedList<MarginCallViewModel>.CreateAsync(
-                _marginCall,
-                1,
-                5);
+            var paginatedResult = await _marginCallService.GetAllAsync(req);
 
             return PartialView("_Search", paginatedResult);
         }
 
         [Authorize]
-        public IActionResult Details(int? id)
+        public async Task<IActionResult> Details(int id)
         {
-            if (id == null)
-            {
-                return NotFound();
-            }
-
-            var entity = _marginCall.FirstOrDefault(x => x.ID == id);
+            var entity = await _marginCallService.GetByIdAsync(id);
             if (entity == null)
             {
                 return NotFound();
