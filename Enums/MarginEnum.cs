@@ -5,7 +5,7 @@ namespace MVCWebApp.Enums
 {
     public enum CurrencySearchEnum
     {
-        [Display(Name = "All Currencies")]
+        [Display(Name = "All")]
         All = 0,
 
         [Display(Name = "Singapore Dollar")]
@@ -17,7 +17,7 @@ namespace MVCWebApp.Enums
 
     public enum MarginCallSearchStatusEnum
     {
-        [Display(Name = "All Status")]
+        [Display(Name = "All")]
         All = 0,
 
         [Display(Name = "Pending")]

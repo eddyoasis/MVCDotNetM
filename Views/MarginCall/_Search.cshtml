@@ -21,6 +21,8 @@
                     <th>TimeStemp</th>
                     <th>TNE</th>
                     <th>TypeOfMarginCall</th>
+                    <th>ModifiedBy</th>
+                    <th>ModifiedAt</th>
                     <th>Actions</th>
                 </tr>
             </thead>
@@ -41,16 +43,16 @@
                         <td>@item.TimeStemp</td>
                         <td>@item.TNE</td>
                         <td>@item.TypeOfMarginCall</td>
-                        @* <td class="text-right"> *@
+                        <td>@item.ModifiedBy</td>
+                        <td>@item.ModifiedAt</td>
                         <td>
-                            <div class="d-flex gap-1">
+                            <div class="d-flex flex-wrap gap-1">
                                 @if (item.Status == "Pending")
                                 {
                                     <button class="btn btn-sm btn-success btn-approve" data-id="@item.ID">Approve</button>
                                     <button class="btn btn-sm btn-danger btn-reject" data-id="@item.ID">Reject</button>
                                 }
                                 <button class="btn btn-sm btn-info btn-detail" data-id="@item.ID">Details</button>
-                                @* <button class="btn btn-sm btn-danger btn-delete" data-id="@item.ID">Delete</button> *@
                             </div>
                             
                         </td>

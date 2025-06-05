@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using MVCWebApp.BackgroundServices;
@@ -30,9 +31,27 @@ builder.Services.AddControllersWithViews();
 
 builder.Services.AddHttpClient(); // Registers IHttpClientFactory
 
-/*------------- DB Connection */
+/*------------- DB Connection Sqlite*/
+//builder.Services.AddDbContext<ApplicationDbContext>(options =>
+//    options.UseSqlite(builder.Configuration.GetConnectionString("DefaultConnection")));
+
+/*------------- DB Connection MSSql*/
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
-    options.UseSqlite(builder.Configuration.GetConnectionString("DefaultConnection")));
+    options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
+
+using (var connection = new SqlConnection(builder.Configuration.GetConnectionString("DefaultConnection")))
+{
+    try
+    {
+        await connection.OpenAsync();
+        Console.WriteLine("Connected Successfully!");
+    }
+    catch (Exception ex)
+    {
+        Console.WriteLine($"SQL Connection Failed: {ex.Message}");
+    }
+}
+
 
 /*------------- DI */
 builder.Services.AddAutoMapper(typeof(MappingProfile));
@@ -120,7 +139,6 @@ builder.Services.AddAuthentication(options =>
 builder.Services.AddAuthorization();
 
 var app = builder.Build();
-
 
 // Configure the HTTP request pipeline.
 if (!app.Environment.IsDevelopment())

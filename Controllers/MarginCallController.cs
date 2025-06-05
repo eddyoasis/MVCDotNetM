@@ -109,9 +109,9 @@ namespace MVCWebApp.Controllers
         }
 
         [Authorize]
-        public IActionResult Approve(int id)
+        public async Task<IActionResult> Approve(int id)
         {
-            var entity = _marginCall.FirstOrDefault(x => x.ID == id);
+            var entity = await _marginCallService.GetByIdAsync(id);
             if (entity == null)
             {
                 return NotFound();
@@ -123,12 +123,20 @@ namespace MVCWebApp.Controllers
         [HttpPost]
         [Authorize]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Approve(MarginCallViewModel entity)
+        public async Task<IActionResult> Approve(MarginCallViewModel model)
         {
-            if (ModelState.IsValid)
+            if (model.ID > 0)
             {
                 try
                 {
+                    var entity = await _marginCallService.GetByEntityIdAsync(model.ID);
+                    if (entity == null)
+                    {
+                        return NotFound();
+                    }
+
+                    await _marginCallService.ApproveAsync(entity);
+
                     return Json(new { success = true });
                 }
                 catch (Exception ex)
@@ -136,13 +144,13 @@ namespace MVCWebApp.Controllers
                     ModelState.AddModelError("", "Error approving record: " + ex.Message);
                 }
             }
-            return PartialView("_ApprovePartial", entity);
+            return PartialView("_ApprovePartial", model);
         }
 
         [Authorize]
-        public IActionResult Reject(int id)
+        public async Task<IActionResult> Reject(int id)
         {
-            var entity = _marginCall.FirstOrDefault(x => x.ID == id);
+            var entity = await _marginCallService.GetByIdAsync(id);
             if (entity == null)
             {
                 return NotFound();
@@ -154,12 +162,20 @@ namespace MVCWebApp.Controllers
         [HttpPost]
         [Authorize]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Reject(MarginCallViewModel entity)
+        public async Task<IActionResult> Reject(MarginCallViewModel model)
         {
-            if (ModelState.IsValid)
+            if (model.ID > 0)
             {
                 try
                 {
+                    var entity = await _marginCallService.GetByEntityIdAsync(model.ID);
+                    if (entity == null)
+                    {
+                        return NotFound();
+                    }
+
+                    await _marginCallService.RejectAsync(entity);
+
                     return Json(new { success = true });
                 }
                 catch (Exception ex)
@@ -167,7 +183,7 @@ namespace MVCWebApp.Controllers
                     ModelState.AddModelError("", "Error rejecting record: " + ex.Message);
                 }
             }
-            return PartialView("_RejectPartial", entity);
+            return PartialView("_RejectPartial", model);
         }
     }
 }

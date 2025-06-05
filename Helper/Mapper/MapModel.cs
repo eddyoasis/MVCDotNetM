@@ -10,10 +10,13 @@ namespace MVCWebApp.Helper.Mapper
         void Map<TSource, TDestination>(TSource modelS, TDestination modelD);
 
         //special
-        TDestination MapDtoCreateSetUsername<TSource, TDestination>(TSource model, string username) 
+
+        TDestination MapDtoCreateSetUsername<TSource, TDestination>(TSource model, string username)
             where TDestination : ISetUserInfo;
         void Map<TSource, TDestination>(TSource modelS, TDestination modelD, string username)
                 where TDestination : ISetUserInfo;
+
+        void Map<TDestination>(TDestination modelD, string username) where TDestination : ISetUpdateInfo;
     }
 
     public class MapModel(IMapper mapper) : IMapModel
@@ -35,7 +38,8 @@ namespace MVCWebApp.Helper.Mapper
         }
 
         //special
-        public TDestination MapDtoCreateSetUsername<TSource, TDestination>(TSource model, string username) 
+
+        public TDestination MapDtoCreateSetUsername<TSource, TDestination>(TSource model, string username)
             where TDestination : ISetUserInfo
         {
             var entity = mapper.Map<TDestination>(model);
@@ -45,11 +49,17 @@ namespace MVCWebApp.Helper.Mapper
             return entity;
         }
 
-        public void Map<TSource, TDestination>(TSource modelS, TDestination modelD, string username) 
+        public void Map<TSource, TDestination>(TSource modelS, TDestination modelD, string username)
                 where TDestination : ISetUserInfo
         {
             mapper.Map(modelS, modelD);
 
+            modelD.ModifiedBy = username;
+            modelD.ModifiedAt = DateTime.UtcNow.AddHours(8);
+        }
+
+        public void Map<TDestination>(TDestination modelD, string username) where TDestination : ISetUpdateInfo
+        {
             modelD.ModifiedBy = username;
             modelD.ModifiedAt = DateTime.UtcNow.AddHours(8);
         }

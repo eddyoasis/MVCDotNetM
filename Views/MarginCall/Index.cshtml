@@ -60,23 +60,38 @@
                 <input type="text" name="OrderDetails" id="OrderDetails" class="form-control" value="@Model?.OrderDetails" placeholder="Enter OrderDetails">
             </div>
             <div class="form-group mt-2">
+                <label for="ModifiedBy">ModifiedBy</label>
+                <input type="text" name="ModifiedBy" id="ModifiedBy" class="form-control" value="@Model?.ModifiedBy" placeholder="Enter ModifiedBy">
+            </div>
+        </div>
+
+        <div class="d-flex flex-wrap gap-2">
+            <div class="form-group mt-2">
                 <label class="mr-2">CcyCode</label>
-                <select id="optionStatus" class="form-control" asp-items="@Model?.CcyCode">
-                    @* <option value="">-- Select --</option> *@
+                <select id="optionCcyCode" class="form-control" asp-items="@Model?.CcyCode">
                 </select>
             </div>
-            @* <div class="form-group mt-2">
-            <label class="mr-2">CcyCode</label>
-            <select id="optionStatus" class="form-control">
-            <option value="0">All</option>
-            <option value="1">SGD</option>
-            <option value="2">USD</option>
-            </select>
-            </div> *@
+
             <div class="form-group mt-2">
                 <label class="mr-2">Status</label>
                 <select id="optionStatus" class="form-control" asp-items="@Model?.Status">
                 </select>
+            </div>
+        </div>
+
+        <div class="d-flex gap-1 mt-2">
+            <div class="form-group">
+                <label>Select Date Type</label>
+                <div class="d-flex gap-1">
+                    <div class="form-check">
+                        <input class="form-check-input" type="radio" id="createdDate" name="dateType" value="CreatedDate" checked>
+                        <label class="form-check-label" for="createdDate">Created Date</label>
+                    </div>
+                    <div class="form-check">
+                        <input class="form-check-input" type="radio" id="modifiedDate" name="dateType" value="ModifiedDate">
+                        <label class="form-check-label" for="modifiedDate">Modified Date</label>
+                    </div>
+                </div>
             </div>
         </div>
 
@@ -88,6 +103,11 @@
             <div class="form-group">
                 <label>To Date</label>
                 <input type="date" id="dateTimeTo" class="form-control">
+            </div>
+            <div class="form-group ms-2 mt-4">
+                <button id="btnCurrentMonth" class="btn btn-primary">Current Month</button>
+                <button id="btnPrevMonth" class="btn btn-primary">Prev Month</button>
+                <button id="btnNextMonth" class="btn btn-primary">Next Month</button>
             </div>
         </div>
 
@@ -142,7 +162,7 @@
         <div class="d-flex gap-2 mt-2">
             <button id="btnSearch" type="submit" class="btn btn-primary">Search</button>
             <button id="btnClear" class="btn btn-dark">Clear</button>
-            <button id="btnTestSendEmailQueue" class="btn btn-dark">Send Email</button>
+            @* <button id="btnTestSendEmailQueue" class="btn btn-dark">Send Email</button> *@
         </div>
 
         <!-- Modal Container -->
@@ -165,6 +185,53 @@
     <script>
         $(document).ready(function () {
 
+            /*-------------------------- Datetime selection */
+            $(document).on("click", "#btnCurrentMonth", function (e) {
+
+                let [year, month] = $("#dateTimeFrom").val().split("-");
+                console.log(year);
+                console.log(month);
+
+                let previousMonth = new Date(year, month - 2, 1); // -2 because months are 0-based
+                console.log(previousMonth);
+
+                let now = new Date();
+                let firstDay = new Date(now.getFullYear(), now.getMonth(), 1).toLocaleDateString('en-CA'); // YYYY-MM-DD format;
+                let lastDay = new Date(now.getFullYear(), now.getMonth() + 1, 0).toLocaleDateString('en-CA');
+                // let lastDay = new Date(now.getFullYear(), now.getMonth() + 1, 0).toISOString().split("T")[0];
+
+                $("#dateTimeFrom").val(firstDay);
+                $("#dateTimeTo").val(lastDay);
+            });
+
+            $(document).on("click", "#btnPrevMonth", function (e) {
+
+                let [year, month] = $("#dateTimeFrom").val().split("-");
+                let previousMonth = new Date(year, month - 2, 1); // -2 because months are 0-based
+
+                let now = new Date();
+                let firstDay = previousMonth.toLocaleDateString('en-CA'); // YYYY-MM-DD format;
+                let lastDay = new Date(previousMonth.getFullYear(), previousMonth.getMonth() + 1, 0).toLocaleDateString('en-CA').split("T")[0];
+
+                $("#dateTimeFrom").val(firstDay);
+                $("#dateTimeTo").val(lastDay);
+            });
+
+            $(document).on("click", "#btnNextMonth", function (e) {
+
+                let [year, month] = $("#dateTimeFrom").val().split("-");
+                let nextMonth = new Date(year, month, 1); // -2 because months are 0-based
+
+                console.log(nextMonth);
+
+                let now = new Date();
+                let firstDay = nextMonth.toLocaleDateString('en-CA'); // YYYY-MM-DD format;
+                let lastDay = new Date(nextMonth.getFullYear(), nextMonth.getMonth() + 1, 0).toLocaleDateString('en-CA').split("T")[0];
+
+                $("#dateTimeFrom").val(firstDay);
+                $("#dateTimeTo").val(lastDay);
+            });
+
             /* ====================================================Testing*/
             $("#btnTestSendEmailQueue").click(function (e) {
                 event.preventDefault(); // Prevent full page reload
@@ -177,9 +244,7 @@
                     url: "/MarginCall/TestSendEmailQueue",
                     type: "POST",
                     contentType: "application/json",
-                    // data: JSON.stringify(requestData),
                     success: function (data) {
-                        // alert("Ok");
                     },
                     error: function (jqXHR) {
                         alert("Search failed. Please try again.");
@@ -234,11 +299,22 @@
 
             function postSearchMarginCalls(pageNumber) {
 
-                //var selectedValue = $("input[name='dateType']:checked").val();
-
                 var requestData = {
-                    // Username: $("#MarginType").val(),
-                    // Username: $("#EmailTemplate").val(),
+                    ClientCode: $("#ClientCode").val(),
+                    LedgerBal: $("#LedgerBal").val(),
+                    TNE: $("#TNE").val(),
+                    IM: $("#IM").val(),
+                    Percentages: $("#Percentages").val() || 0,
+                    SelectedCcyCode: $("#optionCcyCode").val(),
+                    TypeOfMarginCall: $("#TypeOfMarginCall").val(),
+                    OrderDetails: $("#OrderDetails").val(),
+                    IM: $("#IM").val(),
+                    SelectedStatus: $("#optionStatus").val(),
+
+                    ModifiedBy: $("#ModifiedBy").val(),
+                    IsSearchByCreatedDate: $('input[name="dateType"]:checked').val() == 'CreatedDate',
+                    DateFrom: $("#dateTimeFrom").val(),
+                    DateTo: $("#dateTimeTo").val(),
                     PageNumber: pageNumber, // Default to first page
                     PageSize: +$("#optionPageSize").val()
                 };
@@ -446,6 +522,30 @@
                     }
                 });
             });
+
+            /*-------------------------- Clear */
+            $(document).on("click", "#btnClear", function (e) {
+                e.preventDefault();
+                clearSearchFields();
+            });
+
+            function clearSearchFields() {
+                $("#ClientCode").val('');
+                $("#LedgerBal").val('');
+                $("#TNE").val('');
+                $("#IM").val('');
+                $("#Percentages").val(0);
+                $("#optionCcyCode").val(0);
+                $("#TypeOfMarginCall").val('');
+                $("#OrderDetails").val('');
+                $("#optionStatus").val(0);
+
+                $("#ModifiedBy").val('');
+                $('#createdDate').prop('checked', true);
+
+                // $("#dateTimeFrom").val(new Date().toISOString().split("T")[0]);
+                // $("#dateTimeTo").val(new Date().toISOString().split("T")[0]);
+            }
         });
     </script>
 </div>

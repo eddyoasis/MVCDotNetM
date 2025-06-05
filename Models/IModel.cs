@@ -7,4 +7,10 @@
         string? ModifiedBy { get; set; }
         DateTime? ModifiedAt { get; set; }
     }
+
+    public interface ISetUpdateInfo
+    {
+        string? ModifiedBy { get; set; }
+        DateTime? ModifiedAt { get; set; }
+    }
 }

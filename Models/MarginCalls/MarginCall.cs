@@ -2,7 +2,7 @@
 
 namespace MVCWebApp.Models.MarginCalls
 {
-    public class MarginCall
+    public class MarginCall: ISetUpdateInfo
     {
         [Key]
         public int ID { get; set; }
@@ -16,5 +16,7 @@ namespace MVCWebApp.Models.MarginCalls
         public string OrderDetails { get; set; }
         public DateTime TimeStemp { get; set; }
         public int Status { get; set; }
+        public string? ModifiedBy { get; set; }
+        public DateTime? ModifiedAt { get; set; }
     }
 }

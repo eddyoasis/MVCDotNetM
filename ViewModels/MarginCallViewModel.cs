@@ -1,6 +1,12 @@
 ﻿namespace MVCWebApp.ViewModels
 {
-    public class MarginCallViewModel
+    public interface IMarginCallViewModel
+    {
+        public string Status { get; set; }
+        public string CcyCode { get; set; }
+    }
+
+    public class MarginCallViewModel : IMarginCallViewModel
     {
         public int ID { get; set; }
         public string ClientCode { get; set; }
@@ -13,5 +19,7 @@
         public string OrderDetails { get; set; }
         public DateTime TimeStemp { get; set; }
         public string Status { get; set; }
+        public string? ModifiedBy { get; set; }
+        public DateTime? ModifiedAt { get; set; }
     }
 }

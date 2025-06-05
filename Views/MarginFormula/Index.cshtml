@@ -71,6 +71,11 @@
                 <label>To Date</label>
                 <input type="date" id="dateTimeTo" class="form-control">
             </div>
+            <div class="form-group ms-2 mt-4">
+                <button id="btnCurrentMonth" class="btn btn-primary">Current Month</button>
+                <button id="btnPrevMonth" class="btn btn-primary">Prev Month</button>
+                <button id="btnNextMonth" class="btn btn-primary">Next Month</button>
+            </div>
         </div>
 
         <div class="d-flex gap-1 mt-2">
@@ -146,6 +151,53 @@
 
     <script>
         $(document).ready(function () {
+
+            /*-------------------------- Datetime selection */
+            $(document).on("click", "#btnCurrentMonth", function (e) {
+
+                let [year, month] = $("#dateTimeFrom").val().split("-");
+                console.log(year);
+                console.log(month);
+
+                let previousMonth = new Date(year, month - 2, 1); // -2 because months are 0-based
+                console.log(previousMonth);
+
+                let now = new Date();
+                let firstDay = new Date(now.getFullYear(), now.getMonth(), 1).toLocaleDateString('en-CA'); // YYYY-MM-DD format;
+                let lastDay = new Date(now.getFullYear(), now.getMonth() + 1, 0).toLocaleDateString('en-CA');
+                // let lastDay = new Date(now.getFullYear(), now.getMonth() + 1, 0).toISOString().split("T")[0];
+
+                $("#dateTimeFrom").val(firstDay);
+                $("#dateTimeTo").val(lastDay);
+            });
+
+            $(document).on("click", "#btnPrevMonth", function (e) {
+
+                let [year, month] = $("#dateTimeFrom").val().split("-");
+                let previousMonth = new Date(year, month - 2, 1); // -2 because months are 0-based
+
+                let now = new Date();
+                let firstDay = previousMonth.toLocaleDateString('en-CA'); // YYYY-MM-DD format;
+                let lastDay = new Date(previousMonth.getFullYear(), previousMonth.getMonth() + 1, 0).toLocaleDateString('en-CA').split("T")[0];
+
+                $("#dateTimeFrom").val(firstDay);
+                $("#dateTimeTo").val(lastDay);
+            });
+
+            $(document).on("click", "#btnNextMonth", function (e) {
+
+                let [year, month] = $("#dateTimeFrom").val().split("-");
+                let nextMonth = new Date(year, month, 1); // -2 because months are 0-based
+
+                console.log(nextMonth);
+
+                let now = new Date();
+                let firstDay = nextMonth.toLocaleDateString('en-CA'); // YYYY-MM-DD format;
+                let lastDay = new Date(nextMonth.getFullYear(), nextMonth.getMonth() + 1, 0).toLocaleDateString('en-CA').split("T")[0];
+
+                $("#dateTimeFrom").val(firstDay);
+                $("#dateTimeTo").val(lastDay);
+            });
 
             /* ====================================================Init*/
             $("#dateTimeFrom").val(new Date().toISOString().split("T")[0])

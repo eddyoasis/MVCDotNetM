@@ -10,10 +10,11 @@ namespace MVCWebApp.Models.MarginCalls
         public string IM { get; set; }
         public int? Percentages { get; set; }
         public List<SelectListItem> CcyCode { get; set; }
+        public int SelectedCcyCode { get; set; }
         public string TypeOfMarginCall { get; set; }
         public string OrderDetails { get; set; }
-        public DateTime? TimeStemp { get; set; }
-        //public string Status { get; set; }
+        //public DateTime? TimeStemp { get; set; }
         public List<SelectListItem> Status { get; set; }
+        public int SelectedStatus { get; set; }
     }
 }
