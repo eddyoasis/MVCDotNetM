@@ -26,8 +26,6 @@ namespace MVCWebApp.Services
         {
             var marginCalls = _marginCallRepository.GetAllQueryable();
 
-            var ssss  = EnumHelper.GetEnumId<CurrencySearchEnum>("Approved");
-
             marginCalls = marginCalls.Where(x =>
                 ((req.DateFrom == DateTime.MinValue || req.DateTo == DateTime.MinValue) ||
                     (req.IsSearchByCreatedDate ?

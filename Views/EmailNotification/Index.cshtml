@@ -165,7 +165,6 @@
                 let now = new Date();
                 let firstDay = new Date(now.getFullYear(), now.getMonth(), 1).toLocaleDateString('en-CA'); // YYYY-MM-DD format;
                 let lastDay = new Date(now.getFullYear(), now.getMonth() + 1, 0).toLocaleDateString('en-CA');
-                // let lastDay = new Date(now.getFullYear(), now.getMonth() + 1, 0).toISOString().split("T")[0];
 
                 $("#dateTimeFrom").val(firstDay);
                 $("#dateTimeTo").val(lastDay);

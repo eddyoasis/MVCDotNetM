@@ -16,53 +16,6 @@ namespace MVCWebApp.Controllers
         IMapModel _mapper
         ) : ControllerBase
     {
-
-        private List<MarginCallViewModel> _marginCall =
-            [
-                new MarginCallViewModel
-                {
-                    ID = 1,
-                    CcyCode = "SGD",
-                    ClientCode = "ClientCode1",
-                    IM = "IM2",
-                    LedgerBal = "LedgerBal2",
-                    OrderDetails = "OrderDetails2",
-                    Percentages = 10,
-                    Status = "Pending",
-                    TimeStemp = DateTime.Now,
-                    TNE = "TNE2",
-                    TypeOfMarginCall = "TypeOfMarginCall2"
-                },
-                new MarginCallViewModel
-                    {
-                        ID = 2,
-                        CcyCode = "SGD",
-                        ClientCode = "ClientCode2",
-                        IM = "IM2",
-                        LedgerBal = "LedgerBal2",
-                        OrderDetails = "OrderDetails2",
-                        Percentages = 10,
-                        Status = "Approved",
-                        TimeStemp = DateTime.Now,
-                        TNE = "TNE2",
-                        TypeOfMarginCall = "TypeOfMarginCall2"
-                    },
-                new MarginCallViewModel
-                    {
-                        ID = 3,
-                        CcyCode = "SGD",
-                        ClientCode = "ClientCode3",
-                        IM = "IM3",
-                        LedgerBal = "LedgerBal3",
-                        OrderDetails = "OrderDetails3",
-                        Percentages = 10,
-                        Status = "Rejected",
-                        TimeStemp = DateTime.Now,
-                        TNE = "TNE3",
-                        TypeOfMarginCall = "TypeOfMarginCall3"
-                    }
-            ];
-
         [HttpPost]
         public async Task TestSendEmailQueue()
         {

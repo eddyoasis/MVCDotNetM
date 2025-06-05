@@ -21,8 +21,4 @@
     <PackageReference Include="System.DirectoryServices.AccountManagement" Version="9.0.4" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="Models\Req\" />
-  </ItemGroup>
-
 </Project>

@@ -1,6 +1,5 @@
 ﻿using MVCWebApp.Data;
 using MVCWebApp.Models.MarginCalls;
-using MVCWebApp.Models.MarginFormulas;
 
 namespace MVCWebApp.Repositories
 {

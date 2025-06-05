@@ -65,33 +65,6 @@ namespace MVCWebApp.Helper
             return new PaginatedList<TDestination>(mappedItems, count, req.PageNumber, req.PageSize);
         }
 
-        //public static async Task<PaginatedList<TDestination>> GetByPagesAndBaseUpdateAsync<TSource, TDestination>(
-        //    IQueryable<TSource> source,
-        //    IMapModel mapper,
-        //    BaseSearchReq req = null) where TSource : ISetUpdateInfo
-        //{
-        //    if (!req.IsNullOrEmpty())
-        //    {
-        //        source = source.Where(x =>
-        //            ((req.DateFrom == DateTime.MinValue || req.DateTo == DateTime.MinValue) ||
-        //                (req.IsSearchByCreatedDate ?
-        //                        true :
-        //                        x.ModifiedAt >= req.DateFrom && x.ModifiedAt < req.DateTo.AddDays(1))) &&
-        //            (req.ModifiedBy.IsNullOrEmpty() || x.ModifiedBy.ToLower().Contains(req.ModifiedBy.ToLower()))
-        //        );
-        //    }
-
-        //    var count = await source.CountAsync();
-
-        //    var items = await source.Skip((req.PageNumber - 1) * req.PageSize)
-        //                            .Take(req.PageSize)
-        //                            .ToListAsync();
-
-        //    var mappedItems = mapper.MapDto<List<TDestination>>(items);
-
-        //    return new PaginatedList<TDestination>(mappedItems, count, req.PageNumber, req.PageSize);
-        //}
-
         public static async Task<PaginatedList<TDestination>> GetByPagesAsync<TSource, TDestination>(
             IQueryable<TSource> source,
             IMapModel mapper,
@@ -107,16 +80,5 @@ namespace MVCWebApp.Helper
 
             return new PaginatedList<TDestination>(mappedItems, count, req.PageNumber, req.PageSize);
         }
-
-        //public static PaginatedList<T> CreateAsync(IEnumerable<T> source, int pageIndex, int pageSize)
-        //{
-        //    var count = source.Count();
-
-        //    var items = source.Skip((pageIndex - 1) * pageSize)
-        //                            .Take(pageSize)
-        //                            .ToList();
-
-        //    return new PaginatedList<T>(items, count, pageIndex, pageSize);
-        //}
     }
 }
