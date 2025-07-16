@@ -10,6 +10,19 @@ namespace MVCWebApp.Helper
             return string.IsNullOrEmpty(source) || target?.ToLower().Contains(source, StringComparison.CurrentCultureIgnoreCase) == true;
         }
 
+        public static List<SelectListItem> ToSelectList(IEnumerable<string> listString)
+        {
+            return 
+                new[] { "All" }
+                .Concat(listString ?? Enumerable.Empty<string>())
+                .Select(item => new SelectListItem
+                {
+                    Text = item,
+                    Value = item
+                })
+                .ToList();
+        }
+
         public static List<SelectListItem> ToSelectList<TEnum>(bool useDisplayName = true) where TEnum : Enum
         {
             return Enum.GetValues(typeof(TEnum))

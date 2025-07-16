@@ -3,94 +3,172 @@
 @using (Html.BeginForm("Approve", "MarginCall", FormMethod.Post, new { id = "approveForm" }))
 {
     @Html.AntiForgeryToken()
-    @Html.HiddenFor(m => m.ID)
+    @Html.HiddenFor(m => m.PortfolioID)
 
     <div class="modal-header">
-        <h5 class="modal-title">Approve Margin Call</h5>
+        <h5 class="modal-title">Details Margin Call</h5>
         <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
             <span>&times;</span>
         </button>
     </div>
     <div class="modal-body">
         <div class="form-group">
-            <label asp-for="ClientCode" class="control-label"></label>
+            <label asp-for="PortfolioID" class="control-label"></label>
             <div class="col-md-10">
-                <input asp-for="ClientCode" class="form-control" disabled />
-                <span asp-validation-for="ClientCode" class="text-danger"></span>
-            </div>
-        </div>
-        <div class="form-group mt-3">
-            <label asp-for="LedgerBal" class="control-label"></label>
-            <div class="col-md-10">
-                <input asp-for="LedgerBal" class="form-control" disabled />
-                <span asp-validation-for="LedgerBal" class="text-danger"></span>
-            </div>
-        </div>
-        <div class="form-group mt-3">
-            <label asp-for="TNE" class="control-label"></label>
-            <div class="col-md-10">
-                <input asp-for="TNE" class="form-control" disabled />
-                <span asp-validation-for="TNE" class="text-danger"></span>
-            </div>
-        </div>
-        <div class="form-group mt-3">
-            <label asp-for="IM" class="control-label"></label>
-            <div class="col-md-10">
-                <input type="text" asp-for="IM" class="form-control" disabled />
-                <span asp-validation-for="IM" class="text-danger"></span>
+                <input asp-for="PortfolioID" class="form-control" disabled />
             </div>
         </div>
         <div class="form-group mt-3">
             <label asp-for="Percentages" class="control-label"></label>
             <div class="col-md-10">
                 <input asp-for="Percentages" class="form-control" disabled />
-                <span asp-validation-for="Percentages" class="text-danger"></span>
             </div>
         </div>
         <div class="form-group mt-3">
-            <label asp-for="CcyCode" class="control-label"></label>
+            <label asp-for="Collateral" class="control-label"></label>
             <div class="col-md-10">
-                <input type="text" asp-for="CcyCode" class="form-control" disabled />
-                <span asp-validation-for="CcyCode" class="text-danger"></span>
+                <input asp-for="Collateral" class="form-control" disabled />
             </div>
         </div>
         <div class="form-group mt-3">
-            <label asp-for="TypeOfMarginCall" class="control-label"></label>
+            <label asp-for="Collateral_Ccy" class="control-label"></label>
             <div class="col-md-10">
-                <input type="text" asp-for="TypeOfMarginCall" class="form-control" disabled />
-                <span asp-validation-for="TypeOfMarginCall" class="text-danger"></span>
+                <input type="text" asp-for="Collateral_Ccy" class="form-control" disabled />
             </div>
         </div>
         <div class="form-group mt-3">
-            <label asp-for="OrderDetails" class="control-label"></label>
+            <label asp-for="VM" class="control-label"></label>
             <div class="col-md-10">
-                <input type="text" asp-for="OrderDetails" class="form-control" disabled />
-                <span asp-validation-for="OrderDetails" class="text-danger"></span>
+                <input asp-for="VM" class="form-control" disabled />
             </div>
         </div>
         <div class="form-group mt-3">
-            <label asp-for="TimeStemp" class="control-label"></label>
+            <label asp-for="VM_Ccy" class="control-label"></label>
             <div class="col-md-10">
-                <input type="text" asp-for="TimeStemp" class="form-control" disabled />
-                <span asp-validation-for="TimeStemp" class="text-danger"></span>
+                <input asp-for="VM_Ccy" class="form-control" disabled />
             </div>
         </div>
         <div class="form-group mt-3">
-            <label asp-for="Status" class="control-label"></label>
+            <label asp-for="IM" class="control-label"></label>
             <div class="col-md-10">
-                <input type="text" asp-for="Status" class="form-control" disabled />
-                <span asp-validation-for="Status" class="text-danger"></span>
+                <input asp-for="IM" class="form-control" disabled />
             </div>
         </div>
+        <div class="form-group mt-3">
+            <label asp-for="IM_Ccy" class="control-label"></label>
+            <div class="col-md-10">
+                <input asp-for="IM_Ccy" class="form-control" disabled />
+            </div>
+        </div>
+        <div class="form-group mt-3">
+            <label asp-for="MarginCallFlag" class="control-label"></label>
+            <div class="col-md-10">
+                <input asp-for="MarginCallFlag" class="form-control" disabled />
+            </div>
+        </div>
+        <div class="form-group mt-3">
+            <label asp-for="EODTriggerFlag" class="control-label"></label>
+            <div class="col-md-10">
+                <input asp-for="EODTriggerFlag" class="form-control" disabled />
+            </div>
+        </div>
+        <div class="form-group mt-3">
+            <label asp-for="MTMTriggerFlag" class="control-label"></label>
+            <div class="col-md-10">
+                <input asp-for="MTMTriggerFlag" class="form-control" disabled />
+            </div>
+        </div>
+        <div class="form-group mt-3">
+            <label asp-for="Type" class="control-label"></label>
+            <div class="col-md-10">
+                <input asp-for="Type" class="form-control" disabled />
+            </div>
+        </div>
+        <div class="form-group mt-3">
+            <label asp-for="Remarks" class="control-label"></label>
+            <div class="col-md-10">
+                <input asp-for="Remarks" class="form-control" disabled />
+            </div>
+        </div>
+        <div class="form-group mt-3">
+            <label asp-for="InsertedDatetime" class="control-label"></label>
+            <div class="col-md-10">
+                <input asp-for="InsertedDatetime" class="form-control" disabled />
+            </div>
+        </div>
+        <div class="form-group mt-3">
+            <label asp-for="ModifiedDatetime" class="control-label"></label>
+            <div class="col-md-10">
+                <input asp-for="ModifiedDatetime" class="form-control" disabled />
+            </div>
+        </div>
+
+        <div class="form-group mt-3">
+            <label asp-for="EmailTemplateTitle" class="control-label"></label>
+            <select id="EmailTemplateList" class="form-control">
+                @foreach (var item in Model.EmailTemplateList)
+                {
+                    <option value="@item.Value">@item.Text</option>
+                }
+            </select>
+        </div>
+
+        <div class="form-group mt-3">
+            <label asp-for="EmailTemplateValue" class="control-label"></label>
+            @* <input type="text" id="EmailTemplateValue" class="form-control mt-2" /> *@
+            <textarea id="EmailTemplateValue" name="EmailTemplateValue" rows="4" class="form-control"></textarea>
+        </div>
+
     </div>
     <div class="modal-footer">
         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
         <button type="submit" class="btn btn-success">Approve</button>
     </div>
+
+
 }
+
+<script>
+    $(document).ready(function () {
+
+        // Create a dictionary of text-to-value pairs
+        const templateMap = @Html.Raw(Json.Serialize(
+            Model.EmailTemplateList.ToDictionary(x => x.Text, x => x.Value)
+            ));
+
+        const dropdown = document.getElementById('EmailTemplateList');
+        const textbox = document.getElementById('EmailTemplateValue');
+
+        // Set initial textbox value
+        textbox.value = templateMap[dropdown.options[dropdown.selectedIndex].text] || '';
+
+        // Update on change
+        $(document).on("change", "#EmailTemplateList", function (e) {
+            const selectedText = this.options[this.selectedIndex].text;
+            textbox.value = templateMap[selectedText] || '';
+        });
+    });
+</script>
+
+@* <script>
+    $(document).ready(function () {
+        const values = @Html.Raw(Json.Serialize(Model.EmailTemplateValue));
+
+        $(document).on("change", "#emailTitleDropdown", function (e) {
+            const selectedIndex = this.value;
+            const textbox = document.getElementById('EmailTemplateValue');
+            textbox.value = values[selectedIndex] || '';
+        });
+
+        // Initialize textbox on page load
+        document.getElementById('EmailTemplateValue').value = values[0] || '';
+    });
+</script> *@
 
 @section Scripts {
     @{
         await Html.RenderPartialAsync("_ValidationScriptsPartial");
     }
+
+
 }

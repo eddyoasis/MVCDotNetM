@@ -51,6 +51,10 @@
                 <label>Select Date Type</label>
                 <div class="d-flex gap-1">
                     <div class="form-check">
+                        <input class="form-check-input" type="radio" id="allDatetime" name="dateType" value="AllDatetime" checked>
+                        <label class="form-check-label" for="allDatetime">All</label>
+                    </div>
+                    <div class="form-check">
                         <input class="form-check-input" type="radio" id="createdDate" name="dateType" value="CreatedDate" checked>
                         <label class="form-check-label" for="createdDate">Created Date</label>
                     </div>
@@ -242,12 +246,18 @@
 
             function postSearchMarginFormulas(pageNumber) {
 
+                const selectedDateType = $('input[name="dateType"]:checked').val();
+
                 var requestData = {
                     MarginType: $("#MarginType").val(),
                     MarginFormula: $("#MarginFormula").val(),
 
                     CreatedBy: $("#CreatedBy").val(),
                     ModifiedBy: $("#ModifiedBy").val(),
+
+                    SearchByDateType:
+                        selectedDateType === 'AllDatetime' ? 1 :
+                            selectedDateType === 'CreatedDate' ? 2 : 3,
                     IsSearchByCreatedDate: $('input[name="dateType"]:checked').val() == 'CreatedDate',
                     DateFrom: $("#dateTimeFrom").val(),
                     DateTo: $("#dateTimeTo").val(),

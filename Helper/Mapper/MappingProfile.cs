@@ -21,9 +21,11 @@ namespace MVCWebApp.Helper.Mapper
             CreateMap<MarginFormulaAddReq, MarginFormula>();
             CreateMap<MarginFormula, MarginFormulaEditReq>();
 
-            CreateMap<MarginCall, MarginCallViewModel>()
-                .ForMember(dest => dest.CcyCode, opt => opt.MapFrom(src => GetEnumStringValue<CurrencySearchEnum>(src.CcyCode)))
-                .ForMember(dest => dest.Status, opt => opt.MapFrom(src => GetEnumStringValue<MarginCallSearchStatusEnum>(src.Status)));
+            CreateMap<MarginCall, MarginCallViewModel>();
+
+            //CreateMap<MarginCall, MarginCallViewModel>()
+            //    .ForMember(dest => dest.CcyCode, opt => opt.MapFrom(src => GetEnumStringValue<CurrencySearchEnum>(src.CcyCode)))
+            //    .ForMember(dest => dest.Status, opt => opt.MapFrom(src => GetEnumStringValue<MarginCallSearchStatusEnum>(src.Status)));
 
             CreateMap<MarginFormulaSearchReq, BaseSearchReq>();
             CreateMap<EmailNotificationSearchReq, BaseSearchReq>();

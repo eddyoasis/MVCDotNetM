@@ -4,10 +4,10 @@ using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using MVCWebApp.BackgroundServices;
+using MVCWebApp.Configurations;
 using MVCWebApp.Data;
 using MVCWebApp.Filters;
 using MVCWebApp.Helper.Mapper;
-using MVCWebApp.Middlewares;
 using MVCWebApp.Repositories;
 using MVCWebApp.Services;
 using Serilog;
@@ -15,19 +15,36 @@ using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Configure Serilog
+//// Configure Serilog
+//Log.Logger = new LoggerConfiguration()
+//    .Enrich.WithProperty("Application", "MyAspNetCoreApp")
+//    .MinimumLevel.Information()
+//    .WriteTo.Console()
+//    .WriteTo.File("Logs/log.txt", rollingInterval: RollingInterval.Day)
+//    .CreateLogger();
+
+// Configure Serilog from appsettings.json
 Log.Logger = new LoggerConfiguration()
+    .ReadFrom.Configuration(builder.Configuration)
     .Enrich.WithProperty("Application", "MyAspNetCoreApp")
-    .MinimumLevel.Information()
-    .WriteTo.Console()
-    .WriteTo.File("Logs/log.txt", rollingInterval: RollingInterval.Day)
     .CreateLogger();
 
 // Replace the default .NET Core logger with Serilog
 builder.Host.UseSerilog();
 
+builder.Configuration
+    .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true);
+
+builder.Services.Configure<SmtpAppSetting>(
+    builder.Configuration.GetSection("SmtpSettings"));
+
+
 // Add services to the container.
 builder.Services.AddControllersWithViews();
+
+//builder.Services.AddIdentity<ApplicationUser, IdentityRole>()
+//    .AddEntityFrameworkStores<ApplicationDbContext>()
+//    .AddDefaultTokenProviders();
 
 builder.Services.AddHttpClient(); // Registers IHttpClientFactory
 
@@ -62,6 +79,7 @@ builder.Services.AddScoped<IApiService, ApiService>();
 builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddScoped<IJwtTokenService, JwtTokenService>();
 builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
+builder.Services.AddScoped<ITaskQueueService, TaskQueueService>();
 
 builder.Services.AddScoped<IEmailNotificationRepository, EmailNotificationRepository>();
 builder.Services.AddScoped<IMarginFormulaRepository, MarginFormulaRepository>();
@@ -70,6 +88,7 @@ builder.Services.AddScoped<IMarginCallRepository, MarginCallRepository>();
 builder.Services.AddScoped<IEmailNotificationService, EmailNotificationService>();
 builder.Services.AddScoped<IMarginFormulaService, MarginFormulaService>();
 builder.Services.AddScoped<IMarginCallService, MarginCallService>();
+builder.Services.AddScoped<IEmailService, EmailService>();
 
 /*------------- Background Services */
 builder.Services.AddSingleton<IBackgroundTaskQueue, BackgroundTaskQueue>();
@@ -107,10 +126,10 @@ builder.Services.AddAuthentication(options =>
     };
 });
 
-//builder.Services.AddControllers(options =>
-//{
-//    options.Filters.Add<AuthFilter>();
-//});
+builder.Services.AddControllers(options =>
+{
+    options.Filters.Add<AuthFilter>();
+});
 
 //// Register Response Compression services
 //builder.Services.AddResponseCompression(options =>
@@ -153,7 +172,7 @@ app.UseStaticFiles();
 
 app.UseRouting();
 
-app.UseMiddleware<CookieAuthMiddleware>(); // Add before MVC pipeline
+//app.UseMiddleware<CookieAuthMiddleware>(); // Add before MVC pipeline
 app.UseAuthentication();
 app.UseAuthorization();
 

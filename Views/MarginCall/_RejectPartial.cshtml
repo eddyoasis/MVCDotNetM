@@ -1,4 +1,4 @@
-﻿@model MarginCallViewModel
+﻿@* @model MarginCallViewModel
 
 @using (Html.BeginForm("Reject", "MarginCall", FormMethod.Post, new { id = "rejectForm" }))
 {
@@ -94,3 +94,4 @@
         await Html.RenderPartialAsync("_ValidationScriptsPartial");
     }
 }
+ *@

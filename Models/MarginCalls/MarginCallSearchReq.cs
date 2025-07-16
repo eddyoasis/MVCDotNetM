@@ -4,16 +4,26 @@ namespace MVCWebApp.Models.MarginCalls
 {
     public class MarginCallSearchReq : BaseSearchReq
     {
-        public string ClientCode { get; set; }
-        public string LedgerBal { get; set; }
-        public string TNE { get; set; }
-        public string IM { get; set; }
-        public int? Percentages { get; set; }
-        public List<SelectListItem> CcyCode { get; set; }
-        public int SelectedCcyCode { get; set; }
-        public string TypeOfMarginCall { get; set; }
-        public string OrderDetails { get; set; }
-        public List<SelectListItem> Status { get; set; }
-        public int SelectedStatus { get; set; }
+        public string PortfolioID { get; set; }
+        public decimal Percentages { get; set; }
+        public double Collateral { get; set; }
+        public List<SelectListItem> Collateral_Ccy { get; set; }
+        public string Selected_Collateral_Ccy { get; set; }
+        public double VM { get; set; }
+        public List<SelectListItem> VM_Ccy { get; set; }
+        public string Selected_VM_Ccy { get; set; }
+        public double IM { get; set; }
+        public List<SelectListItem> IM_Ccy { get; set; }
+        public string Selected_IM_Ccy { get; set; }
+        public List<SelectListItem> MarginCallFlag { get; set; }
+        public int SelectedMarginCallFlag { get; set; }
+        public List<SelectListItem> EODTriggerFlag { get; set; }
+        public int SelectedEODTriggerFlag { get; set; }
+        public List<SelectListItem> MTMTriggerFlag { get; set; }
+        public int SelectedMTMTriggerFlag { get; set; }
+        public string? Type { get; set; }
+        public string? Remarks { get; set; }
+        public DateTime InsertedDatetime { get; set; }
+        public DateTime? ModifiedDatetime { get; set; }
     }
 }

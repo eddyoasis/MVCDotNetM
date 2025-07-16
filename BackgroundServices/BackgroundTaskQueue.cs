@@ -1,4 +1,5 @@
-﻿using System.Collections.Concurrent;
+﻿using Newtonsoft.Json;
+using System.Collections.Concurrent;
 
 namespace MVCWebApp.BackgroundServices
 {
@@ -8,7 +9,7 @@ namespace MVCWebApp.BackgroundServices
         Task<Func<CancellationToken, Task>> DequeueAsync(CancellationToken cancellationToken);
     }
 
-    public class BackgroundTaskQueue : IBackgroundTaskQueue
+    public class BackgroundTaskQueue(ILogger<BackgroundTaskQueue> _logger) : IBackgroundTaskQueue
     {
         private readonly ConcurrentQueue<Func<CancellationToken, Task>> _workItems = new();
         private readonly SemaphoreSlim _signal = new(0);
@@ -18,6 +19,9 @@ namespace MVCWebApp.BackgroundServices
             if (workItem == null)
                 throw new ArgumentNullException(nameof(workItem));
 
+            _logger.LogInformation("QueueBackgroundWorkItem Enqueue: {workItem}", 
+                JsonConvert.SerializeObject(workItem.Target));
+
             _workItems.Enqueue(workItem);
             _signal.Release();
         }
@@ -26,6 +30,10 @@ namespace MVCWebApp.BackgroundServices
         {
             await _signal.WaitAsync(cancellationToken);
             _workItems.TryDequeue(out var workItem);
+
+            _logger.LogInformation("QueueBackgroundWorkItem Dequeue: {workItem}",
+                JsonConvert.SerializeObject(workItem.Target));
+
             return workItem;
         }
     }

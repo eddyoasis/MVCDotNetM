@@ -29,52 +29,71 @@
 
         <div class="d-flex flex-wrap gap-2">
             <div class="form-group mt-2">
-                <label>ClientCode</label>
-                <input type="text" name="MarginType" id="ClientCode" class="form-control" value="@Model?.ClientCode" placeholder="Enter ClientCode">
+                <label>PortfolioID</label>
+                <input type="text" name="PortfolioID" id="PortfolioID" class="form-control" value="@Model?.PortfolioID" placeholder="Enter PortfolioID">
             </div>
-            <div class="form-group mt-2">
-                <label>LedgerBal</label>
-                <input type="text" name="LedgerBal" id="LedgerBal" class="form-control" value="@Model?.LedgerBal" placeholder="Enter LedgerBal">
-            </div>
-            <div class="form-group mt-2">
-                <label>TNE</label>
-                <input type="text" name="TNE" id="TNE" class="form-control" value="@Model?.TNE" placeholder="Enter TNE">
-            </div>
-            <div class="form-group mt-2">
-                <label>IM</label>
-                <input type="text" name="IM" id="IM" class="form-control" value="@Model?.IM" placeholder="Enter IM">
-            </div>
-        </div>
-
-        <div class="d-flex flex-wrap gap-2">
             <div class="form-group mt-2">
                 <label>Percentages</label>
                 <input type="number" name="Percentages" id="Percentages" class="form-control" value="@Model?.Percentages" placeholder="Enter Percentages">
             </div>
             <div class="form-group mt-2">
-                <label>TypeOfMarginCall</label>
-                <input type="text" name="TypeOfMarginCall" id="TypeOfMarginCall" class="form-control" value="@Model?.TypeOfMarginCall" placeholder="Enter TypeOfMarginCall">
+                <label>Collateral</label>
+                <input type="number" name="Collateral" id="Collateral" class="form-control" value="@Model?.Collateral" placeholder="Enter Collateral">
             </div>
             <div class="form-group mt-2">
-                <label>OrderDetails</label>
-                <input type="text" name="OrderDetails" id="OrderDetails" class="form-control" value="@Model?.OrderDetails" placeholder="Enter OrderDetails">
+                <label>VM</label>
+                <input type="number" name="VM" id="VM" class="form-control" value="@Model?.VM" placeholder="Enter VM">
             </div>
             <div class="form-group mt-2">
-                <label for="ModifiedBy">ModifiedBy</label>
-                <input type="text" name="ModifiedBy" id="ModifiedBy" class="form-control" value="@Model?.ModifiedBy" placeholder="Enter ModifiedBy">
+                <label>IM</label>
+                <input type="number" name="IM" id="IM" class="form-control" value="@Model?.IM" placeholder="Enter IM">
+            </div>
+
+        </div>
+
+        <div class="d-flex flex-wrap gap-2">
+            <div class="form-group mt-2">
+                <label>Type</label>
+                <input type="text" name="Type" id="Type" class="form-control" value="@Model?.Type" placeholder="Enter Type">
+            </div>
+            <div class="form-group mt-2">
+                <label>Remarks</label>
+                <input type="text" name="Remarks" id="Remarks" class="form-control" value="@Model?.Remarks" placeholder="Enter Remarks">
             </div>
         </div>
 
         <div class="d-flex flex-wrap gap-2">
             <div class="form-group mt-2">
-                <label class="mr-2">CcyCode</label>
-                <select id="optionCcyCode" class="form-control" asp-items="@Model?.CcyCode">
+                <label class="mr-2">Collateral_Ccy</label>
+                <select id="optionCollateral_Ccy" class="form-control" asp-items="@Model?.Collateral_Ccy">
                 </select>
             </div>
-
             <div class="form-group mt-2">
-                <label class="mr-2">Status</label>
-                <select id="optionStatus" class="form-control" asp-items="@Model?.Status">
+                <label class="mr-2">VM_Ccy</label>
+                <select id="optionVM_Ccy" class="form-control" asp-items="@Model?.VM_Ccy">
+                </select>
+            </div>
+            <div class="form-group mt-2">
+                <label class="mr-2">IM_Ccy</label>
+                <select id="optionIM_Ccy" class="form-control" asp-items="@Model?.IM_Ccy">
+                </select>
+            </div>
+        </div>
+
+        <div class="d-flex flex-wrap gap-2">
+            <div class="form-group mt-2">
+                <label class="mr-2">MarginCallFlag</label>
+                <select id="optionMarginCallFlag" class="form-control" asp-items="@Model?.MarginCallFlag">
+                </select>
+            </div>
+            <div class="form-group mt-2">
+                <label class="mr-2">EODTriggerFlag</label>
+                <select id="optionEODTriggerFlag" class="form-control" asp-items="@Model?.EODTriggerFlag">
+                </select>
+            </div>
+            <div class="form-group mt-2">
+                <label class="mr-2">MTMTriggerFlag</label>
+                <select id="optionMTMTriggerFlag" class="form-control" asp-items="@Model?.MTMTriggerFlag">
                 </select>
             </div>
         </div>
@@ -84,18 +103,22 @@
                 <label>Select Date Type</label>
                 <div class="d-flex gap-1">
                     <div class="form-check">
-                        <input class="form-check-input" type="radio" id="createdDate" name="dateType" value="CreatedDate" checked>
-                        <label class="form-check-label" for="createdDate">Created Date</label>
+                        <input class="form-check-input" type="radio" id="allDatetime" name="dateType" value="AllDatetime" checked>
+                        <label class="form-check-label" for="allDatetime">All</label>
                     </div>
                     <div class="form-check">
-                        <input class="form-check-input" type="radio" id="modifiedDate" name="dateType" value="ModifiedDate">
-                        <label class="form-check-label" for="modifiedDate">Modified Date</label>
+                        <input class="form-check-input" type="radio" id="insertedDatetime" name="dateType" value="InsertedDatetime">
+                        <label class="form-check-label" for="insertedDatetime">Inserted Datetime</label>
+                    </div>
+                    <div class="form-check">
+                        <input class="form-check-input" type="radio" id="modifiedDatetime" name="dateType" value="ModifiedDatetime">
+                        <label class="form-check-label" for="modifiedDatetime">Modified Datetime</label>
                     </div>
                 </div>
             </div>
         </div>
 
-        <div class="d-flex gap-1 mt-2">
+        <div class="d-flex flex-wrap gap-1 mt-2">
             <div class="form-group">
                 <label>From Date</label>
                 <input type="date" id="dateTimeFrom" class="form-control">
@@ -104,7 +127,8 @@
                 <label>To Date</label>
                 <input type="date" id="dateTimeTo" class="form-control">
             </div>
-            <div class="form-group ms-2 mt-4">
+            @* <div class="form-group ms-2 mt-4"> *@
+            <div class="form-group ms-2 mt-4 d-flex flex-wrap gap-1">
                 <button id="btnCurrentMonth" class="btn btn-primary">Current Month</button>
                 <button id="btnPrevMonth" class="btn btn-primary">Prev Month</button>
                 <button id="btnNextMonth" class="btn btn-primary">Next Month</button>
@@ -162,7 +186,7 @@
         <div class="d-flex gap-2 mt-2">
             <button id="btnSearch" type="submit" class="btn btn-primary">Search</button>
             <button id="btnClear" class="btn btn-dark">Clear</button>
-            @* <button id="btnTestSendEmailQueue" class="btn btn-dark">Send Email</button> *@
+            <button id="btnTestSendEmailQueue" class="btn btn-dark">Send Email</button>
         </div>
 
         <!-- Modal Container -->
@@ -299,20 +323,28 @@
 
             function postSearchMarginCalls(pageNumber) {
 
-                var requestData = {
-                    ClientCode: $("#ClientCode").val(),
-                    LedgerBal: $("#LedgerBal").val(),
-                    TNE: $("#TNE").val(),
-                    IM: $("#IM").val(),
-                    Percentages: $("#Percentages").val() || 0,
-                    SelectedCcyCode: $("#optionCcyCode").val(),
-                    TypeOfMarginCall: $("#TypeOfMarginCall").val(),
-                    OrderDetails: $("#OrderDetails").val(),
-                    IM: $("#IM").val(),
-                    SelectedStatus: $("#optionStatus").val(),
+                const selectedDateType = $('input[name="dateType"]:checked').val();
 
-                    ModifiedBy: $("#ModifiedBy").val(),
+                var requestData = {
+                    PortfolioID: $("#PortfolioID").val(),
+                    Percentages: $("#Percentages").val() || 0,
+                    Collateral: $("#Collateral").val() || 0,
+                    Selected_Collateral_Ccy: $("#optionCollateral_Ccy").val(),
+                    VM: $("#VM").val() || 0,
+                    Selected_VM_Ccy: $("#optionVM_Ccy").val(),
+                    IM: $("#IM").val() || 0,
+                    Selected_IM_Ccy: $("#optionIM_Ccy").val(),
+                    SelectedMarginCallFlag: $("#optionMarginCallFlag").val(),
+                    SelectedEODTriggerFlag: $("#optionEODTriggerFlag").val(),
+                    SelectedMTMTriggerFlag: $("#optionMTMTriggerFlag").val(),
+                    Type: $("#Type").val(),
+                    Remarks: $("#Remarks").val(),
+
+                    SearchByDateType:
+                        selectedDateType === 'AllDatetime' ? 1 :
+                            selectedDateType === 'InsertedDatetime' ? 2 : 3,
                     IsSearchByCreatedDate: $('input[name="dateType"]:checked').val() == 'CreatedDate',
+                    IsSearchByCreatedDate: $('input[name="dateType"]:checked').val() == 'InsertedDatetime',
                     DateFrom: $("#dateTimeFrom").val(),
                     DateTo: $("#dateTimeTo").val(),
                     PageNumber: pageNumber, // Default to first page
@@ -359,7 +391,8 @@
                             alert('success approve');
                             postSearchMarginCalls(1);
                         } else {
-                            $("#approveModal .modal-content").html(result);
+                            // $("#approveModal .modal-content").html(result);
+                            alert('approve failed');
                         }
                     },
                     error: function (xhr, status, error) {

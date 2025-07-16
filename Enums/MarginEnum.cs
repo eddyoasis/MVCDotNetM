@@ -32,4 +32,12 @@ namespace MVCWebApp.Enums
         [Display(Name = "Approved")]
         Approved = 4
     }
+
+    public enum YesNoEnum
+    {
+        [Display(Name = "All")]
+        All = 0,
+        YES = 1,
+        NO = 2
+    }
 }

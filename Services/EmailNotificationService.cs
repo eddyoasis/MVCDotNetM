@@ -9,6 +9,7 @@ namespace MVCWebApp.Services
 {
     public interface IEmailNotificationService
     {
+        Task<IEnumerable<EmailNotification>> GetAllAsync();
         Task<IEnumerable<EmailNotificationViewModel>> GetAllAsync(EmailNotificationSearchReq req);
         Task<EmailNotificationViewModel?> GetByIdAsync(int id);
         Task<EmailNotification?> GetByEntityIdAsync(int id);
@@ -22,6 +23,9 @@ namespace MVCWebApp.Services
         IMapModel _mapper
         ) : BaseService, IEmailNotificationService
     {
+        public async Task<IEnumerable<EmailNotification>> GetAllAsync() =>
+            await emailNotificationRepository.GetAllAsync();
+
         public async Task<IEnumerable<EmailNotificationViewModel>> GetAllAsync(EmailNotificationSearchReq req)
         {
             var emailNotifications = emailNotificationRepository.GetAllQueryable();
