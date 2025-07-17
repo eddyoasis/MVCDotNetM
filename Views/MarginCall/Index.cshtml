@@ -186,7 +186,6 @@
         <div class="d-flex gap-2 mt-2">
             <button id="btnSearch" type="submit" class="btn btn-primary">Search</button>
             <button id="btnClear" class="btn btn-dark">Clear</button>
-            <button id="btnTestSendEmailQueue" class="btn btn-dark">Send Email</button>
         </div>
 
         <!-- Modal Container -->
@@ -256,26 +255,6 @@
                 $("#dateTimeTo").val(lastDay);
             });
 
-            /* ====================================================Testing*/
-            $("#btnTestSendEmailQueue").click(function (e) {
-                event.preventDefault(); // Prevent full page reload
-
-                postTestSendEmailQueue()
-            });
-
-            function postTestSendEmailQueue() {
-                $.ajax({
-                    url: "/MarginCall/TestSendEmailQueue",
-                    type: "POST",
-                    contentType: "application/json",
-                    success: function (data) {
-                    },
-                    error: function (jqXHR) {
-                        alert("Search failed. Please try again.");
-                    }
-                });
-            }
-
             /* ====================================================Init*/
             $("#dateTimeFrom").val(new Date().toISOString().split("T")[0])
             $("#dateTimeTo").val(new Date().toISOString().split("T")[0])
@@ -288,7 +267,6 @@
 
             /*=================================================== Pagination*/
             $(document).on("click", "#btnGo", function (e) {
-                //$("#btnCreate").click(function (e) {
                 event.preventDefault(); // Prevent full page reload
 
                 var pageNumber = +$("#pageIndexNew").val()
@@ -297,7 +275,6 @@
             });
 
             $(document).on("click", "#btnNext", function (e) {
-                //$("#btnCreate").click(function (e) {
                 event.preventDefault(); // Prevent full page reload
 
                 var pageNumber = +$("#pageIndex").val() + 1
@@ -307,7 +284,6 @@
             });
 
             $(document).on("click", "#btnPrevious", function (e) {
-                //$("#btnCreate").click(function (e) {
                 event.preventDefault(); // Prevent full page reload
 
                 var pageNumber = +$("#pageIndex").val() - 1
@@ -368,7 +344,6 @@
             }
 
             /*-------------------------- Approve */
-
             $(document).on("click", ".btn-approve", function (e) {
                 e.preventDefault();
                 var entityId = $(this).data("id");
@@ -391,7 +366,6 @@
                             alert('success approve');
                             postSearchMarginCalls(1);
                         } else {
-                            // $("#approveModal .modal-content").html(result);
                             alert('approve failed');
                         }
                     },
@@ -402,7 +376,6 @@
             });
 
             /*-------------------------- Reject */
-
             $(document).on("click", ".btn-reject", function (e) {
                 e.preventDefault();
                 var entityId = $(this).data("id");
@@ -435,17 +408,16 @@
             });
 
             /*-------------------------- Create */
-
             $(document).on("click", "#btnCreate", function (e) {
                 e.preventDefault();
                 $.get("/EmailNotification/Create")
                     .done(function (data, textStatus, jqXHR) {
-                        console.log("Success:", jqXHR.status); // Logs HTTP status code (e.g., 200)
+                        console.log("Success:", jqXHR.status);
                         $("#createModal .modal-content").html(data);
                         $("#createModal").modal("show");
                     })
                     .fail(function (jqXHR, textStatus, errorThrown) {
-                        console.log("Error:", jqXHR.status);  // Logs error status (e.g., 404, 500)
+                        console.log("Error:", jqXHR.status);
                         alert("Failed to load. Status: " + jqXHR.status);
                         window.location.href = "/Login/Index";
                     });
@@ -533,7 +505,6 @@
                 });
             });
 
-            // Delegate the form submission inside the modal; using a dynamic event handler
             $(document).on("submit", "#deleteForm", function (e) {
                 e.preventDefault();
                 var form = $(this);

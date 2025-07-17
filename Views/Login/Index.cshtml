@@ -1,9 +1,36 @@
-﻿@* Create.cshtml *@
-@model LoginViewModel // Replace YourNamespace with your actual namespace
+﻿@model LoginViewModel // Replace YourNamespace with your actual namespace
 
 @{
     ViewBag.Title = "Login";
 }
+
+@section scripts {
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}
+
+<style>
+    .spinner {
+        display: inline-block;
+        width: 16px;
+        height: 16px;
+        border: 2px solid #fff;
+        border-top: 2px solid #333;
+        border-radius: 50%;
+        animation: spin 0.6s linear infinite;
+        margin-left: 8px;
+        vertical-align: middle;
+    }
+
+    @@keyframes spin {
+        to {
+            transform: rotate(360deg);
+        }
+    }
+</style>
 
 <h2>Login</h2>
 
@@ -12,14 +39,13 @@
     @Html.AntiForgeryToken()
 
     <div class="form-horizontal">
-        @* <h4>Login</h4> *@
         <hr />
         @Html.ValidationSummary(true, "", new { @class = "text-danger" })
 
         <div class="form-group">
             <label asp-for="Username" class="control-label col-md-2"></label>
             <div class="col-md-10">
-                <input asp-for="Username" class="form-control" />
+                <input asp-for="Username" id="Username" class="form-control" />
                 <span asp-validation-for="Username" class="text-danger"></span>
             </div>
         </div>
@@ -28,7 +54,12 @@
         <div class="form-group">
             <label asp-for="Password" class="control-label col-md-2"></label>
             <div class="col-md-10">
-                <input asp-for="Password" class="form-control" />
+                <div class="d-flex gap-2">
+                    <input asp-for="Password" id="Password" class="form-control" />
+                    <button class="btn btn-outline-secondary" type="button" id="togglePassword">
+                        <i class="fa fa-eye"></i>
+                    </button>
+                </div>
                 <span asp-validation-for="Password" class="text-danger"></span>
             </div>
         </div>
@@ -36,8 +67,85 @@
         <br />
         <div class="form-group">
             <div class="col-md-offset-2 col-md-10">
-                <input type="submit" value="Login" class="btn btn-sm btn-primary" />
+                <input id="btnSubmit" type="submit" value="Login" class="btn btn-sm btn-primary" />
+                <span id="spinLogin" class="spinner" style="display: none;"></span>
             </div>
         </div>
+
+        <script>
+            $(document).ready(function () {
+
+                /* togglePassword */
+                $('#togglePassword').on('click', function () {
+                    const passwordInput = $('#Password');
+                    const icon = $(this).find('i');
+
+                    const type = passwordInput.attr('type') === 'password' ? 'text' : 'password';
+                    passwordInput.attr('type', type);
+
+                    icon.toggleClass('fa-eye fa-eye-slash');
+                });
+
+                /* btnSubmit */
+                $("#btnSubmit").click(function (e) {
+                    event.preventDefault();
+
+                    var username = $("#Username").val();
+                    var password = $("#Password").val();
+
+                    if (username === '' || password === '') {
+                        alert('Username and Password are required!');
+                        return;
+                    }
+
+                    showHideSpinning(true);
+                    postLogin(username, password);
+                });
+
+                /* submit */
+                function postLogin(username, password) {
+                    var requestData = {
+                        Username: username,
+                        Password: password
+                    };
+
+                    $.ajax({
+                        url: "/Login/Login",
+                        type: "POST",
+                        contentType: "application/json",
+                        data: JSON.stringify(requestData),
+                        success: function (data) {
+                            if (data.isSuccess) {
+                                alert("Login success.");
+                                window.location.href = "/MarginCall/Index";
+                            }
+                            else {
+                                alert("Login failed. Please try again.");
+                            }
+                            showHideSpinning(false);
+                        },
+                        error: function (jqXHR) {
+                            alert("Login failed. Please try again.");
+                            showHideSpinning(false);
+                        }
+                    });
+                }
+
+                function showHideSpinning(isShow) {
+                    const btnSubmit = $("#btnSubmit");
+                    const spinLogin = $("#spinLogin");
+
+                    if (isShow) {
+                        btnSubmit.prop("disabled", true);
+                        btnSubmit.val("Submitting");
+                        spinLogin.show();
+                    } else {
+                        btnSubmit.prop("disabled", false);
+                        btnSubmit.val("login");
+                        spinLogin.hide();
+                    }
+                }
+            });
+        </script>
     </div>
 }

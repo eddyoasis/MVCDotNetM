@@ -19,21 +19,6 @@ namespace MVCWebApp.Controllers
         IMapModel _mapper
         ) : ControllerBase
     {
-        //[HttpPost]
-        //public async Task TestSendEmailQueue()
-        //{
-        //    taskQueue.QueueBackgroundWorkItem(async token =>
-        //    {
-        //        //await Task.Delay(2000, token); // Simulate work
-        //        await _emailService.SendEmailAsync(
-        //            "eddywang0202.working@gmail.com",
-        //            "testSubject",
-        //            "testBody"
-        //            );
-        //        Console.WriteLine($"Processed at: {DateTime.Now}");
-        //    });
-        //}
-
         public async Task<IActionResult> Index()
         {
             var currencySearchEnum = ConverterHelper.ToSelectList<CurrencySearchEnum>();

@@ -8,6 +8,7 @@ using MVCWebApp.Configurations;
 using MVCWebApp.Data;
 using MVCWebApp.Filters;
 using MVCWebApp.Helper.Mapper;
+using MVCWebApp.Middlewares;
 using MVCWebApp.Repositories;
 using MVCWebApp.Services;
 using Serilog;
@@ -35,8 +36,8 @@ builder.Host.UseSerilog();
 builder.Configuration
     .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true);
 
-builder.Services.Configure<SmtpAppSetting>(
-    builder.Configuration.GetSection("SmtpSettings"));
+builder.Services.Configure<SmtpAppSetting>(builder.Configuration.GetSection("SmtpSettings"));
+builder.Services.Configure<LDAPAppSetting>(builder.Configuration.GetSection("LDAPAppSettings"));
 
 
 // Add services to the container.
@@ -84,11 +85,13 @@ builder.Services.AddScoped<ITaskQueueService, TaskQueueService>();
 builder.Services.AddScoped<IEmailNotificationRepository, EmailNotificationRepository>();
 builder.Services.AddScoped<IMarginFormulaRepository, MarginFormulaRepository>();
 builder.Services.AddScoped<IMarginCallRepository, MarginCallRepository>();
+builder.Services.AddScoped<ILoginAttemptRepository, LoginAttemptRepository>();
 
 builder.Services.AddScoped<IEmailNotificationService, EmailNotificationService>();
 builder.Services.AddScoped<IMarginFormulaService, MarginFormulaService>();
 builder.Services.AddScoped<IMarginCallService, MarginCallService>();
 builder.Services.AddScoped<IEmailService, EmailService>();
+builder.Services.AddScoped<ILoginAttemptService, LoginAttemptService>();
 
 /*------------- Background Services */
 builder.Services.AddSingleton<IBackgroundTaskQueue, BackgroundTaskQueue>();
@@ -98,6 +101,7 @@ builder.Services.AddHostedService<QueuedHostedService>();
 builder.Services.AddControllers(options =>
 {
     options.Filters.Add<GlobalExceptionFilter>();
+    options.Filters.Add<LogFilter>();
 });
 
 builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
@@ -126,10 +130,10 @@ builder.Services.AddAuthentication(options =>
     };
 });
 
-builder.Services.AddControllers(options =>
-{
-    options.Filters.Add<AuthFilter>();
-});
+//builder.Services.AddControllers(options =>
+//{
+//    options.Filters.Add<AuthFilter>();
+//});
 
 //// Register Response Compression services
 //builder.Services.AddResponseCompression(options =>
@@ -172,7 +176,7 @@ app.UseStaticFiles();
 
 app.UseRouting();
 
-//app.UseMiddleware<CookieAuthMiddleware>(); // Add before MVC pipeline
+app.UseMiddleware<CookieAuthMiddleware>(); // Add before MVC pipeline
 app.UseAuthentication();
 app.UseAuthorization();
 

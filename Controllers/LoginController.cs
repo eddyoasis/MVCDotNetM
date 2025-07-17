@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using MVCWebApp.Helper;
 using MVCWebApp.Services;
 using MVCWebApp.ViewModels;
-using System.DirectoryServices.AccountManagement;
 
 namespace MVCWebApp.Controllers
 {
@@ -9,8 +9,6 @@ namespace MVCWebApp.Controllers
         IAuthService authService,
         ILogger<LoginController> logger) : Controller
     {
-        private static string _domain = "60.250.169.233";
-
         // GET: Login
         [HttpGet]
         public ActionResult Index()
@@ -21,25 +19,22 @@ namespace MVCWebApp.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> Index(LoginViewModel loginReq)
+        public async Task<IActionResult> Login([FromBody] LoginViewModel loginReq)
         {
-            var token = await authService.Login(loginReq.Username);
-
-            // Set cookie on successful login
-            Response.Cookies.Append("AuthToken", token, new CookieOptions
+            var token = await authService.AuthenticateAndGetUser(loginReq.Username, loginReq.Password);
+            if (token.IsNotNullOrEmpty())
             {
-                HttpOnly = true,
-                Secure = true, // Set to true in production (HTTPS required)
-                Expires = DateTime.UtcNow.AddHours(1) // Cookie expires in 1 hour
-            });
+                Response.Cookies.Append("AuthToken", token, new CookieOptions
+                {
+                    HttpOnly = true,
+                    Secure = true, // Set to true in production (HTTPS required)
+                    Expires = DateTime.UtcNow.AddHours(1) // Cookie expires in 1 hour
+                });
 
-            return RedirectToAction("Index", "MarginCall");
-        }
+                return Json(new { isSuccess = true });
+            }
 
-        public bool ValidateUser(string domain, string username, string password)
-        {
-            using var context = new PrincipalContext(ContextType.Domain, domain);
-            return context.ValidateCredentials(username, password);
+            return Json(new { isSuccess = false });
         }
 
         public async Task<IActionResult> Logout()
