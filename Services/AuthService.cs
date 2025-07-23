@@ -1,6 +1,8 @@
 ﻿using Microsoft.Extensions.Options;
 using MVCWebApp.Configurations;
 using MVCWebApp.Models;
+using Newtonsoft.Json;
+using Serilog;
 using System.DirectoryServices.Protocols;
 using System.Net;
 
@@ -17,6 +19,33 @@ namespace MVCWebApp.Services
         ILoginAttemptService _loginAttemptService,
         IJwtTokenService _jwtTokenService) : IAuthService
     {
+        //public async Task<string> AuthenticateAndGetUser(string username, string password)
+        //{
+        //    var token = string.Empty;
+        //    var loginAttempt = new LoginAttempt
+        //    {
+        //        Username = username,
+        //        TimeStemp = DateTime.Now,
+        //        IsSuccess = true
+        //    };
+
+        //    try
+        //    {
+        //        token = _jwtTokenService.GenerateJwtToken(username);
+
+        //        await _loginAttemptService.AddAsync(loginAttempt);
+
+        //        return token;
+        //    }
+        //    catch (LdapException ex)
+        //    {
+        //        loginAttempt.IsSuccess = false;
+        //        loginAttempt.Remark = ex.Message;
+        //        await _loginAttemptService.AddAsync(loginAttempt);
+        //        return token;
+        //    }
+        //}
+
         public async Task<string> AuthenticateAndGetUser(string username, string password)
         {
             var token = string.Empty;
@@ -33,13 +62,26 @@ namespace MVCWebApp.Services
 
                 var identifier = new LdapDirectoryIdentifier(ldapAppSetting.Server, ldapAppSetting.Port);
                 using var connection = new LdapConnection(identifier);
+
+                connection.SessionOptions.ProtocolVersion = 3;
+                connection.SessionOptions.VerifyServerCertificate += (conn, cert) => true;
+
+                //connection.SessionOptions.StartTransportLayerSecurity(null);
+                //connection.SessionOptions.SecureSocketLayer = false;
                 connection.SessionOptions.SecureSocketLayer = true;
+                //connection.AuthType = AuthType.Negotiate;
                 connection.AuthType = AuthType.Basic;
 
                 string domainUser = $"{ldapAppSetting.Domain}\\{username}"; // NetBIOS domain\username
+
                 var credential = new NetworkCredential(domainUser, password);
 
+                Log.Information("➡️ START LDAP: _ldapAppSetting:{ldapAppSetting}",
+                   JsonConvert.SerializeObject(_ldapAppSetting, Formatting.Indented));
+
                 connection.Bind(credential); // ✅ Success if no exception
+
+                Log.Information("➡️ SUCCESS LOGIN LDAP");
 
                 // Now search for user details
                 var request = new SearchRequest(

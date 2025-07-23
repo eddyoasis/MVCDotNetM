@@ -27,7 +27,8 @@ namespace MVCWebApp.Controllers
                 Response.Cookies.Append("AuthToken", token, new CookieOptions
                 {
                     HttpOnly = true,
-                    Secure = true, // Set to true in production (HTTPS required)
+                    Secure = false, // Set to true in production (HTTPS required)
+                    //Secure = true, // Set to true in production (HTTPS required)
                     Expires = DateTime.UtcNow.AddHours(1) // Cookie expires in 1 hour
                 });
 

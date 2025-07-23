@@ -1,6 +1,7 @@
 ﻿@model LoginViewModel // Replace YourNamespace with your actual namespace
 
 @{
+    Layout = "~/Views/Shared/_Layout.cshtml";
     ViewBag.Title = "Login";
 }
 
@@ -10,6 +11,82 @@
     @{
         await Html.RenderPartialAsync("_ValidationScriptsPartial");
     }
+
+    <script>
+        $(document).ready(function () {
+
+            /* togglePassword */
+            $('#togglePassword').on('click', function () {
+                const passwordInput = $('#Password');
+                const icon = $(this).find('i');
+
+                const type = passwordInput.attr('type') === 'password' ? 'text' : 'password';
+                passwordInput.attr('type', type);
+
+                icon.toggleClass('fa-eye fa-eye-slash');
+            });
+
+            /* btnSubmit */
+            $("#btnSubmit").click(function (e) {
+                event.preventDefault();
+
+                var username = $("#Username").val();
+                var password = $("#Password").val();
+
+                if (username === '' || password === '') {
+                    alert('Username and Password are required!');
+                    return;
+                }
+
+                showHideSpinning(true);
+                postLogin(username, password);
+            });
+
+            /* submit */
+            function postLogin(username, password) {
+                var requestData = {
+                    Username: username,
+                    Password: password
+                };
+
+                $.ajax({
+                    url: "/Login/Login",
+                    type: "POST",
+                    contentType: "application/json",
+                    data: JSON.stringify(requestData),
+                    success: function (data) {
+                        if (data.isSuccess) {
+                            alert("Login success.");
+                            window.location.href = "/MarginCall/Index";
+                        }
+                        else {
+                            alert("Login failed. Please try again.");
+                        }
+                        showHideSpinning(false);
+                    },
+                    error: function (jqXHR) {
+                        alert("Login failed. Please try again.");
+                        showHideSpinning(false);
+                    }
+                });
+            }
+
+            function showHideSpinning(isShow) {
+                const btnSubmit = $("#btnSubmit");
+                const spinLogin = $("#spinLogin");
+
+                if (isShow) {
+                    btnSubmit.prop("disabled", true);
+                    btnSubmit.val("Submitting");
+                    spinLogin.show();
+                } else {
+                    btnSubmit.prop("disabled", false);
+                    btnSubmit.val("login");
+                    spinLogin.hide();
+                }
+            }
+        });
+    </script>
 }
 
 <style>
@@ -72,7 +149,7 @@
             </div>
         </div>
 
-        <script>
+        @* <script>
             $(document).ready(function () {
 
                 /* togglePassword */
@@ -146,6 +223,6 @@
                     }
                 }
             });
-        </script>
+        </script> *@
     </div>
 }

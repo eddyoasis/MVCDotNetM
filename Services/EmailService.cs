@@ -1,8 +1,12 @@
-﻿using Google.Apis.Gmail.v1.Data;
+﻿using FluentEmail.Core;
+using Google.Apis.Gmail.v1.Data;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
 using MimeKit;
 using MVCWebApp.Configurations;
 using Newtonsoft.Json;
+using Serilog;
+using System;
 using System.Net.Http.Headers;
 using System.Net.Mail;
 using System.Text;
@@ -23,7 +27,8 @@ namespace MVCWebApp.Services
             // --- Email Configuration ---
             string smtpHost = smtpAppSetting.Host;
             string senderEmail = smtpAppSetting.EmailFrom;
-            string recipientEmail = recipient;
+            //string recipientEmail = recipient;
+            var recipientEmails = smtpAppSetting.EmailTo;
             string emailSubject = subject;
             string strMailBody = body;
 
@@ -34,7 +39,10 @@ namespace MVCWebApp.Services
                 using MailMessage mailMessage = new();
                 // Set sender and recipient addresses
                 mailMessage.From = new MailAddress(senderEmail);
-                mailMessage.To.Add(recipientEmail);
+
+                mailMessage.To.AddRange(recipientEmails.Select(e => new MailAddress(e)));
+                //recipientEmails.ForEach(x => mailMessage.To.Add(x));
+                //mailMessage.To.Add(recipientEmails);
 
                 // Set subject (optional)
                 mailMessage.Subject = emailSubject;
@@ -46,64 +54,22 @@ namespace MVCWebApp.Services
 
                 using SmtpClient smtpClient = new(smtpHost);
 
+                Log.Information("➡️ START: EmailService.SendEmailAsync -> {req}",
+                    JsonConvert.SerializeObject(smtpAppSetting, Formatting.Indented));
+
                 smtpClient.Send(mailMessage);
-                Console.WriteLine("Email sent successfully!");
+                Log.Information("✅ END: EmailService.SendEmailAsync -> Email sent successfully!");
             }
             catch (SmtpException ex)
             {
-                Console.WriteLine($"SMTP Error: {ex.StatusCode} - {ex.Message}");
-                Console.WriteLine($"Inner Exception: {ex.InnerException?.Message}");
+                Log.Information("✅ END Error: EmailService.SendEmailAsync -> Error {ex}",
+                    JsonConvert.SerializeObject(ex, Formatting.Indented));
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"An unexpected error occurred: {ex.Message}");
+                Log.Information("✅ END Error: EmailService.SendEmailAsync -> Error {ex}",
+                    JsonConvert.SerializeObject(ex, Formatting.Indented));
             }
         }
-
-        //public async Task SendEmailAsync6(string recipient, string subject, string body)
-        //{
-        //    try
-        //    {
-        //        var accessToken = "sss";
-
-        //        var message = new MimeMessage();
-        //        message.From.Add(new MailboxAddress("System", "SystemTemp@gmail.com"));
-        //        message.To.Add(new MailboxAddress("Recipient", "eddy.wang@kgi.com"));
-        //        message.Subject = "Hello from Gmail API";
-
-        //        var builder = new BodyBuilder
-        //        {
-        //            TextBody = "This is a plain text email.",
-        //            HtmlBody = "<p>This is an <strong>HTML</strong> email.</p>"
-        //        };
-
-        //        message.Body = builder.ToMessageBody();
-
-        //        string rawMessage;
-        //        using (var stream = new MemoryStream())
-        //        {
-        //            message.WriteTo(stream);
-        //            rawMessage = Convert.ToBase64String(stream.ToArray())
-        //                .Replace("+", "-")
-        //                .Replace("/", "_")
-        //                .Replace("=", "");
-        //        }
-
-        //        var httpClient = new HttpClient();
-        //        httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", accessToken);
-
-        //        var payload = new
-        //        {
-        //            raw = rawMessage
-        //        };
-
-        //        var content = new StringContent(JsonConvert.SerializeObject(payload), Encoding.UTF8, "application/json");
-        //        var response = await httpClient.PostAsync("https://gmail.googleapis.com/gmail/v1/users/me/messages/send", content);
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        var ssss = ex;
-        //    }
-        //}
     }
 }
