@@ -19,13 +19,13 @@
                     <th>VM_Ccy</th>
                     <th>IM</th>
                     <th>IM_Ccy</th>
-                    <th>MarginCallFlag</th>
+                    @* <th>MarginCallFlag</th>
                     <th>EODTriggerFlag</th>
                     <th>MTMTriggerFlag</th>
                     <th>Type</th>
                     <th>Remarks</th>
                     <th>InsertedDatetime</th>
-                    <th>ModifiedDatetime</th>
+                    <th>ModifiedDatetime</th> *@
                     <th>Action</th>
                 </tr>
             </thead>
@@ -44,13 +44,13 @@
                         </td> *@
                         <td>@item.IM</td>
                         <td>@item.IM_Ccy</td>
-                        <td>@item.MarginCallFlag</td>
+                        @* <td>@item.MarginCallFlag</td>
                         <td>@item.EODTriggerFlag</td>
                         <td>@item.MTMTriggerFlag</td>
                         <td>@item.Type</td>
                         <td>@item.Remarks</td>
                         <td>@item.InsertedDatetime</td>
-                        <td>@item.ModifiedDatetime</td>
+                        <td>@item.ModifiedDatetime</td> *@
                         <td>
                             <div class="d-flex flex-wrap gap-1">
                                 @if (item.MarginCallFlag == "N")
@@ -95,7 +95,7 @@ else
 
 <!-- Approve Modal Container -->
 <div class="modal fade" id="approveModal" tabindex="-1" role="dialog" aria-hidden="true">
-    <div class="modal-dialog">
+    <div class="modal-dialog modal-lg">
         <div class="modal-content">
         </div>
     </div>
@@ -103,7 +103,7 @@ else
 
 <!-- Reject Modal Container -->
 <div class="modal fade" id="rejectModal" tabindex="-1" role="dialog" aria-hidden="true">
-    <div class="modal-dialog">
+    <div class="modal-dialog modal-lg">
         <div class="modal-content">
         </div>
     </div>
@@ -111,7 +111,7 @@ else
 
 <!-- Edit Modal Container -->
 <div class="modal fade" id="editModal" tabindex="-1" role="dialog" aria-hidden="true">
-    <div class="modal-dialog">
+    <div class="modal-dialog modal-lg">
         <div class="modal-content">
         </div>
     </div>

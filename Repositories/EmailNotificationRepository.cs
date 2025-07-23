@@ -21,7 +21,9 @@ namespace MVCWebApp.Repositories
 
         public IQueryable<EmailNotification> GetAllQueryable()
         {
-            return _context.EmailNotifications.AsQueryable();
+            return _context.EmailNotifications
+                .AsQueryable()
+                .AsNoTracking();
         }
 
         public async Task<EmailNotification?> GetByIdAsync(int id) =>

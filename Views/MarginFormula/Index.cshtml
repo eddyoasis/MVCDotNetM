@@ -23,8 +23,14 @@
 <div class="container">
     <h2>@ViewBag.Title</h2>
 
+    <hr> <!-- Divider -->
+    <div class="d-flex gap-2 mt-2">
+        <button id="btnShowHideSearch" type="submit" class="btn btn-primary">Open Filter</button>
+        <button type="button" class="btn btn-success" id="btnCreate">Create</button>
+    </div>
+    <hr> <!-- Divider -->
     <!-- Search Section -->
-    <section id="searchSection" class="p-4 border rounded bg-light shadow-sm">
+    <section id="searchSection" style="display: none;" class="p-4 border rounded bg-light shadow-sm">
         <h4>Search Margin Formula</h4>
 
         <div class="d-flex gap-1">
@@ -55,7 +61,7 @@
                         <label class="form-check-label" for="allDatetime">All</label>
                     </div>
                     <div class="form-check">
-                        <input class="form-check-input" type="radio" id="createdDate" name="dateType" value="CreatedDate" checked>
+                        <input class="form-check-input" type="radio" id="createdDate" name="dateType" value="CreatedDate">
                         <label class="form-check-label" for="createdDate">Created Date</label>
                     </div>
                     <div class="form-check">
@@ -133,18 +139,17 @@
         <div class="d-flex gap-2 mt-2">
             <button id="btnSearch" type="submit" class="btn btn-primary">Search</button>
             <button id="btnClear" class="btn btn-dark">Clear</button>
-            <button type="button" class="btn btn-success" id="btnCreate">Create</button>
-        </div>
-
-        <!-- Modal Container -->
-        <div class="modal fade" id="createModal" tabindex="-1" role="dialog" aria-hidden="true">
-            <div class="modal-dialog">
-                <div class="modal-content">
-                </div>
-            </div>
         </div>
 
     </section>
+
+    <!-- Modal Container -->
+    <div class="modal fade" id="createModal" tabindex="-1" role="dialog" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+            </div>
+        </div>
+    </div>
 
     <hr> <!-- Divider -->
 
@@ -155,6 +160,16 @@
 
     <script>
         $(document).ready(function () {
+
+            /*-------------------------- Show Hide Search */
+            $(document).on("click", "#btnShowHideSearch", function (e) {
+
+                $('#searchSection').toggle();
+
+                // Optional: Change button text
+                const isVisible = $('#searchSection').is(':visible');
+                $(this).text(isVisible ? 'Hide Search Section' : 'Show Search Section');
+            });
 
             /*-------------------------- Datetime selection */
             $(document).on("click", "#btnCurrentMonth", function (e) {
@@ -421,6 +436,8 @@
                 $("#dateTimeFrom").val(new Date().toISOString().split("T")[0]);
                 $("#dateTimeTo").val(new Date().toISOString().split("T")[0]);
             }
+
+            postSearchMarginFormulas(1)
         });
     </script>
 </div>

@@ -33,7 +33,8 @@ namespace MVCWebApp.Services
             emailNotifications = emailNotifications.Where(x =>
                 (req.MarginType.IsNullOrEmpty() || x.MarginType.ToLower().Contains(req.MarginType.ToLower())) &&
                 (req.EmailTemplate.IsNullOrEmpty() || x.EmailTemplate.ToLower().Contains(req.EmailTemplate.ToLower()))
-            );
+            )
+            .OrderByDescending(x => (x.ModifiedAt ?? x.CreatedAt));
 
             var searchReq = _mapper.MapDto<EmailNotificationSearchReq, BaseSearchReq>(req);
 

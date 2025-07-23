@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using MVCWebApp.Constants;
 using MVCWebApp.Helper.Mapper;
 using MVCWebApp.Models.MarginFormulas;
 using MVCWebApp.Services;
@@ -14,7 +15,7 @@ namespace MVCWebApp.Controllers
     {
         public async Task<IActionResult> Index()
         {
-            return View(new MarginFormulaSearchReq { PageNumber = 1, PageSize = 5 });
+            return View(new MarginFormulaSearchReq { PageNumber = 1, PageSize = AppConstants.DefaultPageSize });
         }
 
         [HttpPost]

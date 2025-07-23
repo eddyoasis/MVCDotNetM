@@ -23,8 +23,12 @@
 <div class="container">
     <h2>@ViewBag.Title</h2>
 
+    <hr> <!-- Divider -->
+    <button id="btnShowHideSearch" type="submit" class="btn btn-primary">Open Filter</button>
+    <hr> <!-- Divider -->
+
     <!-- Search Section -->
-    <section id="searchSection" class="p-4 border rounded bg-light shadow-sm">
+    <section id="searchSection" style="display: none;" class="p-4 border rounded bg-light shadow-sm">
         <h4>Search Margin Call</h4>
 
         <div class="d-flex flex-wrap gap-2">
@@ -188,15 +192,15 @@
             <button id="btnClear" class="btn btn-dark">Clear</button>
         </div>
 
-        <!-- Modal Container -->
-        <div class="modal fade" id="createModal" tabindex="-1" role="dialog" aria-hidden="true">
-            <div class="modal-dialog">
-                <div class="modal-content">
-                </div>
+    </section>
+
+    <!-- Modal Container -->
+    <div class="modal fade" id="createModal" tabindex="-1" role="dialog" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
             </div>
         </div>
-
-    </section>
+    </div>
 
     <hr> <!-- Divider -->
 
@@ -206,7 +210,17 @@
     </section>
 
     <script>
-        $(document).ready(function () {
+        $(document).ready(function () {       
+
+            /*-------------------------- Show Hide Search */
+            $(document).on("click", "#btnShowHideSearch", function (e) {
+
+                $('#searchSection').toggle();
+
+                // Optional: Change button text
+                const isVisible = $('#searchSection').is(':visible');
+                $(this).text(isVisible ? 'Hide Search Section' : 'Show Search Section');
+            });
 
             /*-------------------------- Datetime selection */
             $(document).on("click", "#btnCurrentMonth", function (e) {
@@ -550,6 +564,8 @@
                 // $("#dateTimeFrom").val(new Date().toISOString().split("T")[0]);
                 // $("#dateTimeTo").val(new Date().toISOString().split("T")[0]);
             }
+
+            postSearchMarginCalls(1);
         });
     </script>
 </div>

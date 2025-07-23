@@ -23,8 +23,15 @@
 <div class="container">
     <h2>@ViewBag.Title</h2>
 
+    <hr> <!-- Divider -->
+    <div class="d-flex gap-2 mt-2">
+        <button id="btnShowHideSearch" type="submit" class="btn btn-primary">Open Filter</button>
+        <button type="button" class="btn btn-success" id="btnCreate">Create</button>
+    </div>
+    <hr> <!-- Divider -->
+
     <!-- Search Section -->
-    <section id="searchSection" class="p-4 border rounded bg-light shadow-sm">
+    <section id="searchSection" style="display: none;" class="p-4 border rounded bg-light shadow-sm">
         <h4>Search Email Notifications</h4>
 
         <div class="d-flex gap-1">
@@ -133,18 +140,26 @@
         <div class="d-flex gap-2 mt-2">
             <button id="btnSearch" type="submit" class="btn btn-primary">Search</button>
             <button id="btnClear" class="btn btn-dark">Clear</button>
-            <button type="button" class="btn btn-success" id="btnCreate">Create</button>
+            @* <button type="button" class="btn btn-success" id="btnCreate">Create</button> *@
         </div>
 
-        <!-- Modal Container -->
+@*         <!-- Modal Container -->
         <div class="modal fade" id="createModal" tabindex="-1" role="dialog" aria-hidden="true">
             <div class="modal-dialog">
                 <div class="modal-content">
                 </div>
             </div>
-        </div>
+        </div> *@
 
     </section>
+
+    <!-- Modal Container -->
+    <div class="modal fade" id="createModal" tabindex="-1" role="dialog" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+            </div>
+        </div>
+    </div>
 
     <hr> <!-- Divider -->
 
@@ -155,6 +170,32 @@
 
     <script>
         $(document).ready(function () {
+
+            /*-------------------------- Create */
+            $(document).on("click", "#btnCreate", function (e) {
+                e.preventDefault();
+                $.get("/EmailNotification/Create")
+                    .done(function (data, textStatus, jqXHR) {
+                        console.log("Success:", jqXHR.status); // Logs HTTP status code (e.g., 200)
+                        $("#createModal .modal-content").html(data);
+                        $("#createModal").modal("show");
+                    })
+                    .fail(function (jqXHR, textStatus, errorThrown) {
+                        console.log("Error:", jqXHR.status);  // Logs error status (e.g., 404, 500)
+                        alert("Failed to load. Status: " + jqXHR.status);
+                        window.location.href = "/Login/Index";
+                    });
+            });
+
+            /*-------------------------- Show Hide Search */
+            $(document).on("click", "#btnShowHideSearch", function (e) {
+
+                $('#searchSection').toggle();
+
+                // Optional: Change button text
+                const isVisible = $('#searchSection').is(':visible');
+                $(this).text(isVisible ? 'Hide Search Section' : 'Show Search Section');
+            });
 
             /*-------------------------- Datetime selection */
             $(document).on("click", "#btnCurrentMonth", function (e) {
@@ -214,7 +255,6 @@
 
             /*=================================================== Pagination*/
             $(document).on("click", "#btnGo", function (e) {
-                //$("#btnCreate").click(function (e) {
                 event.preventDefault(); // Prevent full page reload
 
                 var pageNumber = +$("#pageIndexNew").val()
@@ -223,7 +263,6 @@
             });
 
             $(document).on("click", "#btnNext", function (e) {
-                //$("#btnCreate").click(function (e) {
                 event.preventDefault(); // Prevent full page reload
 
                 var pageNumber = +$("#pageIndex").val() + 1
@@ -233,7 +272,6 @@
             });
 
             $(document).on("click", "#btnPrevious", function (e) {
-                //$("#btnCreate").click(function (e) {
                 event.preventDefault(); // Prevent full page reload
 
                 var pageNumber = +$("#pageIndex").val() - 1
@@ -285,23 +323,6 @@
                     }
                 });
             }
-
-            /*-------------------------- Create */
-
-            $(document).on("click", "#btnCreate", function (e) {
-                e.preventDefault();
-                $.get("/EmailNotification/Create")
-                    .done(function (data, textStatus, jqXHR) {
-                        console.log("Success:", jqXHR.status); // Logs HTTP status code (e.g., 200)
-                        $("#createModal .modal-content").html(data);
-                        $("#createModal").modal("show");
-                    })
-                    .fail(function (jqXHR, textStatus, errorThrown) {
-                        console.log("Error:", jqXHR.status);  // Logs error status (e.g., 404, 500)
-                        alert("Failed to load. Status: " + jqXHR.status);
-                        window.location.href = "/Login/Index";
-                    });
-            });
 
             $(document).on("submit", "#createForm", function (e) {
                 e.preventDefault();
@@ -426,6 +447,8 @@
                 $("#dateTimeFrom").val(new Date().toISOString().split("T")[0]);
                 $("#dateTimeTo").val(new Date().toISOString().split("T")[0]);
             }
+
+            postSearchEmailNotifications(1)
         });
     </script>
 </div>

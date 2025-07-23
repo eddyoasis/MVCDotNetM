@@ -17,6 +17,9 @@ namespace MVCWebApp.ViewModels
         [Display(Name = "EmailTemplate Selection")]
         public List<string> EmailTemplateTitle { get; set; }
 
+        [Display(Name = "EmailTemplate Subject")]
+        public string EmailTemplateSubject { get; set; }
+
         [Display(Name = "EmailTemplate Body")]
         public string EmailTemplateValue { get; set; }
 

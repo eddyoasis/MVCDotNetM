@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using MVCWebApp.BackgroundServices;
+using MVCWebApp.Constants;
 using MVCWebApp.Enums;
 using MVCWebApp.Helper;
 using MVCWebApp.Helper.Mapper;
@@ -32,7 +33,7 @@ namespace MVCWebApp.Controllers
             return View(new MarginCallSearchReq
             {
                 PageNumber = 1,
-                PageSize = 5,
+                PageSize = AppConstants.DefaultPageSize,
                 Collateral_Ccy = collateralCcy,
                 IM_Ccy = imCcy,
                 VM_Ccy = vmCcy,

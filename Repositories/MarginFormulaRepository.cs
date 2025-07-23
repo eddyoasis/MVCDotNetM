@@ -1,4 +1,5 @@
-﻿using MVCWebApp.Data;
+﻿using Microsoft.EntityFrameworkCore;
+using MVCWebApp.Data;
 using MVCWebApp.Models.MarginFormulas;
 
 namespace MVCWebApp.Repositories
@@ -13,7 +14,9 @@ namespace MVCWebApp.Repositories
     {
         public IQueryable<MarginFormula> GetAllQueryable()
         {
-            return _context.MarginFormulas.AsQueryable();
+            return _context.MarginFormulas
+                .AsQueryable()
+                .AsNoTracking();
         }
     }
 }

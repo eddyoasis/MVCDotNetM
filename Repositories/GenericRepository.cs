@@ -18,7 +18,10 @@ namespace MVCWebApp.Repositories
         private readonly DbSet<T> _dbSet = context.Set<T>();
 
         public async Task<IEnumerable<T>> GetAllAsync() => await _dbSet.ToListAsync();
-        public IQueryable<T> GetAllQueryable() =>  _dbSet.AsQueryable();
+        public IQueryable<T> GetAllQueryable() =>  
+            _dbSet
+            .AsQueryable()
+            .AsNoTracking();
 
         public async Task<T> GetByIdAsync(int id) => await _dbSet.FindAsync(id);
 

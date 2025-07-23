@@ -21,10 +21,11 @@
         </div>
 
         <br />
+
         <div class="form-group">
             <label asp-for="EmailTemplate" class="control-label"></label>
             <div class="col-md-10">
-                <input asp-for="EmailTemplate" class="form-control" />
+                <textarea asp-for="EmailTemplate" rows="8" class="form-control"></textarea>
                 <span asp-validation-for="EmailTemplate" class="text-danger"></span>
             </div>
         </div>

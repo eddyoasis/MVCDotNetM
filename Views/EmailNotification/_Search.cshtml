@@ -15,8 +15,8 @@
                     <th>Email Template</th>
                     <th>CreatedBy</th>
                     <th>CreatedAt</th>
-                    <th>ModifiedBy</th>
-                    <th>ModifiedAt</th>
+                    @* <th>ModifiedBy</th>
+                    <th>ModifiedAt</th> *@
                     <th>Actions</th>
                 </tr>
             </thead>
@@ -29,12 +29,14 @@
                         <td>@item.EmailTemplate</td>
                         <td>@item.CreatedBy</td>
                         <td>@item.CreatedAt</td>
-                        <td>@item.ModifiedBy</td>
-                        <td>@item.ModifiedAt</td>
-                        <td class="text-right">
-                            <button class="btn btn-sm btn-warning btn-edit" data-id="@item.ID">Edit</button>
-                            <button class="btn btn-sm btn-info btn-detail" data-id="@item.ID">Details</button>
-                            <button class="btn btn-sm btn-danger btn-delete" data-id="@item.ID">Delete</button>
+                       @*  <td>@item.ModifiedBy</td>
+                        <td>@item.ModifiedAt</td> *@
+                        <td>
+                            <div class="d-flex gap-1">
+                                <button class="btn btn-sm btn-warning btn-edit" data-id="@item.ID">Edit</button>
+                                <button class="btn btn-sm btn-info btn-detail" data-id="@item.ID">Details</button>
+                                <button class="btn btn-sm btn-danger btn-delete" data-id="@item.ID">Delete</button>
+                            </div>
                         </td>
                     </tr>
                 }
@@ -68,7 +70,7 @@ else
 
 <!-- Edit Modal Container -->
 <div class="modal fade" id="editModal" tabindex="-1" role="dialog" aria-hidden="true">
-    <div class="modal-dialog">
+    <div class="modal-dialog modal-lg">
         <div class="modal-content">
         </div>
     </div>
@@ -76,7 +78,7 @@ else
 
 <!-- Detail Modal Container -->
 <div class="modal fade" id="detailModal" tabindex="-1" role="dialog" aria-hidden="true">
-    <div class="modal-dialog">
+    <div class="modal-dialog modal-lg">
         <div class="modal-content">
         </div>
     </div>
@@ -84,7 +86,7 @@ else
 
 <!-- Delete Modal Container -->
 <div class="modal fade" id="deleteModal" tabindex="-1" role="dialog" aria-hidden="true">
-    <div class="modal-dialog">
+    <div class="modal-dialog modal-lg">
         <div class="modal-content">
         </div>
     </div>

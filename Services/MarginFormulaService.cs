@@ -29,7 +29,8 @@ namespace MVCWebApp.Services
             marginFormulas = marginFormulas.Where(x =>
                 (req.MarginType.IsNullOrEmpty() || x.MarginType.ToLower().Contains(req.MarginType.ToLower())) &&
                 (req.MarginFormula.IsNullOrEmpty() || x.Formula.ToLower().Contains(req.MarginFormula.ToLower()))
-            );
+            )
+            .OrderByDescending(x => (x.ModifiedAt ?? x.CreatedAt));
 
             var searchReq = _mapper.MapDto<MarginFormulaSearchReq, BaseSearchReq>(req);
 

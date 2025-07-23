@@ -34,23 +34,22 @@ namespace MVCWebApp.Services
 
             try
             {
-                // Use 'using' statements to ensure proper disposal of MailMessage and SmtpClient
-                // This is the modern and recommended way to handle IDisposable objects
                 using MailMessage mailMessage = new();
-                // Set sender and recipient addresses
-                mailMessage.From = new MailAddress(senderEmail);
 
+                mailMessage.From = new MailAddress(senderEmail);
                 mailMessage.To.AddRange(recipientEmails.Select(e => new MailAddress(e)));
-                //recipientEmails.ForEach(x => mailMessage.To.Add(x));
-                //mailMessage.To.Add(recipientEmails);
 
                 // Set subject (optional)
                 mailMessage.Subject = emailSubject;
 
                 // Configure email body
-                mailMessage.IsBodyHtml = true; // Set to true if your body content is HTML
+                //mailMessage.IsBodyHtml = true; // Set to true if your body content is HTML
+                mailMessage.IsBodyHtml = false;
                 mailMessage.Priority = MailPriority.High; // Set email priority
-                mailMessage.Body = strMailBody; // Assign the body content
+                //mailMessage.Body = strMailBody; // Assign the body content
+
+                string formattedMessage = strMailBody.Replace("    ", Environment.NewLine + Environment.NewLine);
+                mailMessage.Body = formattedMessage;
 
                 using SmtpClient smtpClient = new(smtpHost);
 
