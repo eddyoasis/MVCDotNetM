@@ -20,7 +20,7 @@ namespace MVCWebApp.Repositories
         {
             var updateCount = await _context
                 .Database
-                .ExecuteSqlRawAsync($"EXECUTE dbo.USP_MarginCall_Update_MarginCallFlag @PortfolioID={portfolioID}");
+                .ExecuteSqlRawAsync($"EXECUTE dbo.USP_MarginCall_Update_MarginCallFlag @PortfolioID='{portfolioID}'");
 
             return updateCount == 1;
         }

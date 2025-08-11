@@ -39,7 +39,8 @@ namespace MVCWebApp.Controllers
                 VM_Ccy = vmCcy,
                 EODTriggerFlag = yesNoEnum,
                 MarginCallFlag = yesNoEnum,
-                MTMTriggerFlag = yesNoEnum
+                MTMTriggerFlag = yesNoEnum,
+                SelectedMarginCallFlag = 2
             });
         }
 

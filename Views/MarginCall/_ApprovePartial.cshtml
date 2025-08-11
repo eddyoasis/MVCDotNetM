@@ -113,12 +113,12 @@
             </select>
         </div>
 
-@*         <div class="form-group mt-3">
+        <div class="form-group mt-3">
             <label asp-for="EmailTemplateSubject" class="control-label"></label>
             <div class="col-md-10">
                 <input asp-for="EmailTemplateSubject" class="form-control" />
             </div>
-        </div> *@
+        </div>
 
         <div class="form-group mt-3">
             <label asp-for="EmailTemplateValue" class="control-label"></label>
@@ -135,6 +135,12 @@
 <script>
     $(document).ready(function () {
 
+        var marginCallModel = @Html.Raw(System.Text.Json.JsonSerializer.Serialize(Model));
+
+        function parseTemplate(template, model) {
+            return template.replace(/@@(\w+)/g, (_, key) => model[key] || `@@${key}`);
+        }
+
         // Create a dictionary of text-to-value pairs
         const templateMap = @Html.Raw(Json.Serialize(
             Model.EmailTemplateList.ToDictionary(x => x.Text, x => x.Value)
@@ -142,16 +148,33 @@
 
         const dropdown = document.getElementById('EmailTemplateList');
         const textbox = document.getElementById('EmailTemplateValue');
-        // const textSubject = document.getElementById('EmailTemplateSubject');
+        const textSubject = document.getElementById('EmailTemplateSubject');
 
         // Set initial textbox value
         textbox.value = templateMap[dropdown.options[dropdown.selectedIndex].text] || '';
-        // textSubject.value = templateMap[dropdown.options[dropdown.selectedIndex].text] || '';
+        textSubject.value = dropdown.options[dropdown.selectedIndex].text || '';
 
         // Update on change
         $(document).on("change", "#EmailTemplateList", function (e) {
             const selectedText = this.options[this.selectedIndex].text;
             textbox.value = templateMap[selectedText] || '';
+
+            const selectedSubject = this.options[this.selectedIndex].text;
+            textSubject.value = selectedSubject || '';
+
+            const template = textbox.value;
+            const model = {
+                PortfolioID: marginCallModel.PortfolioID,
+                ccy: marginCallModel.VM_Ccy,
+                Collateral: marginCallModel.Collateral,
+                Percentages: marginCallModel.Percentages
+            };
+            const result = parseTemplate(template, model);
+            textbox.value = result;
+
+            const template2 = textSubject.value;
+            const result2 = parseTemplate(template2, model);
+            textSubject.value = result2;
         });
     });
 </script>

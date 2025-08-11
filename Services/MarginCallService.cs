@@ -35,7 +35,7 @@ namespace MVCWebApp.Services
             if (isSuccess)
             {
                 var recipient = "eddy.wang@kgi.com";
-                var subject = "Title margin call";
+                var subject = model.EmailTemplateSubject;
                 var body = model.EmailTemplateValue;
 
                 await _taskQueueService.AddSendEmailQueue(recipient, subject, body);
@@ -89,7 +89,7 @@ namespace MVCWebApp.Services
                 (req.Selected_VM_Ccy == "All" || req.Selected_VM_Ccy == x.VM_Ccy) &&
                 (req.SelectedMarginCallFlag == 0 ||
                     (req.SelectedMarginCallFlag == 1 && x.MarginCallFlag == "Y") ||
-                    (req.SelectedMarginCallFlag == 2 && x.MarginCallFlag == null)) &&
+                    (req.SelectedMarginCallFlag == 2 && x.MarginCallFlag == "N")) &&
                 (req.SelectedMTMTriggerFlag == 0 ||
                     (req.SelectedMTMTriggerFlag == 1 && x.MTMTriggerFlag == true) ||
                     (req.SelectedMTMTriggerFlag == 2 && (x.MTMTriggerFlag == null || x.MTMTriggerFlag == false))) &&
