@@ -35,12 +35,18 @@
 
         <div class="d-flex gap-1">
             <div class="form-group">
-                <label for="MarginType">MarginType</label>
-                <input type="text" name="MarginType" id="MarginType" class="form-control" value="@Model?.MarginType" placeholder="Enter Margin Type">
+                <label asp-for="TypeSelections" class="control-label"></label>
+                    <select id="optionTypeSelections" class="form-control" asp-items="@Model?.TypeSelections">
+                    </select>
+                <input asp-for="Type" class="form-control" hidden />
             </div>
             <div class="form-group">
-                <label for="MarginFormula">MarginFormula</label>
-                <input type="text" name="MarginFormula" id="MarginFormula" class="form-control" value="@Model?.MarginFormula" placeholder="Enter Margin Formula">
+                <label for="MarginType">Name</label>
+                <input type="text" name="FormulaName" id="FormulaName" class="form-control" value="@Model?.Name" placeholder="Enter Name">
+            </div>
+            <div class="form-group">
+                <label for="MarginFormula">Formula</label>
+                <input type="text" name="Formula" id="Formula" class="form-control" value="@Model?.Formula" placeholder="Enter Formula">
             </div>
             <div class="form-group">
                 <label for="CreatedBy">CreatedBy</label>
@@ -175,11 +181,7 @@
             $(document).on("click", "#btnCurrentMonth", function (e) {
 
                 let [year, month] = $("#dateTimeFrom").val().split("-");
-                console.log(year);
-                console.log(month);
-
                 let previousMonth = new Date(year, month - 2, 1); // -2 because months are 0-based
-                console.log(previousMonth);
 
                 let now = new Date();
                 let firstDay = new Date(now.getFullYear(), now.getMonth(), 1).toLocaleDateString('en-CA'); // YYYY-MM-DD format;
@@ -264,8 +266,10 @@
                 const selectedDateType = $('input[name="dateType"]:checked').val();
 
                 var requestData = {
-                    MarginType: $("#MarginType").val(),
-                    MarginFormula: $("#MarginFormula").val(),
+                    Name: $("#FormulaName").val(),
+                    Formula: $("#Formula").val(),
+
+                    Type: $("#optionTypeSelections").val(),
 
                     CreatedBy: $("#CreatedBy").val(),
                     ModifiedBy: $("#ModifiedBy").val(),
@@ -426,8 +430,8 @@
 
             function clearSearchFields() {
 
-                $("#MarginType").val('');
-                $("#MarginFormula").val('');
+                $("#FormulaName").val('');
+                $("#Formula").val('');
                 $("#CreatedBy").val('');
                 $("#ModifiedBy").val('');
 

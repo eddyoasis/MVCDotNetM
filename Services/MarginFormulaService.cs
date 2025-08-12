@@ -27,8 +27,9 @@ namespace MVCWebApp.Services
             var marginFormulas = _marginFormulaRepository.GetAllQueryable();
 
             marginFormulas = marginFormulas.Where(x =>
-                (req.MarginType.IsNullOrEmpty() || x.MarginType.ToLower().Contains(req.MarginType.ToLower())) &&
-                (req.MarginFormula.IsNullOrEmpty() || x.Formula.ToLower().Contains(req.MarginFormula.ToLower()))
+                (req.Type == 0 || req.Type == x.Type) &&
+                (req.Name.IsNullOrEmpty() || x.Name.ToLower().Contains(req.Name.ToLower())) &&
+                (req.Formula.IsNullOrEmpty() || x.Formula.ToLower().Contains(req.Formula.ToLower()))
             )
             .OrderByDescending(x => (x.ModifiedAt ?? x.CreatedAt));
 

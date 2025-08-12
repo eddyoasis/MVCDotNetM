@@ -1,8 +1,13 @@
-﻿namespace MVCWebApp.Models.MarginFormulas
+﻿using Microsoft.AspNetCore.Mvc.Rendering;
+
+namespace MVCWebApp.Models.MarginFormulas
 {
     public class MarginFormulaSearchReq : BaseSearchReq
     {
-        public string MarginType { get; set; }
-        public string MarginFormula { get; set; }
+        public string Name { get; set; }
+        public string Formula { get; set; }
+
+        public List<SelectListItem> TypeSelections { get; set; }
+        public int Type { get; set; }
     }
 }

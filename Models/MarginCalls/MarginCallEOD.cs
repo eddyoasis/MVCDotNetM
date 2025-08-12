@@ -1,10 +1,9 @@
-﻿using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
+﻿using System.ComponentModel.DataAnnotations.Schema;
 
 namespace MVCWebApp.Models.MarginCalls
 {
-    [Table("TBL_MarginCall")]
-    public class MarginCall
+    [Table("TBL_MarginCall_EOD")]
+    public class MarginCallEOD
     {
         //[Key]
         //public int ID { get; set; }
@@ -27,22 +26,7 @@ namespace MVCWebApp.Models.MarginCalls
         public string Day { get; set; }
     }
 
-    public class MarginCallDto
+    public class MarginCallEODDto : MarginCallDto
     {
-
-        public string PortfolioID { get; set; }
-        public double Percentages { get; set; }
-        public double Collateral { get; set; }
-        public string Collateral_Ccy { get; set; }
-        public double VM { get; set; }
-        public string VM_Ccy { get; set; }
-        public double IM { get; set; }
-        public string IM_Ccy { get; set; }
-        public double MarginCallAmount { get; set; }
-        public string? Type { get; set; }
-        public string? Remarks { get; set; }
-        public DateTime InsertedDatetime { get; set; }
-        public DateTime? ModifiedDatetime { get; set; }
-        public string Day { get; set; }
     }
 }

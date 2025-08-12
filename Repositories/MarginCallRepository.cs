@@ -1,13 +1,27 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using MVCWebApp.Data;
+using MVCWebApp.Enums;
 using MVCWebApp.Models.MarginCalls;
 
 namespace MVCWebApp.Repositories
 {
     public interface IMarginCallRepository : IGenericRepository<MarginCall>
     {
-        Task<bool> ApproveWithSP(string portfolioID);
-        Task<MarginCall> GetByPortfolioID(string portfolioID);
+        Task<bool> ApproveMarginCallMTM(string portfolioID);
+        IEnumerable<MarginCallDto> GetMarginCallMTM(MarginCallMode mode);
+        MarginCallDto GetMarginCallMTM(string portfolioID);
+
+        Task<bool> ApproveMarginCallEOD(string portfolioID);
+        IEnumerable<MarginCallDto> GetMarginCallEOD(MarginCallMode mode);
+        MarginCallDto GetMarginCallEOD(string portfolioID);
+
+        //Task<bool> ApproveWithSP(string portfolioID);
+        //Task<MarginCall> GetByPortfolioID(string portfolioID);
+
+        Task<IEnumerable<string>> GetAllCollateralCcyMTM();
+        Task<IEnumerable<string>> GetAllIMCcyMTM();
+        Task<IEnumerable<string>> GetAllVMCcyMTM();
+
         Task<IEnumerable<string>> GetAllCollateralCcy();
         Task<IEnumerable<string>> GetAllIMCcy();
         Task<IEnumerable<string>> GetAllVMCcy();
@@ -16,6 +30,131 @@ namespace MVCWebApp.Repositories
     public class MarginCallRepository
         (ApplicationDbContext _context) : GenericRepository<MarginCall>(_context), IMarginCallRepository
     {
+        /*-------------------------------------------------    MTM     ----------*/
+        public async Task<bool> ApproveMarginCallMTM(string portfolioID)
+        {
+            var updateCount = await _context
+                .Database
+                .ExecuteSqlRawAsync($"exec [dbo].[USP_MarginCall_MTM_Eddy_Update] @PortfolioID='{portfolioID}'");
+
+            return updateCount == 1;
+        }
+
+        public IEnumerable<MarginCallDto> GetMarginCallMTM(MarginCallMode mode)
+        {
+            var result = _context.MarginCallMTM
+               .FromSqlInterpolated($"exec [dbo].[USP_MarginCall_MTM_Eddy] @Mode={(int)mode}")
+               .AsEnumerable()
+               .Select(x => new MarginCallDto
+               {
+                   VM = double.TryParse(x.VM, out var vm) ? vm : 0.0,
+                   IM = double.TryParse(x.IM, out var im) ? im : 0.0,
+                   Percentages = double.TryParse(x.Percentages.Replace("%", ""), out var percentages) ? percentages : 0.0,
+                   Collateral = double.TryParse(x.Collateral, out var collateral) ? collateral : 0.0,
+                   IM_Ccy = x.IM_Ccy,
+                   Collateral_Ccy = x.Collateral_Ccy,
+                   InsertedDatetime = x.InsertedDatetime,
+                   ModifiedDatetime = x.ModifiedDatetime,
+                   PortfolioID = x.PortfolioID,
+                   Remarks = x.Remarks,
+                   Type = x.Type,
+                   VM_Ccy = x.VM_Ccy,
+                   MarginCallAmount = x.MarginCallAmount
+               });
+
+            return result;
+        }
+
+        public MarginCallDto GetMarginCallMTM(string portfolioID)
+        {
+            var result = _context.MarginCallMTM
+               .FromSqlInterpolated($"exec [dbo].[USP_MarginCall_MTM_Eddy_ID] @PortfolioID={portfolioID}")
+               .AsEnumerable()
+               .Select(x => new MarginCallDto
+               {
+                   VM = double.TryParse(x.VM, out var vm) ? vm : 0.0,
+                   IM = double.TryParse(x.IM, out var im) ? im : 0.0,
+                   Percentages = double.TryParse(x.Percentages.Replace("%", ""), out var percentages) ? percentages : 0.0,
+                   Collateral = double.TryParse(x.Collateral, out var collateral) ? collateral : 0.0,
+                   IM_Ccy = x.IM_Ccy,
+                   Collateral_Ccy = x.Collateral_Ccy,
+                   InsertedDatetime = x.InsertedDatetime,
+                   ModifiedDatetime = x.ModifiedDatetime,
+                   PortfolioID = x.PortfolioID,
+                   Remarks = x.Remarks,
+                   Type = x.Type,
+                   VM_Ccy = x.VM_Ccy,
+                   MarginCallAmount = x.MarginCallAmount
+               })
+               .FirstOrDefault();
+
+            return result;
+        }
+
+        /*-------------------------------------------------    EOD     ----------*/
+        public async Task<bool> ApproveMarginCallEOD(string portfolioID)
+        {
+            var updateCount = await _context
+                .Database
+                .ExecuteSqlRawAsync($"exec [dbo].[USP_MarginCall_EOD_Eddy_Update] @PortfolioID='{portfolioID}'");
+
+            return updateCount == 1;
+        }
+
+        public IEnumerable<MarginCallDto> GetMarginCallEOD(MarginCallMode mode)
+        {
+            var result = _context.MarginCallEOD
+               .FromSqlInterpolated($"exec [dbo].[USP_MarginCall_EOD_Eddy] @Mode={(int)mode}")
+               .AsEnumerable()
+               .Select(x => new MarginCallDto
+               {
+                   VM = double.TryParse(x.VM, out var vm) ? vm : 0.0,
+                   IM = double.TryParse(x.IM, out var im) ? im : 0.0,
+                   Percentages = double.TryParse(x.Percentages.Replace("%", ""), out var percentages) ? percentages : 0.0,
+                   Collateral = double.TryParse(x.Collateral, out var collateral) ? collateral : 0.0,
+                   IM_Ccy = x.IM_Ccy,
+                   Collateral_Ccy = x.Collateral_Ccy,
+                   InsertedDatetime = x.InsertedDatetime,
+                   ModifiedDatetime = x.ModifiedDatetime,
+                   PortfolioID = x.PortfolioID,
+                   Remarks = x.Remarks,
+                   Type = x.Type,
+                   VM_Ccy = x.VM_Ccy,
+                   MarginCallAmount = x.MarginCallAmount,
+                   Day = x.Day
+               });
+
+            return result;
+        }
+
+        public MarginCallDto GetMarginCallEOD(string portfolioID)
+        {
+            var result = _context.MarginCallEOD
+               .FromSqlInterpolated($"exec [dbo].[USP_MarginCall_EOD_Eddy_ID] @PortfolioID={portfolioID}")
+               .AsEnumerable()
+               .Select(x => new MarginCallDto
+               {
+                   VM = double.TryParse(x.VM, out var vm) ? vm : 0.0,
+                   IM = double.TryParse(x.IM, out var im) ? im : 0.0,
+                   Percentages = double.TryParse(x.Percentages.Replace("%", ""), out var percentages) ? percentages : 0.0,
+                   Collateral = double.TryParse(x.Collateral, out var collateral) ? collateral : 0.0,
+                   IM_Ccy = x.IM_Ccy,
+                   Collateral_Ccy = x.Collateral_Ccy,
+                   InsertedDatetime = x.InsertedDatetime,
+                   ModifiedDatetime = x.ModifiedDatetime,
+                   PortfolioID = x.PortfolioID,
+                   Remarks = x.Remarks,
+                   Type = x.Type,
+                   VM_Ccy = x.VM_Ccy,
+                   MarginCallAmount = x.MarginCallAmount,
+                   Day = x.Day
+               })
+               .FirstOrDefault();
+
+            return result;
+        }
+
+        /*-------------------------------------------------    General     ----------*/
         public async Task<bool> ApproveWithSP(string portfolioID)
         {
             var updateCount = await _context
@@ -27,6 +166,27 @@ namespace MVCWebApp.Repositories
 
         public async Task<MarginCall> GetByPortfolioID(string portfolioID) =>
             await _context.MarginCall.FirstOrDefaultAsync(x => x.PortfolioID == portfolioID);
+
+        public async Task<IEnumerable<string>> GetAllCollateralCcyMTM() =>
+            await _context.MarginCallMTM
+                .Select(x => x.Collateral_Ccy)
+                .Distinct()
+                .Where(ccy => !string.IsNullOrEmpty(ccy))
+                .ToListAsync();
+
+        public async Task<IEnumerable<string>> GetAllIMCcyMTM() =>
+            await _context.MarginCallMTM
+                .Select(x => x.IM_Ccy)
+                .Distinct()
+                .Where(ccy => !string.IsNullOrEmpty(ccy))
+                .ToListAsync();
+
+        public async Task<IEnumerable<string>> GetAllVMCcyMTM() =>
+            await _context.MarginCallMTM
+                .Select(x => x.VM_Ccy)
+                .Distinct()
+                .Where(ccy => !string.IsNullOrEmpty(ccy))
+                .ToListAsync();
 
         public async Task<IEnumerable<string>> GetAllCollateralCcy() =>
             await _context.MarginCall

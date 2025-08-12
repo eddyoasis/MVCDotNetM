@@ -6,10 +6,13 @@ namespace MVCWebApp.ViewModels
     {
         public int ID { get; set; }
 
-        [Display(Name = "Margin Type")]
-        public string MarginType { get; set; }
+        [Display(Name = "Type")]
+        public string Type { get; set; }
 
-        [Display(Name = "Margin Formula")]
+        [Display(Name = "Name")]
+        public string Name { get; set; }
+
+        [Display(Name = "Formula")]
         public string Formula { get; set; }
 
         [Display(Name = "Created By")]

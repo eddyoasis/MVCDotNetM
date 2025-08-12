@@ -1,7 +1,7 @@
 ﻿@model MarginCallSearchReq
 
 @{
-    ViewBag.Title = "Manage Margin Call";
+    ViewBag.Title = "Manage Margin Call(MTM)";
 }
 
 @section scripts {
@@ -36,10 +36,17 @@
                 <label>PortfolioID</label>
                 <input type="text" name="PortfolioID" id="PortfolioID" class="form-control" value="@Model?.PortfolioID" placeholder="Enter PortfolioID">
             </div>
-           @*  <div class="form-group mt-2">
-                <label>Percentages</label>
-                <input type="number" name="Percentages" id="Percentages" class="form-control" value="@Model?.Percentages" placeholder="Enter Percentages">
-            </div> *@
+            <div class="form-group mt-2">
+                <label>Percentages(From)</label>
+                <input type="number" name="PercentagesFrom" id="PercentagesFrom" class="form-control" value="@Model?.PercentagesFrom" placeholder="Enter Percentages(From)">
+            </div>
+            <div class="form-group mt-2">
+                <label>Percentages(To)</label>
+                <input type="number" name="PercentagesTo" id="PercentagesTo" class="form-control" value="@Model?.PercentagesTo" placeholder="Enter Percentages(To)">
+            </div>
+        </div>
+
+        <div class="d-flex flex-wrap gap-2">
             <div class="form-group mt-2">
                 <label>Collateral</label>
                 <input type="number" name="Collateral" id="Collateral" class="form-control" value="@Model?.Collateral" placeholder="Enter Collateral">
@@ -52,10 +59,9 @@
                 <label>IM</label>
                 <input type="number" name="IM" id="IM" class="form-control" value="@Model?.IM" placeholder="Enter IM">
             </div>
-
         </div>
 
-        <div class="d-flex flex-wrap gap-2">
+        <div class="d-flex flex-wrap gap-2 d-none"> @*Hidden*@
             <div class="form-group mt-2">
                 <label>Type</label>
                 <input type="text" name="Type" id="Type" class="form-control" value="@Model?.Type" placeholder="Enter Type">
@@ -66,7 +72,7 @@
             </div>
         </div>
 
-        <div class="d-flex flex-wrap gap-2">
+        <div class="d-flex flex-wrap gap-2 d-none"> @*Hidden*@
             <div class="form-group mt-2">
                 <label class="mr-2">Collateral_Ccy</label>
                 <select id="optionCollateral_Ccy" class="form-control" asp-items="@Model?.Collateral_Ccy">
@@ -84,7 +90,7 @@
             </div>
         </div>
 
-        <div class="d-flex flex-wrap gap-2">
+        @* <div class="d-flex flex-wrap gap-2">
             <div class="form-group mt-2">
                 <label class="mr-2">MarginCallFlag</label>
                 <select id="optionMarginCallFlag" class="form-control" asp-items="@Model?.MarginCallFlag">
@@ -100,9 +106,9 @@
                 <select id="optionMTMTriggerFlag" class="form-control" asp-items="@Model?.MTMTriggerFlag">
                 </select>
             </div>
-        </div>
+        </div> *@
 
-        <div class="d-flex gap-1 mt-2">
+        <div class="d-flex gap-1 mt-2 d-none"> @*Hidden*@
             <div class="form-group">
                 <label>Select Date Type</label>
                 <div class="d-flex gap-1">
@@ -122,7 +128,7 @@
             </div>
         </div>
 
-        <div class="d-flex flex-wrap gap-1 mt-2">
+        <div class="d-flex flex-wrap gap-1 mt-2 d-none"> @*Hidden*@
             <div class="form-group">
                 <label>From Date</label>
                 <input type="date" id="dateTimeFrom" class="form-control">
@@ -204,6 +210,51 @@
 
     <hr> <!-- Divider -->
 
+    <div class="d-flex flex-wrap gap-2">
+
+        <section class="p-2 border rounded bg-white shadow-sm">
+            <div class="form-group mt-2">
+                <div class="d-flex gap-1">
+                    <div class="form-check">
+                        <input class="form-check-input" type="radio" id="marginModeAll" name="marginMode" value=1 checked>
+                        <label class="form-check-label" for="marginModeAll">All</label>
+                    </div>
+                    <div class="form-check">
+                        <input class="form-check-input" type="radio" id="marginModeTriggered" name="marginMode" value=2>
+                        <label class="form-check-label" for="marginModeTriggered">Triggered Today</label>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="p-2 border rounded bg-white shadow-sm">
+
+            <div class="d-flex flex-wrap gap-2">
+                <div class="form-group mt-2">
+                    <label>Order by</label>
+                </div>
+                <div class="form-group">
+                    <select id="optionMarginCallOrderByColumns" class="form-control" asp-items="@Model?.MarginCallOrderByColumns">
+                    </select>
+                </div>
+                <div class="form-group mt-2">
+                    <div class="d-flex gap-1">
+                        <div class="form-check">
+                            <input class="form-check-input" type="radio" id="asc" name="oderByType" value=1 checked>
+                            <label class="form-check-label" for="asc">Asc</label>
+                        </div>
+                        <div class="form-check">
+                            <input class="form-check-input" type="radio" id="desc" name="oderByType" value=2>
+                            <label class="form-check-label" for="desc">Desc</label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <hr> <!-- Divider -->
+
     <section id="results" class="p-4 border rounded bg-white shadow-sm">
         <div id="results">
         </div>
@@ -211,6 +262,37 @@
 
     <script>
         $(document).ready(function () {       
+            /*-------------------------- margin mode */
+            $(document).on("change", "#marginModeAll", function (e) {
+                event.preventDefault();
+
+                postSearchMarginCalls(1)
+            });
+
+            $(document).on("change", "#marginModeTriggered", function (e) {
+                event.preventDefault();
+
+                postSearchMarginCalls(1)
+            });
+
+            /*-------------------------- Order by changes */
+            $(document).on("change", "#optionMarginCallOrderByColumns", function (e) {
+                event.preventDefault();
+
+                postSearchMarginCalls(1)
+            });
+
+            $(document).on("change", "#asc", function (e) {
+                event.preventDefault();
+
+                postSearchMarginCalls(1)
+            });
+
+            $(document).on("change", "#desc", function (e) {
+                event.preventDefault();
+
+                postSearchMarginCalls(1)
+            });
 
             /*-------------------------- Show Hide Search */
             $(document).on("click", "#btnShowHideSearch", function (e) {
@@ -314,22 +396,29 @@
             function postSearchMarginCalls(pageNumber) {
 
                 const selectedDateType = $('input[name="dateType"]:checked').val();
+                const selectedOderByType = $('input[name="oderByType"]:checked').val();
+                const selectedMarginMode = $('input[name="marginMode"]:checked').val();
 
                 var requestData = {
                     PortfolioID: $("#PortfolioID").val(),
-                    Percentages: $("#PercentagesFrom").val() || 0,
-                    Percentages: $("#PercentagesTo").val() || 0,
+                    PercentagesFrom: $("#PercentagesFrom").val() || 0,
+                    PercentagesTo: $("#PercentagesTo").val() || 0,
                     Collateral: $("#Collateral").val() || 0,
                     Selected_Collateral_Ccy: $("#optionCollateral_Ccy").val(),
                     VM: $("#VM").val() || 0,
                     Selected_VM_Ccy: $("#optionVM_Ccy").val(),
                     IM: $("#IM").val() || 0,
                     Selected_IM_Ccy: $("#optionIM_Ccy").val(),
-                    SelectedMarginCallFlag: $("#optionMarginCallFlag").val(),
-                    SelectedEODTriggerFlag: $("#optionEODTriggerFlag").val(),
-                    SelectedMTMTriggerFlag: $("#optionMTMTriggerFlag").val(),
+                    // SelectedMarginCallFlag: $("#optionMarginCallFlag").val(),
+                    // SelectedEODTriggerFlag: $("#optionEODTriggerFlag").val(),
+                    // SelectedMTMTriggerFlag: $("#optionMTMTriggerFlag").val(),
                     Type: $("#Type").val(),
                     Remarks: $("#Remarks").val(),
+
+                    SearchByOrderByType: selectedOderByType,
+                    Selected_MarginCallOrderByColumn: $("#optionMarginCallOrderByColumns").val(),
+
+                    Selected_MarginMode: selectedMarginMode,
 
                     SearchByDateType:
                         selectedDateType === 'AllDatetime' ? 1 :
@@ -343,7 +432,7 @@
                 };
 
                 $.ajax({
-                    url: "/MarginCall/SearchMarginCalls",
+                    url: "/MarginCallMTM/SearchMarginCalls",
                     type: "POST",
                     contentType: "application/json",
                     data: JSON.stringify(requestData),
@@ -362,7 +451,7 @@
             $(document).on("click", ".btn-approve", function (e) {
                 e.preventDefault();
                 var entityId = $(this).data("id");
-                $.get("/MarginCall/Approve", { id: entityId }, function (data) {
+                $.get("/MarginCallMTM/Approve", { id: entityId }, function (data) {
                     $("#approveModal .modal-content").html(data);
                     $("#approveModal").modal("show");
                 });
@@ -394,7 +483,7 @@
             $(document).on("click", ".btn-reject", function (e) {
                 e.preventDefault();
                 var entityId = $(this).data("id");
-                $.get("/MarginCall/Reject", { id: entityId }, function (data) {
+                $.get("/MarginCallMTM/Reject", { id: entityId }, function (data) {
                     $("#rejectModal .modal-content").html(data);
                     $("#rejectModal").modal("show");
                 });
@@ -504,7 +593,7 @@
             $(document).on("click", ".btn-detail", function (e) {
                 e.preventDefault();
                 var entityId = $(this).data("id");
-                $.get("/MarginCall/Details", { id: entityId }, function (data) {
+                $.get("/MarginCallMTM/Details", { id: entityId }, function (data) {
                     $("#detailModal .modal-content").html(data);
                     $("#detailModal").modal("show");
                 });
@@ -549,16 +638,18 @@
             });
 
             function clearSearchFields() {
-                $("#ClientCode").val('');
-                $("#LedgerBal").val('');
-                $("#TNE").val('');
-                $("#IM").val('');
+                $("#PortfolioID").val('');
                 $("#PercentagesFrom").val(0);
                 $("#PercentagesTo").val(0);
-                $("#optionCcyCode").val(0);
-                $("#TypeOfMarginCall").val('');
-                $("#OrderDetails").val('');
-                $("#optionStatus").val(0);
+                $("#Collateral").val(0);
+                $("#Collateral").val(0);
+                $("#optionCollateral_Ccy").val('All');
+                $("#VM").val(0);
+                $("#optionVM_Ccy").val('All');
+                $("#IM").val(0);
+                $("#optionIM_Ccy").val('All');
+                $("#Type").val('');
+                $("#Remarks").val('');
 
                 $("#ModifiedBy").val('');
                 $('#createdDate').prop('checked', true);

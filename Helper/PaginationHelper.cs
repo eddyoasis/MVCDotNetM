@@ -115,5 +115,21 @@ namespace MVCWebApp.Helper
 
             return new PaginatedList<TDestination>(mappedItems, count, req.PageNumber, req.PageSize);
         }
+
+        public static PaginatedList<TDestination> GetByPagesIEnumerable<TSource, TDestination>(
+            IEnumerable<TSource> source,
+            IMapModel mapper,
+            BaseSearchReq req = null)
+        {
+            var count = source.Count();
+
+            var items = source.Skip((req.PageNumber - 1) * req.PageSize)
+                                    .Take(req.PageSize)
+                                    .ToList();
+
+            var mappedItems = mapper.MapDto<List<TDestination>>(items);
+
+            return new PaginatedList<TDestination>(mappedItems, count, req.PageNumber, req.PageSize);
+        }
     }
 }

@@ -1,8 +1,9 @@
-﻿@model PaginatedList<MarginFormulaViewModel>
+﻿@model PaginatedList<MarginCallViewModel>
 
 @{
-    ViewBag.Title = "Manage Margin Formula";
+    ViewBag.Title = "Manage Margin Call(MTM)";
     int currentPageSize = ViewData["CurrentPageSize"] as int? ?? Model.PageSize;
+    int isMaginModeAll = (int)ViewData["isMaginModeAll"];
 }
 
 @if (Model != null && Model.Any())
@@ -11,32 +12,57 @@
         <table id="myDataTable" class="table table-striped table-bordered table-hover">
             <thead>
                 <tr>
+                    <th>PortfolioID</th>
+                    <th>Percentages</th>
+                    <th>MarginCallAmount</th>
+                    <th>Collateral</th>
+                    <th>Collateral_Ccy</th>
+                    <th>VM</th>
+                    <th>VM_Ccy</th>
+                    <th>IM</th>
+                    <th>IM_Ccy</th>
+                    @* <th>MarginCallFlag</th>
+                    <th>EODTriggerFlag</th>
+                    <th>MTMTriggerFlag</th>
                     <th>Type</th>
-                    <th>Name</th>
-                    <th>Formula</th>
-                    <th>CreatedBy</th>
-                    <th>CreatedAt</th>
-                 @*    <th>ModifiedBy</th>
-                    <th>ModifiedAt</th> *@
-                    <th>Actions</th>
+                    <th>Remarks</th>
+                    <th>InsertedDatetime</th>
+                    <th>ModifiedDatetime</th> *@
+                    <th>Action</th>
                 </tr>
             </thead>
             <tbody>
                 @foreach (var item in Model)
                 {
                     <tr>
-                        @* <td>@item.ID</td> *@
+                        <td>@item.PortfolioID</td>
+                        <td>@item.Percentages%</td>
+                        <td>@item.MarginCallAmount</td>
+                        <td>@item.Collateral</td>
+                        <td>@item.Collateral_Ccy</td>
+                        <td>@item.VM</td>
+                        <td>@item.VM_Ccy</td>
+@*                         <td style="color: @(item.Status == "Approved" ? "green" : item.Status == "Rejected"?"red":"");">
+                            @item.Status
+                        </td> *@
+                        <td>@item.IM</td>
+                        <td>@item.IM_Ccy</td>
+                        @* <td>@item.MarginCallFlag</td>
+                        <td>@item.EODTriggerFlag</td>
+                        <td>@item.MTMTriggerFlag</td>
                         <td>@item.Type</td>
-                        <td>@item.Name</td>
-                        <td>@item.Formula</td>
-                        <td>@item.CreatedBy</td>
-                        <td>@item.CreatedAt</td>
-                       @*  <td>@item.ModifiedBy</td>
-                        <td>@item.ModifiedAt</td> *@
-                        <td class="text-right">
-                            <button class="btn btn-sm btn-warning btn-edit" data-id="@item.ID">Edit</button>
-                            <button class="btn btn-sm btn-info btn-detail" data-id="@item.ID">Details</button>
-                            <button class="btn btn-sm btn-danger btn-delete" data-id="@item.ID">Delete</button>
+                        <td>@item.Remarks</td>
+                        <td>@item.InsertedDatetime</td>
+                        <td>@item.ModifiedDatetime</td> *@
+                        <td>
+                            <div class="d-flex flex-wrap gap-1">
+                                @if (isMaginModeAll == 1)
+                                {
+                                    <button class="btn btn-sm btn-success btn-approve" data-id="@item.PortfolioID">Approve</button>
+                                }
+                                <button class="btn btn-sm btn-info btn-detail" data-id="@item.PortfolioID">Details</button>
+                            </div>
+                            
                         </td>
                     </tr>
                 }
@@ -45,7 +71,8 @@
 
         <!-- Pagination Links -->
         <ul>
-            <li>Total Pages: <input style="width: 70px;" type="number" id="pageIndexNew" value="@Model.PageIndex" />/@Model.TotalPages
+            <li>
+                Total Pages: <input style="width: 70px;" type="number" id="pageIndexNew" value="@Model.PageIndex" />/@Model.TotalPages
                 <button id="btnGo" class="btn btn-sm btn-warning">Go</button>
                 @if (Model.HasPreviousPage)
                 {
@@ -68,9 +95,25 @@ else
     </div>
 }
 
+<!-- Approve Modal Container -->
+<div class="modal fade" id="approveModal" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+        </div>
+    </div>
+</div>
+
+<!-- Reject Modal Container -->
+<div class="modal fade" id="rejectModal" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+        </div>
+    </div>
+</div>
+
 <!-- Edit Modal Container -->
 <div class="modal fade" id="editModal" tabindex="-1" role="dialog" aria-hidden="true">
-    <div class="modal-dialog">
+    <div class="modal-dialog modal-lg">
         <div class="modal-content">
         </div>
     </div>
@@ -111,15 +154,17 @@ else
             /*========================================== DataTable*/
             var table = $('#myDataTable').DataTable({
                 "columns": [
-                    // { "data": "id" },
-                    { "data": "marginType" },
-                    { "data": "marginFormula" },
-                    { "data": "createdBy" },
-                    { "data": "createdAt" },
-                    { "data": "modifiedBy" },
-                    { "data": "modifiedAt" },
+                    { "data": "CcyCode" },
+                    { "data": "ClientCode" },
+                    { "data": "IM" },
+                    { "data": "LedgerBal" },
+                    { "data": "OrderDetails" },
+                    { "data": "Percentages" },
+                    { "data": "Status" },
+                    { "data": "TimeStemp" },
+                    { "data": "TNE" },
+                    { "data": "TypeOfMarginCall" },
                     { "data": "actionString" },
-                    //{}
                 ],
                 "ordering": true, // Enable sorting
                 "searching": true,  // Enable searching

@@ -1,10 +1,14 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using MVCWebApp.Constants;
+using MVCWebApp.Enums;
+using MVCWebApp.Helper;
 using MVCWebApp.Helper.Mapper;
 using MVCWebApp.Models.MarginFormulas;
 using MVCWebApp.Services;
 using MVCWebApp.ViewModels;
+using System.Collections.Generic;
 
 namespace MVCWebApp.Controllers
 {
@@ -13,9 +17,17 @@ namespace MVCWebApp.Controllers
         IMapModel _mapper
         ) : ControllerBase
     {
+        static readonly List<SelectListItem>  _typeSelections = ConverterHelper.ToSelectList<FormulaTypeEnum>();
+        static readonly List<SelectListItem>  _typeSearchSelections = ConverterHelper.ToSelectList<FormulaTypeSearchEnum>();
+
         public async Task<IActionResult> Index()
         {
-            return View(new MarginFormulaSearchReq { PageNumber = 1, PageSize = AppConstants.DefaultPageSize });
+            return View(new MarginFormulaSearchReq
+            {
+                PageNumber = 1,
+                PageSize = AppConstants.DefaultPageSize,
+                TypeSelections = _typeSearchSelections
+            });
         }
 
         [HttpPost]
@@ -28,7 +40,12 @@ namespace MVCWebApp.Controllers
 
         public IActionResult Create()
         {
-            return PartialView("_CreatePartial", new MarginFormulaAddReq());
+            var req = new MarginFormulaAddReq
+            {
+                TypeSelections = _typeSelections
+            };
+
+            return PartialView("_CreatePartial", req);
         }
 
         [HttpPost]
@@ -55,6 +72,7 @@ namespace MVCWebApp.Controllers
             }
 
             var req = _mapper.MapDto<MarginFormulaEditReq>(entity);
+            req.TypeSelections = _typeSelections;
 
 
             return PartialView("_EditPartial", req);

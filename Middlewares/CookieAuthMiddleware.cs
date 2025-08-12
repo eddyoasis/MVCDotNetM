@@ -52,8 +52,11 @@ namespace MVCWebApp.Middlewares
 
                 if (isAjax)
                 {
-                    context.Response.StatusCode = 401; // Set status code
-                    await context.Response.WriteAsync("Unauthorized"); // Send response message
+                    //context.Response.StatusCode = 401; // Set status code
+                    //await context.Response.WriteAsync("Unauthorized"); // Send response message
+                    //return;
+
+                    context.Response.Redirect("/Login/Index");
                     return;
                 }
                 else

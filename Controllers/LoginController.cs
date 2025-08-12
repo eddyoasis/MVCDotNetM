@@ -1,4 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Options;
+using MVCWebApp.Configurations;
 using MVCWebApp.Helper;
 using MVCWebApp.Services;
 using MVCWebApp.ViewModels;
@@ -6,6 +8,7 @@ using MVCWebApp.ViewModels;
 namespace MVCWebApp.Controllers
 {
     public class LoginController(
+        IOptionsSnapshot<LDAPAppSetting> _ldapAppSetting,
         IAuthService authService,
         ILogger<LoginController> logger) : Controller
     {
@@ -21,7 +24,11 @@ namespace MVCWebApp.Controllers
         [HttpPost]
         public async Task<IActionResult> Login([FromBody] LoginViewModel loginReq)
         {
-            var token = await authService.AuthenticateAndGetUser(loginReq.Username, loginReq.Password);
+            //var token = await authService.AuthenticateAndGetUser(loginReq.Username, loginReq.Password);
+            var token = _ldapAppSetting.Value.IsBypass ?
+                await authService.AuthenticateAndGetUserByPass(loginReq.Username, loginReq.Password):
+                await authService.AuthenticateAndGetUser(loginReq.Username, loginReq.Password);
+
             if (token.IsNotNullOrEmpty())
             {
                 Response.Cookies.Append("AuthToken", token, new CookieOptions

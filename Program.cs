@@ -182,6 +182,6 @@ app.UseAuthorization();
 
 app.MapControllerRoute(
     name: "default",
-    pattern: "{controller=MarginCall}/{action=Index}/{id?}");
+    pattern: "{controller=MarginCallMTM}/{action=Index}/{id?}");
 
 app.Run();

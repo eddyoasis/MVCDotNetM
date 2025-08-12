@@ -12,11 +12,22 @@
         </button>
     </div>
     <div class="modal-body">
-        <div class="form-group">
-            <label asp-for="MarginType" class="control-label"></label>
+
+        <div class="form-group mt-2">
+            <label asp-for="TypeSelections" class="control-label"></label>
             <div class="col-md-10">
-                <input asp-for="MarginType" class="form-control" />
-                <span asp-validation-for="MarginType" class="text-danger"></span>
+                <select id="optionTypeSelections" class="form-control" asp-items="@Model?.TypeSelections">
+                </select>
+            </div>
+            <input asp-for="Type" class="form-control" hidden />
+        </div>
+
+        <br />
+        <div class="form-group">
+            <label asp-for="Name" class="control-label"></label>
+            <div class="col-md-10">
+                <input asp-for="Name" class="form-control" />
+                <span asp-validation-for="Name" class="text-danger"></span>
             </div>
         </div>
 
@@ -34,6 +45,18 @@
         <button type="submit" class="btn btn-warning">Edit</button>
     </div>
 }
+
+<script>
+    $(document).ready(function () {
+
+        $("#optionTypeSelections").val($('#Type').val());
+
+        // Update on change
+        $(document).on("change", "#optionTypeSelections", function (e) {
+            $('#Type').val($("#optionTypeSelections").val())
+        });
+    });
+</script>
 
 @section Scripts {
     @{

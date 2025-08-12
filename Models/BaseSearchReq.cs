@@ -6,6 +6,7 @@
         public int PageSize { get; set; } = 5;
         public bool IsSearchByCreatedDate { get; set; }
         public int SearchByDateType { get; set; }
+        public int SearchByOrderByType { get; set; }
         public DateTime DateFrom { get; set; }
         public DateTime DateTo{ get; set; }
         public string CreatedBy { get; set; }

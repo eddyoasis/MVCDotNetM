@@ -17,11 +17,14 @@ namespace MVCWebApp.Helper.Mapper
             CreateMap<EmailNotification, EmailNotificationViewModel>();
             CreateMap<EmailNotification, EmailNotificationEditReq>();
 
-            CreateMap<MarginFormula, MarginFormulaViewModel>();
+            //CreateMap<MarginFormula, MarginFormulaViewModel>();
+            CreateMap<MarginFormula, MarginFormulaViewModel>()
+                .ForMember(dest => dest.Type, opt => opt.MapFrom(src => GetEnumStringValue<FormulaTypeEnum>(src.Type)));
             CreateMap<MarginFormulaAddReq, MarginFormula>();
             CreateMap<MarginFormula, MarginFormulaEditReq>();
 
             CreateMap<MarginCall, MarginCallViewModel>();
+            CreateMap<MarginCallDto, MarginCallViewModel>();
 
             //CreateMap<MarginCall, MarginCallViewModel>()
             //    .ForMember(dest => dest.CcyCode, opt => opt.MapFrom(src => GetEnumStringValue<CurrencySearchEnum>(src.CcyCode)))

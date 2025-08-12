@@ -1,25 +1,32 @@
-﻿using MVCWebApp.Helper;
+﻿using MVCWebApp.Enums;
+using MVCWebApp.Helper;
 using MVCWebApp.Helper.Mapper;
 using MVCWebApp.Models;
 using MVCWebApp.Models.MarginCalls;
 using MVCWebApp.Repositories;
 using MVCWebApp.ViewModels;
+using System.Linq;
 
 namespace MVCWebApp.Services
 {
     public interface IMarginCallService
     {
-        Task<bool> ApproveWithSP(MarginCallViewModel model);
-        Task<MarginCallViewModel> GetByPortfolioID(string portfolioID);
-        Task<MarginCall> GetEntityByPortfolioID(string portfolioID);
         Task<IEnumerable<string>> GetAllCollateralCcy();
         Task<IEnumerable<string>> GetAllVMCcy();
         Task<IEnumerable<string>> GetAllIMCcy();
-        Task<IEnumerable<MarginCallViewModel>> GetAllAsync(MarginCallSearchReq req);
-        Task<MarginCall?> GetByEntityIdAsync(int id);
-        Task<MarginCallViewModel?> GetByIdAsync(int id);
-        Task<bool> ApproveAsync(MarginCall entity);
-        Task<bool> RejectAsync(MarginCall entity);
+
+        Task<IEnumerable<string>> GetAllCollateralCcyMTM();
+        Task<IEnumerable<string>> GetAllVMCcyMTM();
+        Task<IEnumerable<string>> GetAllIMCcyMTM();
+
+        Task<bool> ApproveMarginCallEOD(MarginCallViewModel model);
+        MarginCallViewModel GetMarginCallEOD(string portfolioID);
+        IEnumerable<MarginCallViewModel> GetMarginCallEODAll(MarginCallSearchReq req);
+
+
+        Task<bool> ApproveMarginCallMTM(MarginCallViewModel model);
+        MarginCallViewModel GetMarginCallMTM(string portfolioID);
+        IEnumerable<MarginCallViewModel> GetMarginCallMTMAll(MarginCallSearchReq req);
     }
 
     public class MarginCallService(
@@ -29,9 +36,37 @@ namespace MVCWebApp.Services
         IMapModel _mapper
         ) : BaseService, IMarginCallService
     {
-        public async Task<bool> ApproveWithSP(MarginCallViewModel model)
+        public MarginCallViewModel GetMarginCallMTM(string portfolioID)
         {
-            var isSuccess = await _marginCallRepository.ApproveWithSP(model.PortfolioID);
+            var entity = _marginCallRepository.GetMarginCallMTM(portfolioID);
+
+            return _mapper.MapDto<MarginCallViewModel>(entity);
+        }
+
+        public async Task<IEnumerable<string>> GetAllCollateralCcyMTM() =>
+            await _marginCallRepository.GetAllCollateralCcyMTM();
+
+        public async Task<IEnumerable<string>> GetAllVMCcyMTM() =>
+            await _marginCallRepository.GetAllVMCcyMTM();
+
+        public async Task<IEnumerable<string>> GetAllIMCcyMTM() =>
+            await _marginCallRepository.GetAllIMCcyMTM();
+
+        public async Task<IEnumerable<string>> GetAllCollateralCcy() =>
+            await _marginCallRepository.GetAllCollateralCcy();
+
+        public async Task<IEnumerable<string>> GetAllVMCcy() =>
+            await _marginCallRepository.GetAllVMCcy();
+
+        public async Task<IEnumerable<string>> GetAllIMCcy() =>
+            await _marginCallRepository.GetAllIMCcy();
+
+
+
+        /*-------------------------------------------------    EOD     ----------*/
+        public async Task<bool> ApproveMarginCallEOD(MarginCallViewModel model)
+        {
+            var isSuccess = await _marginCallRepository.ApproveMarginCallEOD(model.PortfolioID);
             if (isSuccess)
             {
                 var recipient = "eddy.wang@kgi.com";
@@ -43,36 +78,19 @@ namespace MVCWebApp.Services
             return isSuccess;
         }
 
-        public async Task<MarginCallViewModel> GetByPortfolioID(string portfolioID)
+        public MarginCallViewModel GetMarginCallEOD(string portfolioID)
         {
-            var entity = await _marginCallRepository.GetByPortfolioID(portfolioID);
+            var entity = _marginCallRepository.GetMarginCallEOD(portfolioID);
 
             return _mapper.MapDto<MarginCallViewModel>(entity);
         }
 
-        public async Task<MarginCall> GetEntityByPortfolioID(string portfolioID)
+        public IEnumerable<MarginCallViewModel> GetMarginCallEODAll(MarginCallSearchReq req)
         {
-            return await _marginCallRepository.GetByPortfolioID(portfolioID);
-        }
-
-        public async Task<IEnumerable<string>> GetAllCollateralCcy() =>
-            await _marginCallRepository.GetAllCollateralCcy();
-
-        public async Task<IEnumerable<string>> GetAllVMCcy() =>
-            await _marginCallRepository.GetAllVMCcy();
-
-        public async Task<IEnumerable<string>> GetAllIMCcy() =>
-            await _marginCallRepository.GetAllIMCcy();
-
-        public async Task<IEnumerable<MarginCallViewModel>> GetAllAsync(MarginCallSearchReq req)
-        {
-            var marginCalls = _marginCallRepository.GetAllQueryable();
+            var marginCalls = _marginCallRepository.GetMarginCallEOD(
+                req.Selected_MarginMode == 1 ? MarginCallMode.All : MarginCallMode.TriggeredToday);
 
             marginCalls = marginCalls.Where(x =>
-                //((req.DateFrom == DateTime.MinValue || req.DateTo == DateTime.MinValue) ||
-                //    (req.IsSearchByCreatedDate ?
-                //        x.InsertedDatetime >= req.DateFrom && x.InsertedDatetime < req.DateTo.AddDays(1) :
-                //        x.ModifiedDatetime >= req.DateFrom && x.ModifiedDatetime < req.DateTo.AddDays(1))) &&
                 (req.SearchByDateType == 1 ||
                      ((req.DateFrom == DateTime.MinValue || req.DateTo == DateTime.MinValue) ||
                             (req.SearchByDateType == 2 ?
@@ -80,30 +98,42 @@ namespace MVCWebApp.Services
                                     x.ModifiedDatetime >= req.DateFrom && x.ModifiedDatetime < req.DateTo.AddDays(1)))
                 ) &&
                 (req.PortfolioID.IsNullOrEmpty() || x.PortfolioID.ToLower().Contains(req.PortfolioID.ToLower())) &&
-                (req.Percentages <= 0 || x.Percentages == req.Percentages) &&
-                (req.Collateral <= 0 || x.Collateral == req.Collateral) &&
-                (req.VM <= 0 || x.VM == req.VM) &&
-                (req.IM <= 0 || x.VM == req.IM) &&
+                ((req.PercentagesFrom <= 0 && req.PercentagesTo <= 0) ||
+                    ((req.PercentagesFrom > 0 && req.PercentagesTo <= 0) && x.Percentages >= req.PercentagesFrom) ||
+                    ((req.PercentagesFrom <= 0 && req.PercentagesTo > 0) && x.Percentages <= req.PercentagesTo) ||
+                    (x.Percentages >= req.PercentagesFrom && x.Percentages <= req.PercentagesTo)) &&
+                (req.Collateral == 0 || x.Collateral == req.Collateral) &&
+                (req.VM == 0 || x.VM == req.VM) &&
+                (req.IM == 0 || x.VM == req.IM) &&
                 (req.Selected_Collateral_Ccy == "All" || req.Selected_Collateral_Ccy == x.Collateral_Ccy) &&
                 (req.Selected_IM_Ccy == "All" || req.Selected_IM_Ccy == x.IM_Ccy) &&
-                (req.Selected_VM_Ccy == "All" || req.Selected_VM_Ccy == x.VM_Ccy) &&
-                (req.SelectedMarginCallFlag == 0 ||
-                    (req.SelectedMarginCallFlag == 1 && x.MarginCallFlag == "Y") ||
-                    (req.SelectedMarginCallFlag == 2 && x.MarginCallFlag == "N")) &&
-                (req.SelectedMTMTriggerFlag == 0 ||
-                    (req.SelectedMTMTriggerFlag == 1 && x.MTMTriggerFlag == true) ||
-                    (req.SelectedMTMTriggerFlag == 2 && (x.MTMTriggerFlag == null || x.MTMTriggerFlag == false))) &&
-                (req.SelectedEODTriggerFlag == 0 ||
-                    (req.SelectedEODTriggerFlag == 1 && x.EODTriggerFlag == true) ||
-                    (req.SelectedEODTriggerFlag == 2 && (x.EODTriggerFlag == null || x.EODTriggerFlag == false))) &&
-                (req.Type.IsNullOrEmpty() || x.Type.ToLower().Contains(req.Type.ToLower())) &&
-                (req.Remarks.IsNullOrEmpty() || x.Remarks.ToLower().Contains(req.Remarks.ToLower()))
+                (req.Selected_VM_Ccy == "All" || req.Selected_VM_Ccy == x.VM_Ccy)
             );
+
+            if (marginCalls.Any())
+            {
+                Func<MarginCallDto, object> orderSelector = x =>
+                    req.Selected_MarginCallOrderByColumn switch
+                    {
+                        1 => x.PortfolioID,
+                        2 => x.Percentages,
+                        3 => x.MarginCallAmount,
+                        4 => x.Collateral,
+                        5 => x.VM,
+                        6 => x.IM,
+                        7 => x.InsertedDatetime,
+                        _ => x.ModifiedDatetime
+                    };
+
+                marginCalls = req.SearchByOrderByType == 1
+                ? marginCalls.OrderBy(orderSelector)
+                : marginCalls.OrderByDescending(orderSelector);
+            }
 
             var searchReq = _mapper.MapDto<MarginCallSearchReq, BaseSearchReq>(req);
 
-            var paginatedResult = await PaginatedList<MarginCallViewModel>.
-                    GetByPagesAsync<MarginCall, MarginCallViewModel>(
+            var paginatedResult = PaginatedList<MarginCallViewModel>.
+                    GetByPagesIEnumerable<MarginCallDto, MarginCallViewModel>(
                         marginCalls,
                         _mapper,
                         searchReq);
@@ -111,54 +141,125 @@ namespace MVCWebApp.Services
             return paginatedResult;
         }
 
-        public async Task<MarginCall?> GetByEntityIdAsync(int id)
+        /*-------------------------------------------------    MTM     ----------*/
+        public async Task<bool> ApproveMarginCallMTM(MarginCallViewModel model)
         {
-            return await _marginCallRepository.GetByIdAsync(id);
+            var isSuccess = await _marginCallRepository.ApproveMarginCallMTM(model.PortfolioID);
+            if (isSuccess)
+            {
+                var recipient = "eddy.wang@kgi.com";
+                var subject = model.EmailTemplateSubject;
+                var body = model.EmailTemplateValue;
+
+                await _taskQueueService.AddSendEmailQueue(recipient, subject, body);
+            }
+            return isSuccess;
         }
 
-        public async Task<MarginCallViewModel?> GetByIdAsync(int id)
+        public IEnumerable<MarginCallViewModel> GetMarginCallMTMAll(MarginCallSearchReq req)
         {
-            var entity = await _marginCallRepository.GetByIdAsync(id);
+            var marginCalls =  _marginCallRepository.GetMarginCallMTM(
+                req.Selected_MarginMode == 1 ? MarginCallMode.All : MarginCallMode.TriggeredToday);
 
-            return _mapper.MapDto<MarginCallViewModel>(entity);
+            marginCalls = marginCalls.Where(x =>
+                (req.SearchByDateType == 1 ||
+                     ((req.DateFrom == DateTime.MinValue || req.DateTo == DateTime.MinValue) ||
+                            (req.SearchByDateType == 2 ?
+                                    x.InsertedDatetime >= req.DateFrom && x.InsertedDatetime < req.DateTo.AddDays(1) :
+                                    x.ModifiedDatetime >= req.DateFrom && x.ModifiedDatetime < req.DateTo.AddDays(1)))
+                ) &&
+                (req.PortfolioID.IsNullOrEmpty() || x.PortfolioID.ToLower().Contains(req.PortfolioID.ToLower())) &&
+                ((req.PercentagesFrom <= 0 && req.PercentagesTo <= 0) ||
+                    ((req.PercentagesFrom > 0 && req.PercentagesTo <= 0) && x.Percentages >= req.PercentagesFrom) ||
+                    ((req.PercentagesFrom <= 0 && req.PercentagesTo > 0) && x.Percentages <= req.PercentagesTo) ||
+                    (x.Percentages >= req.PercentagesFrom && x.Percentages <= req.PercentagesTo)) &&
+                (req.Collateral == 0 || x.Collateral == req.Collateral) &&
+                (req.VM == 0 || x.VM == req.VM) &&
+                (req.IM == 0 || x.VM == req.IM) &&
+                (req.Selected_Collateral_Ccy == "All" || req.Selected_Collateral_Ccy == x.Collateral_Ccy) &&
+                (req.Selected_IM_Ccy == "All" || req.Selected_IM_Ccy == x.IM_Ccy) &&
+                (req.Selected_VM_Ccy == "All" || req.Selected_VM_Ccy == x.VM_Ccy)
+            //(req.Type.IsNullOrEmpty() || x.Type.ToLower().Contains(req.Type.ToLower())) &&
+            //(req.Remarks.IsNullOrEmpty() || x.Remarks.ToLower().Contains(req.Remarks.ToLower()))
+            );
+
+            if (marginCalls.Any())
+            {
+                Func<MarginCallDto, object> orderSelector = x =>
+                    req.Selected_MarginCallOrderByColumn switch
+                    {
+                        1 => x.PortfolioID,
+                        2 => x.Percentages,
+                        3 => x.MarginCallAmount,
+                        4 => x.Collateral,
+                        5 => x.VM,
+                        6 => x.IM,
+                        7 => x.InsertedDatetime,
+                        _ => x.ModifiedDatetime
+                    };
+
+                marginCalls = req.SearchByOrderByType == 1
+                ? marginCalls.OrderBy(orderSelector)
+                : marginCalls.OrderByDescending(orderSelector);
+            }
+
+            var searchReq = _mapper.MapDto<MarginCallSearchReq, BaseSearchReq>(req);
+
+            var paginatedResult = PaginatedList<MarginCallViewModel>.
+                    GetByPagesIEnumerable<MarginCallDto, MarginCallViewModel>(
+                        marginCalls,
+                        _mapper,
+                        searchReq);
+
+            return paginatedResult;
         }
 
-        public async Task<bool> ApproveAsync(MarginCall entity)
-        {
-            try
-            {
-                entity.MarginCallFlag = "Y";
+        //public async Task<IEnumerable<MarginCallViewModel>> GetAllAsync2(MarginCallSearchReq req)
+        //{
+        //    var marginCalls = _marginCallRepository.GetAllQueryable();
 
-                _mapper.Map(entity, Username);
+        //    marginCalls = marginCalls.Where(x =>
+        //        //((req.DateFrom == DateTime.MinValue || req.DateTo == DateTime.MinValue) ||
+        //        //    (req.IsSearchByCreatedDate ?
+        //        //        x.InsertedDatetime >= req.DateFrom && x.InsertedDatetime < req.DateTo.AddDays(1) :
+        //        //        x.ModifiedDatetime >= req.DateFrom && x.ModifiedDatetime < req.DateTo.AddDays(1))) &&
+        //        (req.SearchByDateType == 1 ||
+        //             ((req.DateFrom == DateTime.MinValue || req.DateTo == DateTime.MinValue) ||
+        //                    (req.SearchByDateType == 2 ?
+        //                            x.InsertedDatetime >= req.DateFrom && x.InsertedDatetime < req.DateTo.AddDays(1) :
+        //                            x.ModifiedDatetime >= req.DateFrom && x.ModifiedDatetime < req.DateTo.AddDays(1)))
+        //        ) &&
+        //        (req.PortfolioID.IsNullOrEmpty() || x.PortfolioID.ToLower().Contains(req.PortfolioID.ToLower())) &&
+        //        //(req.Percentages <= 0 || x.Percentages == req.Percentages) &&
+        //        //(req.Collateral <= 0 || x.Collateral == req.Collateral) &&
+        //        //(req.VM <= 0 || x.VM == req.VM) &&
+        //        //(req.IM <= 0 || x.VM == req.IM) &&
+        //        (req.Selected_Collateral_Ccy == "All" || req.Selected_Collateral_Ccy == x.Collateral_Ccy) &&
+        //        (req.Selected_IM_Ccy == "All" || req.Selected_IM_Ccy == x.IM_Ccy) &&
+        //        (req.Selected_VM_Ccy == "All" || req.Selected_VM_Ccy == x.VM_Ccy) &&
+        //        (req.SelectedMarginCallFlag == 0 ||
+        //            (req.SelectedMarginCallFlag == 1 && x.MarginCallFlag == "Y") ||
+        //            (req.SelectedMarginCallFlag == 2 && x.MarginCallFlag == "N")) &&
+        //        (req.SelectedMTMTriggerFlag == 0 ||
+        //            (req.SelectedMTMTriggerFlag == 1 && x.MTMTriggerFlag == true) ||
+        //            (req.SelectedMTMTriggerFlag == 2 && (x.MTMTriggerFlag == null || x.MTMTriggerFlag == false))) &&
+        //        (req.SelectedEODTriggerFlag == 0 ||
+        //            (req.SelectedEODTriggerFlag == 1 && x.EODTriggerFlag == true) ||
+        //            (req.SelectedEODTriggerFlag == 2 && (x.EODTriggerFlag == null || x.EODTriggerFlag == false))) &&
+        //        (req.Type.IsNullOrEmpty() || x.Type.ToLower().Contains(req.Type.ToLower())) &&
+        //        (req.Remarks.IsNullOrEmpty() || x.Remarks.ToLower().Contains(req.Remarks.ToLower()))
+        //    );
 
-                await _marginCallRepository.UpdateAsync(entity);
+        //    var searchReq = _mapper.MapDto<MarginCallSearchReq, BaseSearchReq>(req);
 
+        //    var paginatedResult = await PaginatedList<MarginCallViewModel>.
+        //            GetByPagesAsync<MarginCall, MarginCallViewModel>(
+        //                marginCalls,
+        //                _mapper,
+        //                searchReq);
 
-            }
-            catch (Exception ex)
-            {
-                throw ex;
-            }
+        //    return paginatedResult;
+        //}
 
-            return true;
-        }
-
-        public async Task<bool> RejectAsync(MarginCall entity)
-        {
-            try
-            {
-                //entity.Status = (int)MarginCallSearchStatusEnum.Rejected;
-
-                //_mapper.Map(entity, Username);
-
-                //await _marginCallRepository.UpdateAsync(entity);
-            }
-            catch (Exception ex)
-            {
-                throw ex;
-            }
-
-            return true;
-        }
     }
 }

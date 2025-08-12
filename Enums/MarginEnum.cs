@@ -40,4 +40,28 @@ namespace MVCWebApp.Enums
         YES = 1,
         NO = 2
     }
+
+    public enum MarginCallMode
+    {
+        All = 2,
+        TriggeredToday = 3
+    }
+
+    public enum MarginCallOrderByColumn
+    {
+        PortfolioID = 1,
+        Percentages = 2,
+        MarginCallAmount = 3,
+        Collateral = 4,
+        VM = 5,
+        IM = 6,
+        InsertedDatetime = 7,
+        ModifiedDatetime = 8
+    }
+
+    public enum OrderByType
+    {
+        Asc = 1,
+        Desc = 2
+    }
 }

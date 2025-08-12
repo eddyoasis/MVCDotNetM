@@ -5,7 +5,8 @@ namespace MVCWebApp.Models.MarginCalls
     public class MarginCallSearchReq : BaseSearchReq
     {
         public string PortfolioID { get; set; }
-        public decimal Percentages { get; set; }
+        public double PercentagesFrom { get; set; }
+        public double PercentagesTo { get; set; }
         public double Collateral { get; set; }
         public List<SelectListItem> Collateral_Ccy { get; set; }
         public string Selected_Collateral_Ccy { get; set; }
@@ -25,5 +26,10 @@ namespace MVCWebApp.Models.MarginCalls
         public string? Remarks { get; set; }
         public DateTime InsertedDatetime { get; set; }
         public DateTime? ModifiedDatetime { get; set; }
+
+
+        public List<SelectListItem> MarginCallOrderByColumns { get; set; }
+        public int Selected_MarginCallOrderByColumn { get; set; }
+        public int Selected_MarginMode { get; set; }
     }
 }
