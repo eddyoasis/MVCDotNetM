@@ -15,10 +15,10 @@
         <div class="form-group mt-2">
             <label asp-for="TypeSelections" class="control-label"></label>
             <div class="col-md-10">
-                <select id="optionTypeSelectionsCreate" class="form-control" asp-items="@Model?.TypeSelections">
+                <select id="optionTypeSelections" class="form-control" asp-items="@Model?.TypeSelections">
                 </select>
             </div>
-            <input asp-for="Type" id="TypeCreate" class="form-control" hidden />
+            <input asp-for="Type" class="form-control" hidden />
         </div>
 
         <br />
@@ -49,12 +49,11 @@
     $(document).ready(function () {
        
         // Update on change
-        $(document).on("change", "#optionTypeSelectionsCreate", function (e) {
-            $('#TypeCreate').val($("#optionTypeSelectionsCreate").val())
-            console.log($('#TypeCreate').val());
+        $(document).on("change", "#optionTypeSelections", function (e) {
+            $('#Type').val($("#optionTypeSelections").val())
         });
 
-        $("#optionTypeSelectionsCreate").trigger("change");
+        $("#optionTypeSelections").trigger("change");
     });
 </script>
 

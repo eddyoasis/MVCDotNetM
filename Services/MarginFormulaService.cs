@@ -1,9 +1,13 @@
-﻿using MVCWebApp.Helper;
+﻿using MVCWebApp.Enums;
+using MVCWebApp.Helper;
 using MVCWebApp.Helper.Mapper;
 using MVCWebApp.Models;
+using MVCWebApp.Models.AuditLogs;
 using MVCWebApp.Models.MarginFormulas;
 using MVCWebApp.Repositories;
 using MVCWebApp.ViewModels;
+using Newtonsoft.Json;
+using Org.BouncyCastle.Ocsp;
 
 namespace MVCWebApp.Services
 {
@@ -19,6 +23,7 @@ namespace MVCWebApp.Services
 
     public class MarginFormulaService(
         IMarginFormulaRepository _marginFormulaRepository,
+        IAuditLogService _auditLogService,
         IMapModel _mapper
         ) : BaseService, IMarginFormulaService
     {
@@ -59,6 +64,18 @@ namespace MVCWebApp.Services
         {
             var entity = _mapper.MapDtoCreateSetUsername<MarginFormulaAddReq, MarginFormula>(req, Username);
             await _marginFormulaRepository.AddAsync(entity);
+
+            var auditReq = new AuditLog
+            {
+                TypeID = (int)AuditLogTypeEnum.Formula,
+                ActionID = (int)AuditLogActionEnum.Create,
+                Name = entity.Name,
+                CreatedBy = Username,
+                CreatedAt = DateTime.Now,
+                NewValue = JsonConvert.SerializeObject(entity)
+            };
+
+            await _auditLogService.AddAsync(auditReq);
         }
 
         public async Task UpdateAsync(MarginFormulaEditReq req, MarginFormula entity)
@@ -66,9 +83,35 @@ namespace MVCWebApp.Services
             _mapper.Map(req, entity, Username);
 
             await _marginFormulaRepository.UpdateAsync(entity);
+
+            var auditReq = new AuditLog
+            {
+                TypeID = (int)AuditLogTypeEnum.Formula,
+                ActionID = (int)AuditLogActionEnum.Edit,
+                Name = entity.Name,
+                CreatedBy = Username,
+                CreatedAt = DateTime.Now,
+                NewValue = JsonConvert.SerializeObject(entity)
+            };
+
+            await _auditLogService.AddAsync(auditReq);
         }
 
-        public async Task DeleteAsync(MarginFormula entity) =>
+        public async Task DeleteAsync(MarginFormula entity)
+        {
             await _marginFormulaRepository.DeleteAsync(entity);
+
+            var auditReq = new AuditLog
+            {
+                TypeID = (int)AuditLogTypeEnum.Formula,
+                ActionID = (int)AuditLogActionEnum.Delete,
+                Name = entity.Name,
+                CreatedBy = Username,
+                CreatedAt = DateTime.Now,
+                NewValue = JsonConvert.SerializeObject(entity)
+            };
+
+            await _auditLogService.AddAsync(auditReq);
+        }
     }
 }

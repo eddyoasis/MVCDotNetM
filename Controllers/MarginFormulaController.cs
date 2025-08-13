@@ -53,6 +53,8 @@ namespace MVCWebApp.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(MarginFormulaAddReq req)
         {
+            req.TypeSelections = _typeSelections;
+
             if (ModelState.IsValid)
             {
                 await _marginFormulaService.AddAsync(req);

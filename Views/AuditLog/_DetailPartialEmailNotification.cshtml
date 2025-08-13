@@ -1,0 +1,61 @@
+﻿@model EmailNotificationViewModel
+
+<div class="modal-header">
+    <h5 class="modal-title">Details Email Notification</h5>
+    <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
+        <span>&times;</span>
+    </button>
+</div>
+<div class="modal-body">
+    <div class="form-group">
+        <label asp-for="MarginType" class="control-label"></label>
+        <div class="col-md-10">
+            <input asp-for="MarginType" class="form-control" disabled />
+            <span asp-validation-for="MarginType" class="text-danger"></span>
+        </div>
+    </div>
+    <div class="form-group">
+        <label asp-for="EmailTemplate" class="control-label"></label>
+        <div class="col-md-10">
+            <textarea asp-for="EmailTemplate" rows="8" class="form-control" disabled></textarea>
+            <span asp-validation-for="EmailTemplate" class="text-danger"></span>
+        </div>
+    </div>
+    <div class="form-group mt-3">
+        <label asp-for="CreatedBy" class="control-label"></label>
+        <div class="col-md-10">
+            <input asp-for="CreatedBy" class="form-control" disabled />
+            <span asp-validation-for="CreatedBy" class="text-danger"></span>
+        </div>
+    </div>
+    <div class="form-group mt-3">
+        <label asp-for="CreatedAt" class="control-label"></label>
+        <div class="col-md-10">
+            <input type="text" asp-for="CreatedAt" class="form-control" disabled />
+            <span asp-validation-for="CreatedAt" class="text-danger"></span>
+        </div>
+    </div>
+    <div class="form-group mt-3">
+        <label asp-for="ModifiedBy" class="control-label"></label>
+        <div class="col-md-10">
+            <input asp-for="ModifiedBy" class="form-control" disabled />
+            <span asp-validation-for="ModifiedBy" class="text-danger"></span>
+        </div>
+    </div>
+    <div class="form-group mt-3">
+        <label asp-for="ModifiedAt" class="control-label"></label>
+        <div class="col-md-10">
+            <input type="text" asp-for="ModifiedAt" class="form-control" disabled />
+            <span asp-validation-for="ModifiedAt" class="text-danger"></span>
+        </div>
+    </div>
+</div>
+<div class="modal-footer">
+    <button type="button" class="btn btn-info" data-bs-dismiss="modal">Close</button>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

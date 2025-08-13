@@ -17,7 +17,11 @@ namespace MVCWebApp.Repositories
     {
         private readonly DbSet<T> _dbSet = context.Set<T>();
 
-        public async Task<IEnumerable<T>> GetAllAsync() => await _dbSet.ToListAsync();
+        public async Task<IEnumerable<T>> GetAllAsync() => 
+            await _dbSet
+            .AsTracking()
+            .ToListAsync();
+
         public IQueryable<T> GetAllQueryable() =>  
             _dbSet
             .AsQueryable()

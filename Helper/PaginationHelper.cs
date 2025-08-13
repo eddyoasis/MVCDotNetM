@@ -72,6 +72,32 @@ namespace MVCWebApp.Helper
             return new PaginatedList<TDestination>(mappedItems, count, req.PageNumber, req.PageSize);
         }
 
+        public static async Task<PaginatedList<TDestination>> GetByPagesAndBaseAuditAsync<TSource, TDestination>(
+            IQueryable<TSource> source,
+            IMapModel mapper,
+            BaseSearchReq req = null) where TSource : IAuditInfo
+        {
+            if (!req.IsNullOrEmpty())
+            {
+                source = source.Where(x =>
+                (
+                     ((req.DateFrom == DateTime.MinValue || req.DateTo == DateTime.MinValue) ||
+                           x.CreatedAt >= req.DateFrom && x.CreatedAt < req.DateTo.AddDays(1)) &&
+                    (req.CreatedBy.IsNullOrEmpty() || x.CreatedBy.ToLower().Contains(req.CreatedBy.ToLower())))
+                );
+            }
+
+            var count = await source.CountAsync();
+
+            var items = await source.Skip((req.PageNumber - 1) * req.PageSize)
+                                    .Take(req.PageSize)
+                                    .ToListAsync();
+
+            var mappedItems = mapper.MapDto<List<TDestination>>(items);
+
+            return new PaginatedList<TDestination>(mappedItems, count, req.PageNumber, req.PageSize);
+        }
+
         //public static async Task<PaginatedList<TDestination>> GetByPagesAndBaseAsync<TSource, TDestination>(
         //    IQueryable<TSource> source,
         //    IMapModel mapper,

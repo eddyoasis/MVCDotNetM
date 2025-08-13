@@ -6,9 +6,11 @@ using MVCWebApp.Constants;
 using MVCWebApp.Enums;
 using MVCWebApp.Helper;
 using MVCWebApp.Helper.Mapper;
+using MVCWebApp.Models.AuditLogs;
 using MVCWebApp.Models.MarginCalls;
 using MVCWebApp.Services;
 using MVCWebApp.ViewModels;
+using Newtonsoft.Json;
 
 namespace MVCWebApp.Controllers
 {
@@ -17,6 +19,7 @@ namespace MVCWebApp.Controllers
         IMarginCallService _marginCallService,
         IEmailNotificationService _emailNotificationService,
         IEmailService _emailService,
+        IAuditLogService _auditLogService,
         IMapModel _mapper
         ) : ControllerBase
     {
@@ -109,8 +112,21 @@ namespace MVCWebApp.Controllers
                         return NotFound();
                     }
 
-                    var isSuccess = await _marginCallService.ApproveMarginCallEOD(model);
+                    _mapper.Map(entity, model);
 
+                    var auditReq = new AuditLog
+                    {
+                        TypeID = (int)AuditLogTypeEnum.AutoMarginEOD,
+                        ActionID = (int)AuditLogActionEnum.Approve,
+                        Name = model.PortfolioID,
+                        CreatedBy = Username,
+                        CreatedAt = DateTime.Now,
+                        NewValue = JsonConvert.SerializeObject(model)
+                    };
+
+                    await _auditLogService.AddAsync(auditReq);
+
+                    var isSuccess = await _marginCallService.ApproveMarginCallEOD(model);
                     if (isSuccess)
                     {
                         return Json(new { success = true });

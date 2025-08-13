@@ -1,9 +1,13 @@
-﻿using MVCWebApp.Helper;
+﻿using MVCWebApp.Enums;
+using MVCWebApp.Helper;
 using MVCWebApp.Helper.Mapper;
 using MVCWebApp.Models;
+using MVCWebApp.Models.AuditLogs;
 using MVCWebApp.Models.EmailNotifications;
 using MVCWebApp.Repositories;
 using MVCWebApp.ViewModels;
+using Newtonsoft.Json;
+using Org.BouncyCastle.Ocsp;
 
 namespace MVCWebApp.Services
 {
@@ -14,12 +18,13 @@ namespace MVCWebApp.Services
         Task<EmailNotificationViewModel?> GetByIdAsync(int id);
         Task<EmailNotification?> GetByEntityIdAsync(int id);
         Task AddAsync(EmailNotificationAddReq req);
-        void Update(EmailNotificationEditReq req, EmailNotification emailNotification);
-        void Delete(EmailNotification emailNotification);
+        Task Update(EmailNotificationEditReq req, EmailNotification emailNotification);
+        Task Delete(EmailNotification emailNotification);
     }
 
     public class EmailNotificationService(
         IEmailNotificationRepository emailNotificationRepository,
+        IAuditLogService _auditLogService,
         IMapModel _mapper
         ) : BaseService, IEmailNotificationService
     {
@@ -62,16 +67,54 @@ namespace MVCWebApp.Services
         {
             var entity = _mapper.MapDtoCreateSetUsername<EmailNotificationAddReq, EmailNotification>(req, Username);
             await emailNotificationRepository.AddAsync(entity);
+
+            var auditReq = new AuditLog
+            {
+                TypeID = (int)AuditLogTypeEnum.EmailNotifcation,
+                ActionID = (int)AuditLogActionEnum.Create,
+                Name = req.MarginType,
+                CreatedBy = Username,
+                CreatedAt = DateTime.Now,
+                NewValue = JsonConvert.SerializeObject(entity)
+            };
+
+            await _auditLogService.AddAsync(auditReq);
         }
 
-        public void Update(EmailNotificationEditReq req, EmailNotification entity)
+        public async Task Update(EmailNotificationEditReq req, EmailNotification entity)
         {
             _mapper.Map(req, entity, Username);
 
             emailNotificationRepository.Update(entity);
+
+            var auditReq = new AuditLog
+            {
+                TypeID = (int)AuditLogTypeEnum.EmailNotifcation,
+                ActionID = (int)AuditLogActionEnum.Edit,
+                Name = req.MarginType,
+                CreatedBy = Username,
+                CreatedAt = DateTime.Now,
+                NewValue = JsonConvert.SerializeObject(entity)
+            };
+
+            await _auditLogService.AddAsync(auditReq);
         }
 
-        public void Delete(EmailNotification emailNotification) =>
+        public async Task Delete(EmailNotification emailNotification)
+        {
+            var auditReq = new AuditLog
+            {
+                TypeID = (int)AuditLogTypeEnum.EmailNotifcation,
+                ActionID = (int)AuditLogActionEnum.Delete,
+                Name = emailNotification.MarginType,
+                CreatedBy = Username,
+                CreatedAt = DateTime.Now,
+                NewValue = JsonConvert.SerializeObject(emailNotification)
+            };
+
+            await _auditLogService.AddAsync(auditReq);
+
             emailNotificationRepository.Delete(emailNotification);
+        }
     }
 }

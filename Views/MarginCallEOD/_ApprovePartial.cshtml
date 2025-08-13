@@ -148,7 +148,8 @@
                 PortfolioID: marginCallModel.PortfolioID,
                 ccy: marginCallModel.VM_Ccy,
                 Collateral: marginCallModel.Collateral,
-                Percentages: marginCallModel.Percentages
+                Percentages: marginCallModel.Percentages,
+                MarginCallAmount: marginCallModel.MarginCallAmount
             };
             const result = parseTemplate(template, model);
             textbox.value = result;

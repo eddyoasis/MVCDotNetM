@@ -8,6 +8,12 @@
         DateTime? ModifiedAt { get; set; }
     }
 
+    public interface IAuditInfo
+    {
+        string CreatedBy { get; set; }
+        DateTime CreatedAt { get; set; }
+    }
+
     public interface ISetUpdateInfo
     {
         string? ModifiedBy { get; set; }

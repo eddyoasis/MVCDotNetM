@@ -74,7 +74,7 @@ namespace MVCWebApp.Controllers
                         return NotFound();
                     }
 
-                    _emailNotificationService.Update(req, entity);
+                    await _emailNotificationService.Update(req, entity);
 
                     return Json(new { success = true });
                 }
@@ -123,7 +123,7 @@ namespace MVCWebApp.Controllers
 
             try
             {
-                _emailNotificationService.Delete(entity);
+                await _emailNotificationService.Delete(entity);
 
                 return Json(new { success = true });
             }

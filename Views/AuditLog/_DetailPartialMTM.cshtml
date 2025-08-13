@@ -1,0 +1,98 @@
+﻿@model MarginCallViewModel
+
+<div class="modal-header">
+    <h5 class="modal-title">Details Margin Call</h5>
+    <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
+        <span>&times;</span>
+    </button>
+</div>
+<div class="modal-body">
+    <div class="form-group">
+        <label asp-for="PortfolioID" class="control-label"></label>
+        <div class="col-md-10">
+            <input asp-for="PortfolioID" class="form-control" disabled />
+        </div>
+    </div>
+    <div class="form-group mt-3">
+        <label asp-for="Percentages" class="control-label"></label>
+        <div class="col-md-10">
+            <input asp-for="Percentages" class="form-control" disabled />
+        </div>
+    </div>
+    <div class="form-group mt-3">
+        <label asp-for="MarginCallAmount" class="control-label"></label>
+        <div class="col-md-10">
+            <input asp-for="MarginCallAmount" class="form-control" disabled />
+        </div>
+    </div>
+    <div class="form-group mt-3">
+        <label asp-for="Collateral" class="control-label"></label>
+        <div class="col-md-10">
+            <input asp-for="Collateral" class="form-control" disabled />
+        </div>
+    </div>
+    <div class="form-group mt-3">
+        <label asp-for="Collateral_Ccy" class="control-label"></label>
+        <div class="col-md-10">
+            <input type="text" asp-for="Collateral_Ccy" class="form-control" disabled />
+        </div>
+    </div>
+    <div class="form-group mt-3">
+        <label asp-for="VM" class="control-label"></label>
+        <div class="col-md-10">
+            <input asp-for="VM" class="form-control" disabled />
+        </div>
+    </div>
+    <div class="form-group mt-3">
+        <label asp-for="VM_Ccy" class="control-label"></label>
+        <div class="col-md-10">
+            <input asp-for="VM_Ccy" class="form-control" disabled />
+        </div>
+    </div>
+    <div class="form-group mt-3">
+        <label asp-for="IM" class="control-label"></label>
+        <div class="col-md-10">
+            <input asp-for="IM" class="form-control" disabled />
+        </div>
+    </div>
+    <div class="form-group mt-3">
+        <label asp-for="IM_Ccy" class="control-label"></label>
+        <div class="col-md-10">
+            <input asp-for="IM_Ccy" class="form-control" disabled />
+        </div>
+    </div>
+    <div class="form-group mt-3">
+        <label asp-for="Remarks" class="control-label"></label>
+        <div class="col-md-10">
+            <input asp-for="Remarks" class="form-control" disabled />
+        </div>
+    </div>
+    <div class="form-group mt-3">
+        <label asp-for="InsertedDatetime" class="control-label"></label>
+        <div class="col-md-10">
+            <input asp-for="InsertedDatetime" class="form-control" disabled />
+        </div>
+    </div>
+
+    <div class="form-group mt-3">
+        <label asp-for="EmailTemplateSubject" class="control-label"></label>
+        <div class="col-md-10">
+            <input asp-for="EmailTemplateSubject" class="form-control" disabled />
+        </div>
+    </div>
+
+    <div class="form-group mt-3">
+        <label asp-for="EmailTemplateValue" class="control-label"></label>
+        <textarea asp-for="EmailTemplateValue" id="EmailTemplateValue" name="EmailTemplateValue" rows="8" class="form-control" disabled></textarea>
+    </div>
+
+</div>
+<div class="modal-footer">
+    <button type="button" class="btn btn-info" data-bs-dismiss="modal">Close</button>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}
