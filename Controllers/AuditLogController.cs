@@ -1,5 +1,4 @@
-﻿using AutoMapper;
-using Microsoft.AspNetCore.Authorization;
+﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using MVCWebApp.Constants;
@@ -11,7 +10,6 @@ using MVCWebApp.Models.MarginFormulas;
 using MVCWebApp.Services;
 using MVCWebApp.ViewModels;
 using Newtonsoft.Json;
-using Org.BouncyCastle.Ocsp;
 
 namespace MVCWebApp.Controllers
 {
@@ -68,6 +66,16 @@ namespace MVCWebApp.Controllers
                 var sssasd = JsonConvert.DeserializeObject<MarginFormula>(entity.NewValue);
                 response = _mapper.MapDto<MarginFormulaViewModel>(sssasd);
                 return PartialView("_DetailPartialFormula", response);
+            }
+            else if (entity.TypeID == (int)AuditLogTypeEnum.EmailNotifcation)
+            {
+                response = JsonConvert.DeserializeObject<EmailNotificationViewModel>(entity.NewValue);
+                return PartialView("_DetailPartialEmailNotification", response);
+            }
+            else if (entity.TypeID == (int)AuditLogTypeEnum.EmailGroup)
+            {
+                response = JsonConvert.DeserializeObject<EmailGroupViewModel>(entity.NewValue);
+                return PartialView("_DetailPartialEmailGroup", response);
             }
             else
             {

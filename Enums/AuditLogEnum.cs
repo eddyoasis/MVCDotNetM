@@ -8,7 +8,8 @@ namespace MVCWebApp.Enums
         AutoMarginMTM = 1,
         AutoMarginEOD = 2,
         EmailNotifcation = 3,
-        Formula = 4
+        Formula = 4,
+        EmailGroup = 5
     }
 
     public enum AuditLogActionEnum
@@ -18,6 +19,7 @@ namespace MVCWebApp.Enums
         Edit = 2,
         Delete = 3,
         Approve = 4,
-        ApproveStockloss = 5
+        ApproveStockloss = 5,
+        ApproveMOC = 6
     }
 }

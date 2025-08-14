@@ -26,6 +26,7 @@
     <hr> <!-- Divider -->
     <button id="btnShowHideSearch" type="submit" class="btn btn-primary">Open Filter</button>
     <hr> <!-- Divider -->
+
     <!-- Search Section -->
     <section id="searchSection" style="display: none;" class="p-4 border rounded bg-light shadow-sm">
         <h4>Search Margin Call</h4>
@@ -428,6 +429,70 @@
                     }
                 });
             }
+
+            /*-------------------------- Approve MOC*/
+            $(document).on("click", ".btn-approveMOC", function (e) {
+                e.preventDefault();
+                var entityId = $(this).data("id");
+                $.get("/MarginCallEOD/ApproveMOC", { id: entityId }, function (data) {
+                    $("#approveModal .modal-content").html(data);
+                    $("#approveModal").modal("show");
+                });
+            });
+
+            $(document).on("submit", "#approveMOCForm", function (e) {
+                e.preventDefault();
+                var form = $(this);
+                $.ajax({
+                    url: form.attr("action"),
+                    type: form.attr("method"),
+                    data: form.serialize(),
+                    success: function (result) {
+                        if (result.success) {
+                            $("#approveModal").modal("hide");
+                            alert('success approve');
+                            postSearchMarginCalls(1);
+                        } else {
+                            alert('approve failed');
+                        }
+                    },
+                    error: function (xhr, status, error) {
+                        console.error("Error updating the entity: " + error);
+                    }
+                });
+            });
+
+            /*-------------------------- Approve Stockloss*/
+            $(document).on("click", ".btn-approveStockloss", function (e) {
+                e.preventDefault();
+                var entityId = $(this).data("id");
+                $.get("/MarginCallEOD/ApproveStockloss", { id: entityId }, function (data) {
+                    $("#approveModal .modal-content").html(data);
+                    $("#approveModal").modal("show");
+                });
+            });
+
+            $(document).on("submit", "#approveStocklossForm", function (e) {
+                e.preventDefault();
+                var form = $(this);
+                $.ajax({
+                    url: form.attr("action"),
+                    type: form.attr("method"),
+                    data: form.serialize(),
+                    success: function (result) {
+                        if (result.success) {
+                            $("#approveModal").modal("hide");
+                            alert('success approve');
+                            postSearchMarginCalls(1);
+                        } else {
+                            alert('approve failed');
+                        }
+                    },
+                    error: function (xhr, status, error) {
+                        console.error("Error updating the entity: " + error);
+                    }
+                });
+            });
 
             /*-------------------------- Approve */
             $(document).on("click", ".btn-approve", function (e) {

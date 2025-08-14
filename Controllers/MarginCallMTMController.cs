@@ -7,6 +7,7 @@ using MVCWebApp.Enums;
 using MVCWebApp.Helper;
 using MVCWebApp.Helper.Mapper;
 using MVCWebApp.Models.AuditLogs;
+using MVCWebApp.Models.EmailGroups;
 using MVCWebApp.Models.MarginCalls;
 using MVCWebApp.Services;
 using MVCWebApp.ViewModels;
@@ -20,6 +21,7 @@ namespace MVCWebApp.Controllers
         IMarginCallService _marginCallService,
         IEmailNotificationService _emailNotificationService,
         IEmailService _emailService,
+        IEmailGroupService _emailGroupService,
         IAuditLogService _auditLogService,
         IMapModel _mapper
         ) : ControllerBase
@@ -82,6 +84,15 @@ namespace MVCWebApp.Controllers
                 return NotFound();
             }
 
+            var emailGroups = await _emailGroupService.GetAllAsync();
+            if (emailGroups.Any())
+            {
+                entity.EmailGroupSelections = 
+                    emailGroups
+                    .Where(x=>x.TypeID == (int)EmailGroupTypeEnum.StockLoss)
+                    .ToList();
+            }
+
             var emailNotifications = await _emailNotificationService.GetAllAsync();
             if (emailNotifications.Any())
             {
@@ -116,21 +127,21 @@ namespace MVCWebApp.Controllers
 
                     _mapper.Map(entity, model);
 
-                    var auditReq = new AuditLog
-                    {
-                        TypeID = (int)AuditLogTypeEnum.AutoMarginMTM,
-                        ActionID = (int)AuditLogActionEnum.ApproveStockloss,
-                        Name = model.PortfolioID,
-                        CreatedBy = Username,
-                        CreatedAt = DateTime.Now,
-                        NewValue = JsonConvert.SerializeObject(model)
-                    };
-
-                    await _auditLogService.AddAsync(auditReq);
-
-                    var isSuccess = await _marginCallService.ApproveMarginCallMTM(model);
+                    var isSuccess = await _marginCallService.ApproveMarginCallMTMStockloss(model);
                     if (isSuccess)
                     {
+                        var auditReq = new AuditLog
+                        {
+                            TypeID = (int)AuditLogTypeEnum.AutoMarginMTM,
+                            ActionID = (int)AuditLogActionEnum.ApproveStockloss,
+                            Name = model.PortfolioID,
+                            CreatedBy = Username,
+                            CreatedAt = DateTime.Now,
+                            NewValue = JsonConvert.SerializeObject(model)
+                        };
+
+                        await _auditLogService.AddAsync(auditReq);
+
                         return Json(new { success = true });
                     }
                 }
@@ -138,6 +149,15 @@ namespace MVCWebApp.Controllers
                 {
                     ModelState.AddModelError("", "Error approving record: " + ex.Message);
                 }
+            }
+
+            var emailGroups = await _emailGroupService.GetAllAsync();
+            if (emailGroups.Any())
+            {
+                model.EmailGroupSelections =
+                    emailGroups
+                    .Where(x => x.TypeID == (int)EmailGroupTypeEnum.StockLoss)
+                    .ToList();
             }
 
             var emailNotifications = await _emailNotificationService.GetAllAsync();
@@ -166,12 +186,21 @@ namespace MVCWebApp.Controllers
                 return NotFound();
             }
 
+            var emailGroups = await _emailGroupService.GetAllAsync();
+            if (emailGroups.Any())
+            {
+                entity.EmailGroupSelections =
+                    emailGroups
+                    .Where(x => x.TypeID == (int)EmailGroupTypeEnum.AutoMargin)
+                    .ToList();
+            }
+
             var emailNotifications = await _emailNotificationService.GetAllAsync();
             if (emailNotifications.Any())
             {
                 entity.EmailTemplateList =
                         emailNotifications
-                        .Where(x=>x.TypeID == (int)EmailNotificationTypeEnum.MTM)
+                        .Where(x => x.TypeID == (int)EmailNotificationTypeEnum.MTM)
                         .Select(x => new SelectListItem
                         {
                             Text = x.MarginType,
@@ -200,21 +229,21 @@ namespace MVCWebApp.Controllers
 
                     _mapper.Map(entity, model);
 
-                    var auditReq = new AuditLog
-                    {
-                        TypeID = (int)AuditLogTypeEnum.AutoMarginMTM,
-                        ActionID = (int)AuditLogActionEnum.Approve,
-                        Name = model.PortfolioID,
-                        CreatedBy = Username,
-                        CreatedAt = DateTime.Now,
-                        NewValue = JsonConvert.SerializeObject(model)
-                    };
-
-                    await _auditLogService.AddAsync(auditReq);
-
                     var isSuccess = await _marginCallService.ApproveMarginCallMTM(model);
                     if (isSuccess)
                     {
+                        var auditReq = new AuditLog
+                        {
+                            TypeID = (int)AuditLogTypeEnum.AutoMarginMTM,
+                            ActionID = (int)AuditLogActionEnum.Approve,
+                            Name = model.PortfolioID,
+                            CreatedBy = Username,
+                            CreatedAt = DateTime.Now,
+                            NewValue = JsonConvert.SerializeObject(model)
+                        };
+
+                        await _auditLogService.AddAsync(auditReq);
+
                         return Json(new { success = true });
                     }
                 }
@@ -222,6 +251,15 @@ namespace MVCWebApp.Controllers
                 {
                     ModelState.AddModelError("", "Error approving record: " + ex.Message);
                 }
+            }
+
+            var emailGroups = await _emailGroupService.GetAllAsync();
+            if (emailGroups.Any())
+            {
+                model.EmailGroupSelections =
+                    emailGroups
+                    .Where(x => x.TypeID == (int)EmailGroupTypeEnum.AutoMargin)
+                    .ToList();
             }
 
             var emailNotifications = await _emailNotificationService.GetAllAsync();

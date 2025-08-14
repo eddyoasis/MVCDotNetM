@@ -25,6 +25,7 @@ namespace MVCWebApp.Services
 
 
         Task<bool> ApproveMarginCallMTM(MarginCallViewModel model);
+        Task<bool> ApproveMarginCallMTMStockloss(MarginCallViewModel model);
         MarginCallViewModel GetMarginCallMTM(string portfolioID);
         IEnumerable<MarginCallViewModel> GetMarginCallMTMAll(MarginCallSearchReq req);
     }
@@ -69,11 +70,12 @@ namespace MVCWebApp.Services
             var isSuccess = await _marginCallRepository.ApproveMarginCallEOD(model.PortfolioID);
             if (isSuccess)
             {
-                var recipient = "eddy.wang@kgi.com";
+                List<string> recipientsTo = ["eddy.wang@kgi.com"];
+                List<string> recipientsCC = ["eddy.wang@kgi.com"];
                 var subject = model.EmailTemplateSubject;
                 var body = model.EmailTemplateValue;
 
-                await _taskQueueService.AddSendEmailQueue(recipient, subject, body);
+                await _taskQueueService.AddSendEmailQueue(recipientsTo, recipientsCC, subject, body);
             }
             return isSuccess;
         }
@@ -147,18 +149,37 @@ namespace MVCWebApp.Services
             var isSuccess = await _marginCallRepository.ApproveMarginCallMTM(model.PortfolioID);
             if (isSuccess)
             {
-                var recipient = "eddy.wang@kgi.com";
+                List<string> recipientsTo = ["eddy.wang@kgi.com"];
+                List<string> recipientsCC = ["eddy.wang@kgi.com"];
                 var subject = model.EmailTemplateSubject;
                 var body = model.EmailTemplateValue;
 
-                await _taskQueueService.AddSendEmailQueue(recipient, subject, body);
+                await _taskQueueService.AddSendEmailQueue(recipientsTo, recipientsCC, subject, body);
+            }
+            return isSuccess;
+        }
+
+        public async Task<bool> ApproveMarginCallMTMStockloss(MarginCallViewModel model)
+        {
+            var isSuccess = await _marginCallRepository.ApproveMarginCallMTM(model.PortfolioID);
+            if (isSuccess)
+            {
+                var emailTo = model.EmailTo.Split("\r\n");
+                var emailCC = model.EmailCC?.Split("\r\n");
+
+                List<string> recipientsTo = emailTo.ToList();
+                List<string> recipientsCC = emailCC == null ? new List<string>(): emailCC.ToList();
+                var subject = model.EmailTemplateSubject;
+                var body = model.EmailTemplateValue;
+
+                await _taskQueueService.AddSendEmailQueue(recipientsTo, recipientsCC, subject, body);
             }
             return isSuccess;
         }
 
         public IEnumerable<MarginCallViewModel> GetMarginCallMTMAll(MarginCallSearchReq req)
         {
-            var marginCalls =  _marginCallRepository.GetMarginCallMTM(
+            var marginCalls = _marginCallRepository.GetMarginCallMTM(
                 req.Selected_MarginMode == 1 ? MarginCallMode.All : MarginCallMode.TriggeredToday);
 
             marginCalls = marginCalls.Where(x =>

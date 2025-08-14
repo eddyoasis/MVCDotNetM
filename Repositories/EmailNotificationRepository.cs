@@ -10,8 +10,8 @@ namespace MVCWebApp.Repositories
         IQueryable<EmailNotification> GetAllQueryable();
         Task<EmailNotification?> GetByIdAsync(int id);
         Task AddAsync(EmailNotification emailNotification);
-        void Update(EmailNotification emailNotification);
-        void Delete(EmailNotification emailNotification);
+        Task Update(EmailNotification emailNotification);
+        Task Delete(EmailNotification emailNotification);
     }
 
     public class EmailNotificationRepository(ApplicationDbContext _context) : IEmailNotificationRepository
@@ -35,16 +35,16 @@ namespace MVCWebApp.Repositories
             await _context.SaveChangesAsync();
         }
 
-        public void Update(EmailNotification entity)
+        public async Task Update(EmailNotification entity)
         {
             _context.EmailNotifications.Update(entity);
-            _context.SaveChanges();
+            await _context.SaveChangesAsync();
         }
 
-        public void Delete(EmailNotification entity)
+        public async Task Delete(EmailNotification entity)
         {
             _context.EmailNotifications.Remove(entity);
-            _context.SaveChanges();
+            await _context.SaveChangesAsync();
         }
     }
 }

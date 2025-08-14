@@ -15,12 +15,13 @@ namespace MVCWebApp.Services
 {
     public interface IEmailService
     {
-        Task SendEmailAsync(string recipient, string subject, string body);
+        //Task SendEmailAsync(string recipient, string subject, string body);
+        Task SendEmailAsync(List<string> recipientsTo, List<string> recipientsCC, string subject, string body);
     }
 
     public class EmailService(IOptionsSnapshot<SmtpAppSetting> _smtpAppSetting) : IEmailService
     {
-        public async Task SendEmailAsync(string recipient, string subject, string body)
+        public async Task SendEmailAsync(List<string> recipientsTo, List<string> recipientsCC, string subject, string body)
         {
             var smtpAppSetting = _smtpAppSetting.Value;
 
@@ -28,7 +29,7 @@ namespace MVCWebApp.Services
             string smtpHost = smtpAppSetting.Host;
             string senderEmail = smtpAppSetting.EmailFrom;
             //string recipientEmail = recipient;
-            var recipientEmails = smtpAppSetting.EmailTo;
+            //var recipientEmails = smtpAppSetting.EmailTo;
             string emailSubject = subject;
             string strMailBody = body;
 
@@ -37,7 +38,12 @@ namespace MVCWebApp.Services
                 using MailMessage mailMessage = new();
 
                 mailMessage.From = new MailAddress(senderEmail);
-                mailMessage.To.AddRange(recipientEmails.Select(e => new MailAddress(e)));
+                mailMessage.To.AddRange(recipientsTo.Select(e => new MailAddress(e)));
+
+                if(recipientsCC.Any())
+                {
+                    mailMessage.CC.AddRange(recipientsCC.Select(e => new MailAddress(e)));
+                }
 
                 // Set subject (optional)
                 mailMessage.Subject = emailSubject;

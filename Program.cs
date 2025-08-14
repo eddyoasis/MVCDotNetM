@@ -87,6 +87,7 @@ builder.Services.AddScoped<IMarginFormulaRepository, MarginFormulaRepository>();
 builder.Services.AddScoped<IMarginCallRepository, MarginCallRepository>();
 builder.Services.AddScoped<ILoginAttemptRepository, LoginAttemptRepository>();
 builder.Services.AddScoped<IAuditLogRepository, AuditLogRepository>();
+builder.Services.AddScoped<IEmailGroupRepository, EmailGroupRepository>();
 
 builder.Services.AddScoped<IEmailNotificationService, EmailNotificationService>();
 builder.Services.AddScoped<IMarginFormulaService, MarginFormulaService>();
@@ -94,6 +95,7 @@ builder.Services.AddScoped<IMarginCallService, MarginCallService>();
 builder.Services.AddScoped<IEmailService, EmailService>();
 builder.Services.AddScoped<ILoginAttemptService, LoginAttemptService>();
 builder.Services.AddScoped<IAuditLogService, AuditLogService>();
+builder.Services.AddScoped<IEmailGroupService, EmailGroupService>();
 
 /*------------- Background Services */
 builder.Services.AddSingleton<IBackgroundTaskQueue, BackgroundTaskQueue>();

@@ -1,6 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using MVCWebApp.Models;
 using MVCWebApp.Models.AuditLogs;
+using MVCWebApp.Models.EmailGroups;
 using MVCWebApp.Models.EmailNotifications;
 using MVCWebApp.Models.MarginCalls;
 using MVCWebApp.Models.MarginFormulas;
@@ -16,6 +17,7 @@ namespace MVCWebApp.Data
         public DbSet<MarginCallEOD> MarginCallEOD { get; set; }
         public DbSet<LoginAttempt> LoginAttempt { get; set; }
         public DbSet<AuditLog> AuditLog { get; set; }
+        public DbSet<EmailGroup> EmailGroup { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

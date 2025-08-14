@@ -1,7 +1,7 @@
-﻿@model AuditLogSearchReq
+﻿@model EmailGroupSearchReq
 
 @{
-    ViewBag.Title = "Audit Log";
+    ViewBag.Title = "Manage Email Group";
 }
 
 @section scripts {
@@ -31,50 +31,38 @@
     <hr> <!-- Divider -->
     <!-- Search Section -->
     <section id="searchSection" style="display: none;" class="p-4 border rounded bg-light shadow-sm">
-        <h4>Search Audit Log</h4>
+        <h4>Search Margin Formula</h4>
 
         <div class="d-flex gap-1">
-            @* <div class="form-group">
-                <label asp-for="TypeSelections" class="control-label"></label>
-                    <select id="optionTypeSelections" class="form-control" asp-items="@Model?.TypeSelections">
-                    </select>
-                <input asp-for="Type" class="form-control" hidden />
-            </div>
-            <div class="form-group">
-                <label for="MarginType">Name</label>
-                <input type="text" name="FormulaName" id="FormulaName" class="form-control" value="@Model?.Name" placeholder="Enter Name">
-            </div>
-            <div class="form-group">
-                <label for="MarginFormula">Formula</label>
-                <input type="text" name="Formula" id="Formula" class="form-control" value="@Model?.Formula" placeholder="Enter Formula">
-            </div> *@
             <div class="form-group">
                 <label asp-for="TypeSelections" class="control-label"></label>
                 <select id="optionTypeSelections" class="form-control" asp-items="@Model?.TypeSelections">
                 </select>
-                @* <input asp-for="TypeID" class="form-control" hidden /> *@
+                <input asp-for="TypeID" class="form-control" hidden />
             </div>
             <div class="form-group">
-                <label asp-for="ActionSelections" class="control-label"></label>
-                <select id="optionActionSelections" class="form-control" asp-items="@Model?.ActionSelections">
-                </select>
-                <input asp-for="ActionID" class="form-control" hidden />
-            </div>
-            <div class="form-group">
-                <label for="Name">Name</label>
+                <label for="MarginType">Name</label>
                 <input type="text" name="Name" id="Name" class="form-control" value="@Model?.Name" placeholder="Enter Name">
+            </div>
+            <div class="form-group">
+                <label for="EmailTo">Email To</label>
+                <input type="text" name="EmailTo" id="EmailTo" class="form-control" value="@Model?.EmailTo" placeholder="Enter EmailTo">
+            </div>
+            <div class="form-group">
+                <label for="EmailCC">Email To</label>
+                <input type="text" name="EmailCC" id="EmailCC" class="form-control" value="@Model?.EmailCC" placeholder="Enter EmailCC">
             </div>
             <div class="form-group">
                 <label for="CreatedBy">CreatedBy</label>
                 <input type="text" name="CreatedBy" id="CreatedBy" class="form-control" value="@Model?.CreatedBy" placeholder="Enter CreatedBy">
             </div>
-@*             <div class="form-group">
+            <div class="form-group">
                 <label for="ModifiedBy">ModifiedBy</label>
                 <input type="text" name="ModifiedBy" id="ModifiedBy" class="form-control" value="@Model?.ModifiedBy" placeholder="Enter ModifiedBy">
-            </div> *@
+            </div>
         </div>
 
-        <div class="d-flex gap-1 mt-2 d-none"> @*hidden*@
+        <div class="d-flex gap-1 mt-2">
             <div class="form-group">
                 <label>Select Date Type</label>
                 <div class="d-flex gap-1">
@@ -243,7 +231,7 @@
             $("#btnSearch").click(function (e) {
                 event.preventDefault(); // Prevent full page reload
 
-                postSearchAuditLog(1)
+                postSearchEmailGroups(1)
             });
 
             /*=================================================== Pagination*/
@@ -252,7 +240,7 @@
 
                 var pageNumber = +$("#pageIndexNew").val()
 
-                postSearchAuditLog(pageNumber)
+                postSearchEmailGroups(pageNumber)
             });
 
             $(document).on("click", "#btnNext", function (e) {
@@ -260,7 +248,7 @@
 
                 var pageNumber = +$("#pageIndex").val() + 1
 
-                postSearchAuditLog(pageNumber)
+                postSearchEmailGroups(pageNumber)
             });
 
             $(document).on("click", "#btnPrevious", function (e) {
@@ -268,26 +256,28 @@
 
                 var pageNumber = +$("#pageIndex").val() - 1
 
-                postSearchAuditLog(pageNumber)
+                postSearchEmailGroups(pageNumber)
             });
 
             $(document).on("change", "#optionPageSize", function (e) {
                 event.preventDefault(); // Prevent full page reload
 
-                postSearchAuditLog(1)
+                postSearchEmailGroups(1)
             });
 
-            function postSearchAuditLog(pageNumber) {
+            function postSearchEmailGroups(pageNumber) {
 
                 const selectedDateType = $('input[name="dateType"]:checked').val();
 
                 var requestData = {
+                    Type: $("#optionTypeSelections").val(),
+                    
                     Name: $("#Name").val(),
-                    TypeID: $("#optionTypeSelections").val(),
-                    ActionID: $("#optionActionSelections").val(),
+                    EmailTo: $("#EmailTo").val(),
+                    EmailCC: $("#EmailCC").val(),
 
                     CreatedBy: $("#CreatedBy").val(),
-                    // ModifiedBy: $("#ModifiedBy").val(),
+                    ModifiedBy: $("#ModifiedBy").val(),
 
                     SearchByDateType:
                         selectedDateType === 'AllDatetime' ? 1 :
@@ -300,7 +290,7 @@
                 };
 
                 $.ajax({
-                    url: "/AuditLog/SearchAuditLogs",
+                    url: "/EmailGroup/SearchEmailGroups",
                     type: "POST",
                     contentType: "application/json",
                     data: JSON.stringify(requestData),
@@ -309,10 +299,8 @@
                         $("#results").html(data); // Update results dynamically
                     },
                     error: function (jqXHR) {
-                        console.error("Error:", jqXHR);
-                        console.error("Error status:", jqXHR.status);
-                        if (jqXHR.status == 401)
-                            window.location.href = "/Login/Index";
+                        console.error("Error:", jqXHR.status);
+                        alert("Search failed. Please try again.");
                     }
                 });
             }
@@ -321,7 +309,7 @@
 
             $(document).on("click", "#btnCreate", function (e) {
                 e.preventDefault();
-                $.get("/AuditLog/Create")
+                $.get("/EmailGroup/Create")
                     .done(function (data, textStatus, jqXHR) {
                         console.log("Success:", jqXHR.status); // Logs HTTP status code (e.g., 200)
                         $("#createModal .modal-content").html(data);
@@ -348,14 +336,14 @@
                             $("#createModal").modal("hide");
 
                             alert('success create');
-                            postSearchAuditLog(1);
+                            postSearchEmailGroups(1);
                         } else {
                             $("#createModal .modal-content").html(result);
                         }
                     },
                     error: function (xhr, status, error) {
-                        console.error("Submission error: " + error);
-                        alert("Failed to load. Status: " + xhr.status);
+                        console.error("Submission error: " + xhr);
+                        alert("Failed to submit. Status: " + xhr);
                         if (xhr.status == 401)
                             window.location.href = "/Login/Index";
                     }
@@ -367,7 +355,7 @@
                 e.preventDefault();
                 var entityId = $(this).data("id");
 
-                $.get("/AuditLog/Edit", { id: entityId }, function (data) {
+                $.get("/EmailGroup/Edit", { id: entityId }, function (data) {
                     $("#editModal .modal-content").html(data);
                     $("#editModal").modal("show");
                 });
@@ -384,7 +372,7 @@
                         if (result.success) {
                             $("#editModal").modal("hide");
                             alert('success edit');
-                            postSearchAuditLog(1);
+                            postSearchEmailGroups(1);
 
                         } else {
                             // Re-render the form with validation errors when needed
@@ -397,31 +385,21 @@
                 });
             });
 
-            /*-------------------------- DetailMTM */
+            /*-------------------------- Detail */
             $(document).on("click", ".btn-detail", function (e) {
                 e.preventDefault();
                 var entityId = $(this).data("id");
-                $.get("/AuditLog/DetailsMTM", { id: entityId }, function (data) {
+                $.get("/EmailGroup/Details", { id: entityId }, function (data) {
                     $("#detailModal .modal-content").html(data);
                     $("#detailModal").modal("show");
                 });
             });
 
-            // /*-------------------------- Detail */
-            // $(document).on("click", ".btn-detail", function (e) {
-            //     e.preventDefault();
-            //     var entityId = $(this).data("id");
-            //     $.get("/AuditLog/Details", { id: entityId }, function (data) {
-            //         $("#detailModal .modal-content").html(data);
-            //         $("#detailModal").modal("show");
-            //     });
-            // });
-
             /*-------------------------- Delete */
             $(document).on("click", ".btn-delete", function (e) {
                 e.preventDefault();
                 var entityId = $(this).data("id");
-                $.get("/AuditLog/Delete", { id: entityId }, function (data) {
+                $.get("/EmailGroup/Delete", { id: entityId }, function (data) {
                     $("#deleteModal .modal-content").html(data);
                     $("#deleteModal").modal("show");
                 });
@@ -438,7 +416,7 @@
                         if (result.success) {
                             $("#deleteModal").modal("hide");
                             alert('success delete');
-                            postSearchAuditLog(1);
+                            postSearchEmailGroups(1);
                         } else {
                             $("#deleteModal .modal-content").html(result);
                         }
@@ -457,10 +435,8 @@
 
             function clearSearchFields() {
 
-                $("#optionTypeSelections").val(1);
-                $("#optionActionSelections").val(0);
-                $("#Name").val('');
-
+                $("#FormulaName").val('');
+                $("#Formula").val('');
                 $("#CreatedBy").val('');
                 $("#ModifiedBy").val('');
 
@@ -470,9 +446,7 @@
                 $("#dateTimeTo").val(new Date().toISOString().split("T")[0]);
             }
 
-            //initial call
-            $("#optionTypeSelections").val(1)
-            postSearchAuditLog(1)
+            postSearchEmailGroups(1)
         });
     </script>
 </div>

@@ -2,6 +2,7 @@
 using MVCWebApp.Enums;
 using MVCWebApp.Models;
 using MVCWebApp.Models.AuditLogs;
+using MVCWebApp.Models.EmailGroups;
 using MVCWebApp.Models.EmailNotifications;
 using MVCWebApp.Models.MarginCalls;
 using MVCWebApp.Models.MarginFormulas;
@@ -19,7 +20,6 @@ namespace MVCWebApp.Helper.Mapper
             CreateMap<EmailNotification, EmailNotificationViewModel>()
                 .ForMember(dest => dest.Type, opt => opt.MapFrom(src => GetEnumStringValue<EmailNotificationTypeEnum>(src.TypeID)));
 
-
             CreateMap<MarginFormula, MarginFormulaViewModel>()
                 .ForMember(dest => dest.Type, opt => opt.MapFrom(src => GetEnumStringValue<FormulaTypeEnum>(src.Type)));
             CreateMap<MarginFormulaAddReq, MarginFormula>();
@@ -32,10 +32,16 @@ namespace MVCWebApp.Helper.Mapper
                .ForMember(dest => dest.Type, opt => opt.MapFrom(src => GetEnumStringValue<AuditLogTypeEnum>(src.TypeID)))
                .ForMember(dest => dest.Action, opt => opt.MapFrom(src => GetEnumStringValue<AuditLogActionEnum>(src.ActionID)));
 
+            CreateMap<EmailGroupAddReq, EmailGroup>();
+            CreateMap<EmailGroup, EmailGroupEditReq>();
+            CreateMap<EmailGroup, EmailGroupViewModel>()
+                .ForMember(dest => dest.Type, opt => opt.MapFrom(src => GetEnumStringValue<EmailGroupTypeEnum>(src.TypeID)));
+
             CreateMap<MarginFormulaSearchReq, BaseSearchReq>();
             CreateMap<EmailNotificationSearchReq, BaseSearchReq>();
             CreateMap<MarginCallSearchReq, BaseSearchReq>();
             CreateMap<AuditLogSearchReq, BaseSearchReq>();
+            CreateMap<EmailGroupSearchReq, BaseSearchReq>();
         }
     }
 }

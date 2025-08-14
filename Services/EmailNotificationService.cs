@@ -85,7 +85,7 @@ namespace MVCWebApp.Services
         {
             _mapper.Map(req, entity, Username);
 
-            emailNotificationRepository.Update(entity);
+            await emailNotificationRepository.Update(entity);
 
             var auditReq = new AuditLog
             {
@@ -114,7 +114,7 @@ namespace MVCWebApp.Services
 
             await _auditLogService.AddAsync(auditReq);
 
-            emailNotificationRepository.Delete(emailNotification);
+            await emailNotificationRepository.Delete(emailNotification);
         }
     }
 }

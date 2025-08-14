@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc.Rendering;
+using MVCWebApp.Models.EmailGroups;
 using MVCWebApp.Models.MarginCalls;
 using System.ComponentModel.DataAnnotations;
 
@@ -23,5 +24,14 @@ namespace MVCWebApp.ViewModels
         [Display(Name = "EmailTemplate Body")]
         public string EmailTemplateValue { get; set; }
 
+
+
+        public List<EmailGroup> EmailGroupSelections { get; set; }
+
+        [Display(Name = "Email To")]
+        public string EmailTo { get; set; }
+
+        [Display(Name = "Email CC")]
+        public string EmailCC { get; set; }
     }
 }

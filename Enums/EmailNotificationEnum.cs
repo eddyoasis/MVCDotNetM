@@ -18,6 +18,9 @@ namespace MVCWebApp.Enums
 
         [Display(Name = "Stock loss")]
         StockLoss = 12,
+
+        [Display(Name = "MOC")]
+        MOC = 13,
     }
 
     public enum EmailNotificationTypeSearchEnum
@@ -39,5 +42,8 @@ namespace MVCWebApp.Enums
 
         [Display(Name = "Stock loss")]
         StockLoss = 12,
+
+        [Display(Name = "MOC")]
+        MOC = 13,
     }
 }

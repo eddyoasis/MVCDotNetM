@@ -85,7 +85,38 @@
             </div>
         </div>
 
+        @*--------------------------------------------------------------- Email Group*@
+
         <div class="form-group mt-3">
+            <label asp-for="EmailGroupSelections" class="control-label"></label>
+            <div class="col-md-10">
+                <select id="EmailGroupSelections" class="form-control">
+                    @foreach (var item in Model.EmailGroupSelections)
+                    {
+                        <option value="@item.Name">@item.Name</option>
+                    }
+                </select>
+            </div>
+        </div>
+
+        <div class="form-group mt-3">
+            <label asp-for="EmailTo" class="control-label"></label>
+            <div class="col-md-10">
+                <textarea asp-for="EmailTo" rows="4" class="form-control"></textarea>
+            </div>
+        </div>
+
+        <div class="form-group mt-3">
+            <label asp-for="EmailCC" class="control-label"></label>
+            <div class="col-md-10">
+                <textarea asp-for="EmailCC" rows="4" class="form-control"></textarea>
+            </div>
+        </div>
+
+        @*--------------------------------------------------------------- Email Template*@
+
+        <div class="form-group mt-3 d-none">
+            @*hidden*@
             <label asp-for="EmailTemplateTitle" class="control-label"></label>
             <div class="col-md-10">
                 <select id="EmailTemplateList" class="form-control">
@@ -120,6 +151,20 @@
     $(document).ready(function () {
 
         var marginCallModel = @Html.Raw(System.Text.Json.JsonSerializer.Serialize(Model));
+
+        /*----------------------------- Email group */
+
+        const dicEmailTo = @Html.Raw(Json.Serialize(Model.EmailGroupSelections.ToDictionary(x => x.Name, x => x.EmailTo)));
+        const dicEmailCC = @Html.Raw(Json.Serialize(Model.EmailGroupSelections.ToDictionary(x => x.Name, x => x.EmailCC)));
+
+        $(document).on("change", "#EmailGroupSelections", function (e) {
+            const selectedText = this.options[this.selectedIndex].text;
+
+            //$("#EmailTo").val(dicEmailTo[selectedText]);
+            $("#EmailCC").val(dicEmailCC[selectedText]);
+        });
+
+        /*----------------------------- Email notification */
 
         function parseTemplate(template, model) {
             return template.replace(/@@(\w+)/g, (_, key) => model[key] || `@@${key}`);
@@ -162,6 +207,7 @@
             textSubject.value = result2;
         });
 
+        $("#EmailGroupSelections").trigger("change");
         $("#EmailTemplateList").trigger("change");
     });
 </script>

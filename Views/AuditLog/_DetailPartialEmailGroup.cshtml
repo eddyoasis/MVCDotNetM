@@ -1,0 +1,42 @@
+﻿@model EmailGroupViewModel
+
+<div class="modal-header">
+    <h5 class="modal-title">Detail Email Group</h5>
+    <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
+        <span>&times;</span>
+    </button>
+</div>
+<div class="modal-body">
+
+    <div class="form-group mt-3">
+        <label asp-for="Name" class="control-label"></label>
+        <div class="col-md-10">
+            <input asp-for="Name" class="form-control" disabled />
+            <span asp-validation-for="Name" class="text-danger"></span>
+        </div>
+    </div>
+    <div class="form-group mt-3">
+        <label asp-for="EmailTo" class="control-label"></label>
+        <div class="col-md-10">
+            <textarea asp-for="EmailTo" rows="8" class="form-control" disabled></textarea>
+            <span asp-validation-for="EmailTo" class="text-danger"></span>
+        </div>
+    </div>
+    <div class="form-group mt-3">
+        <label asp-for="EmailCC" class="control-label"></label>
+        <div class="col-md-10">
+            <textarea asp-for="EmailCC" rows="8" class="form-control" disabled></textarea>
+            <span asp-validation-for="EmailCC" class="text-danger"></span>
+        </div>
+    </div>
+
+</div>
+<div class="modal-footer">
+    <button type="button" class="btn btn-info" data-bs-dismiss="modal">Close</button>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

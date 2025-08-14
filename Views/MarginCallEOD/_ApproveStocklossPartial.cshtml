@@ -1,12 +1,12 @@
 ﻿@model MarginCallViewModel
 
-@using (Html.BeginForm("Approve", "MarginCallMTM", FormMethod.Post, new { id = "approveForm" }))
+@using (Html.BeginForm("ApproveStockloss", "MarginCallEOD", FormMethod.Post, new { id = "approveStocklossForm" }))
 {
     @Html.AntiForgeryToken()
     @Html.HiddenFor(m => m.PortfolioID)
 
     <div class="modal-header">
-        <h5 class="modal-title">Approve Margin Call</h5>
+        <h5 class="modal-title">Approve Stockloss</h5>
         <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
             <span>&times;</span>
         </button>
@@ -66,30 +66,6 @@
                 <input asp-for="IM_Ccy" class="form-control" disabled />
             </div>
         </div>
-        @* <div class="form-group mt-3">
-            <label asp-for="MarginCallFlag" class="control-label"></label>
-            <div class="col-md-10">
-                <input asp-for="MarginCallFlag" class="form-control" disabled />
-            </div>
-        </div>
-        <div class="form-group mt-3">
-            <label asp-for="EODTriggerFlag" class="control-label"></label>
-            <div class="col-md-10">
-                <input asp-for="EODTriggerFlag" class="form-control" disabled />
-            </div>
-        </div>
-        <div class="form-group mt-3">
-            <label asp-for="MTMTriggerFlag" class="control-label"></label>
-            <div class="col-md-10">
-                <input asp-for="MTMTriggerFlag" class="form-control" disabled />
-            </div>
-        </div>
-        <div class="form-group mt-3">
-            <label asp-for="Type" class="control-label"></label>
-            <div class="col-md-10">
-                <input asp-for="Type" class="form-control" disabled />
-            </div>
-        </div> *@
         <div class="form-group mt-3">
             <label asp-for="Remarks" class="control-label"></label>
             <div class="col-md-10">
@@ -102,12 +78,6 @@
                 <input asp-for="InsertedDatetime" class="form-control" disabled />
             </div>
         </div>
-        @* <div class="form-group mt-3">
-            <label asp-for="ModifiedDatetime" class="control-label"></label>
-            <div class="col-md-10">
-                <input asp-for="ModifiedDatetime" class="form-control" disabled />
-            </div>
-        </div> *@
 
         @*--------------------------------------------------------------- Email Group*@
 
@@ -184,8 +154,11 @@
         $(document).on("change", "#EmailGroupSelections", function (e) {
             const selectedText = this.options[this.selectedIndex].text;
 
-            //$("#EmailTo").val(dicEmailTo[selectedText]);
+            $("#EmailTo").val(dicEmailTo[selectedText]);
             $("#EmailCC").val(dicEmailCC[selectedText]);
+
+            console.log(dicEmailTo[selectedText]);
+            console.log(dicEmailCC[selectedText]);
         });
 
         /*----------------------------- Email notification */
@@ -235,21 +208,6 @@
         $("#EmailTemplateList").trigger("change");
     });
 </script>
-
-@* <script>
-    $(document).ready(function () {
-        const values = @Html.Raw(Json.Serialize(Model.EmailTemplateValue));
-
-        $(document).on("change", "#emailTitleDropdown", function (e) {
-            const selectedIndex = this.value;
-            const textbox = document.getElementById('EmailTemplateValue');
-            textbox.value = values[selectedIndex] || '';
-        });
-
-        // Initialize textbox on page load
-        document.getElementById('EmailTemplateValue').value = values[0] || '';
-    });
-</script> *@
 
 @section Scripts {
     @{
