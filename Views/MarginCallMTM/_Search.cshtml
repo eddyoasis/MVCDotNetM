@@ -28,7 +28,8 @@
                     <th>Remarks</th>
                     <th>InsertedDatetime</th>
                     <th>ModifiedDatetime</th> *@
-                    <th>Action</th>
+                    <th>Action(Margin)</th>
+                    <th>Action(Stockloss)</th>
                 </tr>
             </thead>
             <tbody>
@@ -62,7 +63,15 @@
                                 }
                                 <button class="btn btn-sm btn-info btn-detail" data-id="@item.PortfolioID">Details</button>
                             </div>
-                            
+                        </td>
+                        <td>
+                            <div class="d-flex flex-wrap gap-1">
+                                @if (isMaginModeAll == 1)
+                                {
+                                    <button class="btn btn-sm btn-success btn-approveStockloss" data-id="@item.PortfolioID">Approve</button>
+                                }
+                                <button class="btn btn-sm btn-info btn-detail" data-id="@item.PortfolioID">Details</button>
+                            </div>
                         </td>
                     </tr>
                 }

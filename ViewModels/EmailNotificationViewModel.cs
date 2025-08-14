@@ -7,8 +7,12 @@ namespace MVCWebApp.ViewModels
         public int ID { get; set; }
 
         [Required]
-        [Display(Name = "Margin Type")]
+        [Display(Name = "Template Name")]
         public string MarginType { get; set; }
+
+        [Required]
+        [Display(Name = "Type")]
+        public string Type { get; set; }
 
         [Required]
         [Display(Name = "Email Template")]

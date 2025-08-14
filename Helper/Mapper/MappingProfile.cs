@@ -15,8 +15,10 @@ namespace MVCWebApp.Helper.Mapper
         public MappingProfile()
         {
             CreateMap<EmailNotificationAddReq, EmailNotification>();
-            CreateMap<EmailNotification, EmailNotificationViewModel>();
             CreateMap<EmailNotification, EmailNotificationEditReq>();
+            CreateMap<EmailNotification, EmailNotificationViewModel>()
+                .ForMember(dest => dest.Type, opt => opt.MapFrom(src => GetEnumStringValue<EmailNotificationTypeEnum>(src.TypeID)));
+
 
             CreateMap<MarginFormula, MarginFormulaViewModel>()
                 .ForMember(dest => dest.Type, opt => opt.MapFrom(src => GetEnumStringValue<FormulaTypeEnum>(src.Type)));

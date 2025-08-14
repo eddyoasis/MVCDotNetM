@@ -17,6 +17,7 @@ namespace MVCWebApp.Enums
         Create = 1,
         Edit = 2,
         Delete = 3,
-        Approve = 4
+        Approve = 4,
+        ApproveStockloss = 5
     }
 }

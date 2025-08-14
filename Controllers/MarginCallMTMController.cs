@@ -74,6 +74,90 @@ namespace MVCWebApp.Controllers
         }
 
         [Authorize]
+        public async Task<IActionResult> ApproveStockloss(string id)
+        {
+            var entity = _marginCallService.GetMarginCallMTM(id);
+            if (entity == null)
+            {
+                return NotFound();
+            }
+
+            var emailNotifications = await _emailNotificationService.GetAllAsync();
+            if (emailNotifications.Any())
+            {
+                entity.EmailTemplateList =
+                        emailNotifications
+                        .Where(x => x.TypeID == (int)EmailNotificationTypeEnum.StockLoss)
+                        .Select(x => new SelectListItem
+                        {
+                            Text = x.MarginType,
+                            Value = x.EmailTemplate
+                        })
+                        .ToList();
+            }
+
+            return PartialView("_ApproveStocklossPartial", entity);
+        }
+
+        [HttpPost]
+        [Authorize]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> ApproveStockloss(MarginCallViewModel model)
+        {
+            if (model.PortfolioID.IsNotNullOrEmpty())
+            {
+                try
+                {
+                    var entity = _marginCallService.GetMarginCallMTM(model.PortfolioID);
+                    if (entity == null)
+                    {
+                        return NotFound();
+                    }
+
+                    _mapper.Map(entity, model);
+
+                    var auditReq = new AuditLog
+                    {
+                        TypeID = (int)AuditLogTypeEnum.AutoMarginMTM,
+                        ActionID = (int)AuditLogActionEnum.ApproveStockloss,
+                        Name = model.PortfolioID,
+                        CreatedBy = Username,
+                        CreatedAt = DateTime.Now,
+                        NewValue = JsonConvert.SerializeObject(model)
+                    };
+
+                    await _auditLogService.AddAsync(auditReq);
+
+                    var isSuccess = await _marginCallService.ApproveMarginCallMTM(model);
+                    if (isSuccess)
+                    {
+                        return Json(new { success = true });
+                    }
+                }
+                catch (Exception ex)
+                {
+                    ModelState.AddModelError("", "Error approving record: " + ex.Message);
+                }
+            }
+
+            var emailNotifications = await _emailNotificationService.GetAllAsync();
+            if (emailNotifications.Any())
+            {
+                model.EmailTemplateList =
+                        emailNotifications
+                        .Where(x => x.TypeID == (int)EmailNotificationTypeEnum.StockLoss)
+                        .Select(x => new SelectListItem
+                        {
+                            Text = x.MarginType,
+                            Value = x.EmailTemplate
+                        })
+                        .ToList();
+            }
+
+            return PartialView("_ApproveStocklossPartial", model);
+        }
+
+        [Authorize]
         public async Task<IActionResult> Approve(string id)
         {
             var entity = _marginCallService.GetMarginCallMTM(id);
@@ -87,6 +171,7 @@ namespace MVCWebApp.Controllers
             {
                 entity.EmailTemplateList =
                         emailNotifications
+                        .Where(x=>x.TypeID == (int)EmailNotificationTypeEnum.MTM)
                         .Select(x => new SelectListItem
                         {
                             Text = x.MarginType,
@@ -144,6 +229,7 @@ namespace MVCWebApp.Controllers
             {
                 model.EmailTemplateList =
                         emailNotifications
+                        .Where(x => x.TypeID == (int)EmailNotificationTypeEnum.MTM)
                         .Select(x => new SelectListItem
                         {
                             Text = x.MarginType,

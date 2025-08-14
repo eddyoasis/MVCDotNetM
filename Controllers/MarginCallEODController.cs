@@ -86,6 +86,7 @@ namespace MVCWebApp.Controllers
             {
                 entity.EmailTemplateList =
                         emailNotifications
+                        .Where(x=>x.TypeID == Convert.ToInt32(entity.Day))
                         .Select(x => new SelectListItem
                         {
                             Text = x.MarginType,

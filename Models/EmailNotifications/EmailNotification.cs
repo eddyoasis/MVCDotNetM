@@ -7,6 +7,7 @@ namespace MVCWebApp.Models.EmailNotifications
         [Key]
         public int ID { get; set; }
         public string MarginType { get; set; }
+        public int TypeID { get; set; }
         public string EmailTemplate { get; set; }
         public string CreatedBy { get; set; }
         public DateTime CreatedAt { get; set; }

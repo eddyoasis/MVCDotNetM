@@ -442,10 +442,46 @@
                     },
                     error: function (jqXHR) {
                         console.error("Error:", jqXHR.status);
+                        if (jqXHR.StatusCode == 401) {
+                            alert("Failed to load. Status: " + jqXHR.status);
+                            window.location.href = "/Login/Index";
+                        }
                         alert("Search failed. Please try again.");
                     }
                 });
             }
+
+            /*-------------------------- Approve Stockloss*/
+            $(document).on("click", ".btn-approveStockloss", function (e) {
+                e.preventDefault();
+                var entityId = $(this).data("id");
+                $.get("/MarginCallMTM/ApproveStockloss", { id: entityId }, function (data) {
+                    $("#approveModal .modal-content").html(data);
+                    $("#approveModal").modal("show");
+                });
+            });
+
+            $(document).on("submit", "#approveStocklossForm", function (e) {
+                e.preventDefault();
+                var form = $(this);
+                $.ajax({
+                    url: form.attr("action"),
+                    type: form.attr("method"),
+                    data: form.serialize(),
+                    success: function (result) {
+                        if (result.success) {
+                            $("#approveModal").modal("hide");
+                            alert('success approve');
+                            postSearchMarginCalls(1);
+                        } else {
+                            alert('approve failed');
+                        }
+                    },
+                    error: function (xhr, status, error) {
+                        console.error("Error updating the entity: " + error);
+                    }
+                });
+            });
 
             /*-------------------------- Approve */
             $(document).on("click", ".btn-approve", function (e) {

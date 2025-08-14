@@ -76,7 +76,6 @@ namespace MVCWebApp.Controllers
             var req = _mapper.MapDto<MarginFormulaEditReq>(entity);
             req.TypeSelections = _typeSelections;
 
-
             return PartialView("_EditPartial", req);
         }
 
