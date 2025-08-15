@@ -182,8 +182,13 @@
                     })
                     .fail(function (jqXHR, textStatus, errorThrown) {
                         console.log("Error:", jqXHR.status);  // Logs error status (e.g., 404, 500)
-                        alert("Failed to load. Status: " + jqXHR.status);
-                        window.location.href = "/Login/Index";
+                        if (jqXHR.status == 401) {
+                            alert("Login token expired");
+                            window.location.href = "/Login/Index";
+                        }
+                        else {
+                            alert("Failed to load. Status: " + jqXHR.status);
+                        }
                     });
             });
 
@@ -319,7 +324,13 @@
                     },
                     error: function (jqXHR) {
                         console.error("Error:", jqXHR.status);
-                        alert("Search failed. Please try again.");
+                        if (jqXHR.status == 401) {
+                            alert("Login token expired");
+                            window.location.href = "/Login/Index";
+                        }
+                        else {
+                            alert("Failed to search. Status: " + jqXHR.status);
+                        }
                     }
                 });
             }
@@ -343,11 +354,15 @@
                             $("#createModal .modal-content").html(result);
                         }
                     },
-                    error: function (xhr, status, error) {
+                    error: function (jqXHR, status, error) {
                         console.error("Submission error: " + error);
-                        alert("Failed to load. Status: " + xhr.status);
-                        if (xhr.status == 401)
+                        if (jqXHR.status == 401) {
+                            alert("Login token expired");
                             window.location.href = "/Login/Index";
+                        }
+                        else {
+                            alert("Failed to create. Status: " + jqXHR.status);
+                        }
                     }
                 });
             });
@@ -357,10 +372,26 @@
                 e.preventDefault();
                 var entityId = $(this).data("id");
 
-                $.get("/EmailNotification/Edit", { id: entityId }, function (data) {
-                    $("#editModal .modal-content").html(data);
-                    $("#editModal").modal("show");
-                });
+                // $.get("/EmailNotification/Edit", { id: entityId }, function (data) {
+                //     $("#editModal .modal-content").html(data);
+                //     $("#editModal").modal("show");
+                // });
+
+                $.get("/EmailNotification/Edit", { id: entityId })
+                    .done(function (data) {
+                        $("#editModal .modal-content").html(data);
+                        $("#editModal").modal("show");
+                    })
+                    .fail(function (jqXHR, textStatus, errorThrown) {
+                        console.error("Error fetching modal:", textStatus, errorThrown);
+                        if (jqXHR.status == 401) {
+                            alert("Login token expired");
+                            window.location.href = "/Login/Index";
+                        }
+                        else {
+                            alert("Edit failed: " + jqXHR.status);
+                        }
+                    });
             });
 
             $(document).on("submit", "#editForm", function (e) {
@@ -381,8 +412,15 @@
                             $("#editModal .modal-content").html(result);
                         }
                     },
-                    error: function (xhr, status, error) {
+                    error: function (jqXHR, status, error) {
                         console.error("Error updating the entity: " + error);
+                        if (jqXHR.status == 401) {
+                            alert("Login token expired");
+                            window.location.href = "/Login/Index";
+                        }
+                        else {
+                            alert("Error updating the entity: " + jqXHR.status);
+                        }
                     }
                 });
             });
@@ -391,20 +429,52 @@
             $(document).on("click", ".btn-detail", function (e) {
                 e.preventDefault();
                 var entityId = $(this).data("id");
-                $.get("/EmailNotification/Details", { id: entityId }, function (data) {
-                    $("#detailModal .modal-content").html(data);
-                    $("#detailModal").modal("show");
-                });
+                // $.get("/EmailNotification/Details", { id: entityId }, function (data) {
+                //     $("#detailModal .modal-content").html(data);
+                //     $("#detailModal").modal("show");
+                // });
+
+                $.get("/EmailNotification/Details", { id: entityId })
+                    .done(function (data) {
+                        $("#detailModal .modal-content").html(data);
+                        $("#detailModal").modal("show");
+                    })
+                    .fail(function (jqXHR, textStatus, errorThrown) {
+                        console.error("Error fetching modal:", textStatus, errorThrown);
+                        if (jqXHR.status == 401) {
+                            alert("Login token expired");
+                            window.location.href = "/Login/Index";
+                        }
+                        else {
+                            alert("Details failed: " + jqXHR.status);
+                        }
+                    });
             });
 
             /*-------------------------- Delete */
             $(document).on("click", ".btn-delete", function (e) {
                 e.preventDefault();
                 var entityId = $(this).data("id");
-                $.get("/EmailNotification/Delete", { id: entityId }, function (data) {
-                    $("#deleteModal .modal-content").html(data);
-                    $("#deleteModal").modal("show");
-                });
+                // $.get("/EmailNotification/Delete", { id: entityId }, function (data) {
+                //     $("#deleteModal .modal-content").html(data);
+                //     $("#deleteModal").modal("show");
+                // });
+
+                $.get("/EmailNotification/Delete", { id: entityId })
+                    .done(function (data) {
+                        $("#deleteModal .modal-content").html(data);
+                        $("#deleteModal").modal("show");
+                    })
+                    .fail(function (jqXHR, textStatus, errorThrown) {
+                        console.error("Error fetching modal:", textStatus, errorThrown);
+                        if (jqXHR.status == 401) {
+                            alert("Login token expired");
+                            window.location.href = "/Login/Index";
+                        }
+                        else {
+                            alert("Delete failed: " + jqXHR.status);
+                        }
+                    });
             });
 
             $(document).on("submit", "#deleteForm", function (e) {
@@ -423,8 +493,15 @@
                             $("#deleteModal .modal-content").html(result);
                         }
                     },
-                    error: function (xhr, status, error) {
-                        console.error("Error updating the entity: " + error);
+                    error: function (jqXHR, status, error) {
+                        console.error("Error deleting the entity: " + error);
+                        if (jqXHR.status == 401) {
+                            alert("Login token expired");
+                            window.location.href = "/Login/Index";
+                        }
+                        else {
+                            alert("Error deleting the entity: " + jqXHR.status);
+                        }
                     }
                 });
             });

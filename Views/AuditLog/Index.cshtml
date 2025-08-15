@@ -26,7 +26,7 @@
     <hr> <!-- Divider -->
     <div class="d-flex gap-2 mt-2">
         <button id="btnShowHideSearch" type="submit" class="btn btn-primary">Open Filter</button>
-        <button type="button" class="btn btn-success" id="btnCreate">Create</button>
+        @* <button type="button" class="btn btn-success" id="btnCreate">Create</button> *@
     </div>
     <hr> <!-- Divider -->
     <!-- Search Section -->
@@ -329,8 +329,13 @@
                     })
                     .fail(function (jqXHR, textStatus, errorThrown) {
                         console.log("Error:", jqXHR.status);  // Logs error status (e.g., 404, 500)
-                        alert("Failed to load. Status: " + jqXHR.status);
-                        window.location.href = "/Login/Index";
+                        if (jqXHR.status == 401) {
+                            alert("Login token expired");
+                            window.location.href = "/Login/Index";
+                        }
+                        else {
+                            alert("Failed to load. Status: " + jqXHR.status);
+                        }
                     });
             });
 
@@ -353,11 +358,15 @@
                             $("#createModal .modal-content").html(result);
                         }
                     },
-                    error: function (xhr, status, error) {
+                    error: function (jqXHR, status, error) {
                         console.error("Submission error: " + error);
-                        alert("Failed to load. Status: " + xhr.status);
-                        if (xhr.status == 401)
+                        if (jqXHR.status == 401) {
+                            alert("Login token expired");
                             window.location.href = "/Login/Index";
+                        }
+                        else {
+                            alert("Failed to submit. Status: " + jqXHR.status);
+                        }
                     }
                 });
             });
@@ -367,10 +376,26 @@
                 e.preventDefault();
                 var entityId = $(this).data("id");
 
-                $.get("/AuditLog/Edit", { id: entityId }, function (data) {
-                    $("#editModal .modal-content").html(data);
-                    $("#editModal").modal("show");
-                });
+                // $.get("/AuditLog/Edit", { id: entityId }, function (data) {
+                //     $("#editModal .modal-content").html(data);
+                //     $("#editModal").modal("show");
+                // });
+
+                $.get("/AuditLog/Edit", { id: entityId })
+                    .done(function (data) {
+                        $("#editModal .modal-content").html(data);
+                        $("#editModal").modal("show");
+                    })
+                    .fail(function (jqXHR, textStatus, errorThrown) {
+                        console.error("Error fetching modal:", textStatus, errorThrown);
+                        if (jqXHR.status == 401) {
+                            alert("Login token expired");
+                            window.location.href = "/Login/Index";
+                        }
+                        else {
+                            alert("edit failed: " + jqXHR.status);
+                        }
+                    });
             });
 
             $(document).on("submit", "#editForm", function (e) {
@@ -391,8 +416,16 @@
                             $("#editModal .modal-content").html(result);
                         }
                     },
-                    error: function (xhr, status, error) {
+                    error: function (jqXHR, status, error) {
                         console.error("Error updating the entity: " + error);
+                        if (jqXHR.status == 401) {
+                            alert("Login token expired");
+                            window.location.href = "/Login/Index";
+                        }
+                        else {
+                            alert("Failed to submit. Status: " + jqXHR.status);
+                        }
+
                     }
                 });
             });
@@ -401,10 +434,26 @@
             $(document).on("click", ".btn-detail", function (e) {
                 e.preventDefault();
                 var entityId = $(this).data("id");
-                $.get("/AuditLog/DetailsMTM", { id: entityId }, function (data) {
-                    $("#detailModal .modal-content").html(data);
-                    $("#detailModal").modal("show");
-                });
+                // $.get("/AuditLog/DetailsMTM", { id: entityId }, function (data) {
+                //     $("#detailModal .modal-content").html(data);
+                //     $("#detailModal").modal("show");
+                // });
+
+                $.get("/AuditLog/DetailsMTM", { id: entityId })
+                    .done(function (data) {
+                        $("#detailModal .modal-content").html(data);
+                        $("#detailModal").modal("show");
+                    })
+                    .fail(function (jqXHR, textStatus, errorThrown) {
+                        console.error("Error fetching modal:", textStatus, errorThrown);
+                        if (jqXHR.status == 401) {
+                            alert("Login token expired");
+                            window.location.href = "/Login/Index";
+                        }
+                        else {
+                            alert("detail failed: " + jqXHR.status);
+                        }
+                    });
             });
 
             // /*-------------------------- Detail */
@@ -443,8 +492,15 @@
                             $("#deleteModal .modal-content").html(result);
                         }
                     },
-                    error: function (xhr, status, error) {
-                        console.error("Error updating the entity: " + error);
+                    error: function (jqXHR, status, error) {
+                        console.error("Error deleting the entity: " + error);
+                        if (jqXHR.status == 401) {
+                            alert("Login token expired");
+                            window.location.href = "/Login/Index";
+                        }
+                        else {
+                            alert("Failed to submit. Status: " + jqXHR.status);
+                        }
                     }
                 });
             });

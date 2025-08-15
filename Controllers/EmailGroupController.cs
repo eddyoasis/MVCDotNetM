@@ -55,25 +55,6 @@ namespace MVCWebApp.Controllers
         {
             req.TypeSelections = _typeSelections;
 
-            //if(req.TypeID == (int)EmailGroupTypeEnum.AutoMargin)
-            //{
-            //    if (req.EmailCC.IsNullOrEmpty())
-            //    {
-            //        ModelState.AddModelError("EmailTo must have value", "EmailTo must have value");
-            //        return PartialView("_EditPartial", req);
-            //    }
-            //}
-
-            //if (req.TypeID == (int)EmailGroupTypeEnum.StockLoss)
-            //{
-            //    if (req.EmailTo.IsNullOrEmpty())
-            //    {
-            //        ModelState.AddModelError("EmailTo must have value", "EmailTo must have value");
-            //        return PartialView("_EditPartial", req);
-            //    }
-
-            //}
-
             if (ModelState.IsValid)
             {
                 await _emailGroupService.AddAsync(req);

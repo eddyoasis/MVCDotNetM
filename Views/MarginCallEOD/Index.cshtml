@@ -425,7 +425,13 @@
                     },
                     error: function (jqXHR) {
                         console.error("Error:", jqXHR.status);
-                        alert("Search failed. Please try again.");
+                        if (jqXHR.status == 401) {
+                            alert("Login token expired");
+                            window.location.href = "/Login/Index";
+                        }
+                        else {
+                            alert("Search failed: " + jqXHR.status);
+                        }
                     }
                 });
             }
@@ -434,10 +440,26 @@
             $(document).on("click", ".btn-approveMOC", function (e) {
                 e.preventDefault();
                 var entityId = $(this).data("id");
-                $.get("/MarginCallEOD/ApproveMOC", { id: entityId }, function (data) {
-                    $("#approveModal .modal-content").html(data);
-                    $("#approveModal").modal("show");
-                });
+                // $.get("/MarginCallEOD/ApproveMOC", { id: entityId }, function (data) {
+                //     $("#approveModal .modal-content").html(data);
+                //     $("#approveModal").modal("show");
+                // });
+
+                $.get("/MarginCallEOD/ApproveMOC", { id: entityId })
+                    .done(function (data) {
+                        $("#approveModal .modal-content").html(data);
+                        $("#approveModal").modal("show");
+                    })
+                    .fail(function (jqXHR, textStatus, errorThrown) {
+                        console.error("Error fetching modal:", textStatus, errorThrown);
+                        if (jqXHR.status == 401) {
+                            alert("Login token expired");
+                            window.location.href = "/Login/Index";
+                        }
+                        else {
+                            alert("ApproveMOC failed: " + jqXHR.status);
+                        }
+                    });
             });
 
             $(document).on("submit", "#approveMOCForm", function (e) {
@@ -456,8 +478,15 @@
                             alert('approve failed');
                         }
                     },
-                    error: function (xhr, status, error) {
-                        console.error("Error updating the entity: " + error);
+                    error: function (jqXHR, status, error) {
+                        console.error("approve MOC failed:: " + error);
+                        if (jqXHR.status == 401) {
+                            alert("Login token expired");
+                            window.location.href = "/Login/Index";
+                        }
+                        else {
+                            alert("approve MOC failed: " + jqXHR.status);
+                        }
                     }
                 });
             });
@@ -466,10 +495,26 @@
             $(document).on("click", ".btn-approveStockloss", function (e) {
                 e.preventDefault();
                 var entityId = $(this).data("id");
-                $.get("/MarginCallEOD/ApproveStockloss", { id: entityId }, function (data) {
-                    $("#approveModal .modal-content").html(data);
-                    $("#approveModal").modal("show");
-                });
+                // $.get("/MarginCallEOD/ApproveStockloss", { id: entityId }, function (data) {
+                //     $("#approveModal .modal-content").html(data);
+                //     $("#approveModal").modal("show");
+                // });
+
+                $.get("/MarginCallEOD/ApproveStockloss", { id: entityId })
+                    .done(function (data) {
+                        $("#approveModal .modal-content").html(data);
+                        $("#approveModal").modal("show");
+                    })
+                    .fail(function (jqXHR, textStatus, errorThrown) {
+                        console.error("Error fetching modal:", textStatus, errorThrown);
+                        if (jqXHR.status == 401) {
+                            alert("Login token expired");
+                            window.location.href = "/Login/Index";
+                        }
+                        else {
+                            alert("ApproveStockloss failed: " + jqXHR.status);
+                        }
+                    });
             });
 
             $(document).on("submit", "#approveStocklossForm", function (e) {
@@ -488,8 +533,15 @@
                             alert('approve failed');
                         }
                     },
-                    error: function (xhr, status, error) {
-                        console.error("Error updating the entity: " + error);
+                    error: function (jqXHR, status, error) {
+                        console.error("approve Stockloss failed: " + error);
+                        if (jqXHR.status == 401) {
+                            alert("Login token expired");
+                            window.location.href = "/Login/Index";
+                        }
+                        else {
+                            alert("approve Stockloss failed: " + jqXHR.status);
+                        }
                     }
                 });
             });
@@ -498,10 +550,26 @@
             $(document).on("click", ".btn-approve", function (e) {
                 e.preventDefault();
                 var entityId = $(this).data("id");
-                $.get("/MarginCallEOD/Approve", { id: entityId }, function (data) {
-                    $("#approveModal .modal-content").html(data);
-                    $("#approveModal").modal("show");
-                });
+                // $.get("/MarginCallEOD/Approve", { id: entityId }, function (data) {
+                //     $("#approveModal .modal-content").html(data);
+                //     $("#approveModal").modal("show");
+                // });
+
+                $.get("/MarginCallEOD/Approve", { id: entityId })
+                    .done(function (data) {
+                        $("#approveModal .modal-content").html(data);
+                        $("#approveModal").modal("show");
+                    })
+                    .fail(function (jqXHR, textStatus, errorThrown) {
+                        console.error("Error fetching modal:", textStatus, errorThrown);
+                        if (jqXHR.status == 401) {
+                            alert("Login token expired");
+                            window.location.href = "/Login/Index";
+                        }
+                        else {
+                            alert("Approve failed: " + jqXHR.status);
+                        }
+                    });
             });
 
             $(document).on("submit", "#approveForm", function (e) {
@@ -520,8 +588,15 @@
                             alert('approve failed');
                         }
                     },
-                    error: function (xhr, status, error) {
-                        console.error("Error updating the entity: " + error);
+                    error: function (jqXHR, status, error) {
+                        console.error("approve failed: " + error);
+                        if (jqXHR.status == 401) {
+                            alert("Login token expired");
+                            window.location.href = "/Login/Index";
+                        }
+                        else {
+                            alert("approve failed: " + jqXHR.status);
+                        }
                     }
                 });
             });
@@ -569,8 +644,13 @@
                     })
                     .fail(function (jqXHR, textStatus, errorThrown) {
                         console.log("Error:", jqXHR.status);
-                        alert("Failed to load. Status: " + jqXHR.status);
-                        window.location.href = "/Login/Index";
+                        if (jqXHR.status == 401) {
+                            alert("Login token expired");
+                            window.location.href = "/Login/Index";
+                        }
+                        else {
+                            alert("creae failed: " + jqXHR.status);
+                        }
                     });
             });
 
@@ -593,10 +673,15 @@
                             $("#createModal .modal-content").html(result);
                         }
                     },
-                    error: function (xhr, status, error) {
+                    error: function (jqXHR, status, error) {
                         console.error("Submission error: " + error);
-                        alert("Failed to load. Status: " + xhr.status);
-                        window.location.href = "/Login/Index";
+                        if (jqXHR.status == 401) {
+                            alert("Login token expired");
+                            window.location.href = "/Login/Index";
+                        }
+                        else {
+                            alert("creae failed: " + jqXHR.status);
+                        }
                     }
                 });
             });
@@ -630,8 +715,15 @@
                             $("#editModal .modal-content").html(result);
                         }
                     },
-                    error: function (xhr, status, error) {
-                        console.error("Error updating the entity: " + error);
+                    error: function (jqXHR, status, error) {
+                        console.error("it failed: " + error);
+                        if (jqXHR.status == 401) {
+                            alert("Login token expired");
+                            window.location.href = "/Login/Index";
+                        }
+                        else {
+                            alert("edit failed: " + jqXHR.status);
+                        }
                     }
                 });
             });
@@ -640,10 +732,26 @@
             $(document).on("click", ".btn-detail", function (e) {
                 e.preventDefault();
                 var entityId = $(this).data("id");
-                $.get("/MarginCallEOD/Details", { id: entityId }, function (data) {
-                    $("#detailModal .modal-content").html(data);
-                    $("#detailModal").modal("show");
-                });
+                // $.get("/MarginCallEOD/Details", { id: entityId }, function (data) {
+                //     $("#detailModal .modal-content").html(data);
+                //     $("#detailModal").modal("show");
+                // });
+
+                $.get("/MarginCallEOD/Details", { id: entityId })
+                    .done(function (data) {
+                        $("#detailModal .modal-content").html(data);
+                        $("#detailModal").modal("show");
+                    })
+                    .fail(function (jqXHR, textStatus, errorThrown) {
+                        console.error("Error fetching modal:", textStatus, errorThrown);
+                        if (jqXHR.status == 401) {
+                            alert("Login token expired");
+                            window.location.href = "/Login/Index";
+                        }
+                        else {
+                            alert("Details failed: " + jqXHR.status);
+                        }
+                    });
             });
 
             /*-------------------------- Delete */
@@ -672,8 +780,15 @@
                             $("#deleteModal .modal-content").html(result);
                         }
                     },
-                    error: function (xhr, status, error) {
-                        console.error("Error updating the entity: " + error);
+                    error: function (jqXHR, status, error) {
+                        console.error("delete failed: " + error);
+                        if (jqXHR.status == 401) {
+                            alert("Login token expired");
+                            window.location.href = "/Login/Index";
+                        }
+                        else {
+                            alert("delete failed: " + jqXHR.status);
+                        }
                     }
                 });
             });

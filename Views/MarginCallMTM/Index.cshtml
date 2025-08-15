@@ -26,7 +26,6 @@
     <hr> <!-- Divider -->
     <button id="btnShowHideSearch" type="submit" class="btn btn-primary">Open Filter</button>
     <hr> <!-- Divider -->
-
     <!-- Search Section -->
     <section id="searchSection" style="display: none;" class="p-4 border rounded bg-light shadow-sm">
         <h4>Search Margin Call</h4>
@@ -61,7 +60,8 @@
             </div>
         </div>
 
-        <div class="d-flex flex-wrap gap-2 d-none"> @*Hidden*@
+        <div class="d-flex flex-wrap gap-2 d-none">
+            @*Hidden*@
             <div class="form-group mt-2">
                 <label>Type</label>
                 <input type="text" name="Type" id="Type" class="form-control" value="@Model?.Type" placeholder="Enter Type">
@@ -72,7 +72,8 @@
             </div>
         </div>
 
-        <div class="d-flex flex-wrap gap-2 d-none"> @*Hidden*@
+        <div class="d-flex flex-wrap gap-2 d-none">
+            @*Hidden*@
             <div class="form-group mt-2">
                 <label class="mr-2">Collateral_Ccy</label>
                 <select id="optionCollateral_Ccy" class="form-control" asp-items="@Model?.Collateral_Ccy">
@@ -91,24 +92,25 @@
         </div>
 
         @* <div class="d-flex flex-wrap gap-2">
-            <div class="form-group mt-2">
-                <label class="mr-2">MarginCallFlag</label>
-                <select id="optionMarginCallFlag" class="form-control" asp-items="@Model?.MarginCallFlag">
-                </select>
-            </div>
-            <div class="form-group mt-2">
-                <label class="mr-2">EODTriggerFlag</label>
-                <select id="optionEODTriggerFlag" class="form-control" asp-items="@Model?.EODTriggerFlag">
-                </select>
-            </div>
-            <div class="form-group mt-2">
-                <label class="mr-2">MTMTriggerFlag</label>
-                <select id="optionMTMTriggerFlag" class="form-control" asp-items="@Model?.MTMTriggerFlag">
-                </select>
-            </div>
+        <div class="form-group mt-2">
+        <label class="mr-2">MarginCallFlag</label>
+        <select id="optionMarginCallFlag" class="form-control" asp-items="@Model?.MarginCallFlag">
+        </select>
+        </div>
+        <div class="form-group mt-2">
+        <label class="mr-2">EODTriggerFlag</label>
+        <select id="optionEODTriggerFlag" class="form-control" asp-items="@Model?.EODTriggerFlag">
+        </select>
+        </div>
+        <div class="form-group mt-2">
+        <label class="mr-2">MTMTriggerFlag</label>
+        <select id="optionMTMTriggerFlag" class="form-control" asp-items="@Model?.MTMTriggerFlag">
+        </select>
+        </div>
         </div> *@
 
-        <div class="d-flex gap-1 mt-2 d-none"> @*Hidden*@
+        <div class="d-flex gap-1 mt-2 d-none">
+            @*Hidden*@
             <div class="form-group">
                 <label>Select Date Type</label>
                 <div class="d-flex gap-1">
@@ -128,7 +130,8 @@
             </div>
         </div>
 
-        <div class="d-flex flex-wrap gap-1 mt-2 d-none"> @*Hidden*@
+        <div class="d-flex flex-wrap gap-1 mt-2 d-none">
+            @*Hidden*@
             <div class="form-group">
                 <label>From Date</label>
                 <input type="date" id="dateTimeFrom" class="form-control">
@@ -261,7 +264,7 @@
     </section>
 
     <script>
-        $(document).ready(function () {       
+        $(document).ready(function () {
             /*-------------------------- margin mode */
             $(document).on("change", "#marginModeAll", function (e) {
                 event.preventDefault();
@@ -442,11 +445,13 @@
                     },
                     error: function (jqXHR) {
                         console.error("Error:", jqXHR.status);
-                        if (jqXHR.StatusCode == 401) {
-                            alert("Failed to load. Status: " + jqXHR.status);
+                        if (jqXHR.status == 401) {
+                            alert("Login token expired");
                             window.location.href = "/Login/Index";
                         }
-                        alert("Search failed. Please try again.");
+                        else {
+                            alert("search failed: " + jqXHR.status);
+                        }
                     }
                 });
             }
@@ -455,10 +460,26 @@
             $(document).on("click", ".btn-approveStockloss", function (e) {
                 e.preventDefault();
                 var entityId = $(this).data("id");
-                $.get("/MarginCallMTM/ApproveStockloss", { id: entityId }, function (data) {
-                    $("#approveModal .modal-content").html(data);
-                    $("#approveModal").modal("show");
-                });
+                // $.get("/MarginCallMTM/ApproveStockloss", { id: entityId }, function (data) {
+                //     $("#approveModal .modal-content").html(data);
+                //     $("#approveModal").modal("show");
+                // });
+
+                $.get("/MarginCallMTM/ApproveStockloss", { id: entityId })
+                    .done(function (data) {
+                        $("#approveModal .modal-content").html(data);
+                        $("#approveModal").modal("show");
+                    })
+                    .fail(function (jqXHR, textStatus, errorThrown) {
+                        console.error("Error fetching approval modal:", textStatus, errorThrown);
+                        if (jqXHR.status == 401) {
+                            alert("Login token expired");
+                            window.location.href = "/Login/Index";
+                        }
+                        else {
+                            alert("approve stockloss failed: " + jqXHR.status);
+                        }
+                    });
             });
 
             $(document).on("submit", "#approveStocklossForm", function (e) {
@@ -477,8 +498,15 @@
                             alert('approve failed');
                         }
                     },
-                    error: function (xhr, status, error) {
-                        console.error("Error updating the entity: " + error);
+                    error: function (jqXHR, status, error) {
+                        console.error("approve stockloss failed: " + error);
+                        if (jqXHR.status == 401) {
+                            alert("Login token expired");
+                            window.location.href = "/Login/Index";
+                        }
+                        else {
+                            alert("approve stockloss failed: " + jqXHR.status);
+                        }
                     }
                 });
             });
@@ -487,10 +515,25 @@
             $(document).on("click", ".btn-approve", function (e) {
                 e.preventDefault();
                 var entityId = $(this).data("id");
-                $.get("/MarginCallMTM/Approve", { id: entityId }, function (data) {
-                    $("#approveModal .modal-content").html(data);
-                    $("#approveModal").modal("show");
-                });
+                // $.get("/MarginCallMTM/Approve", { id: entityId }, function (data) {
+                //     $("#approveModal .modal-content").html(data);
+                //     $("#approveModal").modal("show");
+                // });
+                $.get("/MarginCallMTM/Approve", { id: entityId })
+                    .done(function (data) {
+                        $("#approveModal .modal-content").html(data);
+                        $("#approveModal").modal("show");
+                    })
+                    .fail(function (jqXHR, textStatus, errorThrown) {
+                        console.error("Error fetching approval modal:", textStatus, errorThrown);
+                        if (jqXHR.status == 401) {
+                            alert("Login token expired");
+                            window.location.href = "/Login/Index";
+                        }
+                        else {
+                            alert("approve failed: " + jqXHR.status);
+                        }
+                    });
             });
 
             $(document).on("submit", "#approveForm", function (e) {
@@ -509,8 +552,15 @@
                             alert('approve failed');
                         }
                     },
-                    error: function (xhr, status, error) {
-                        console.error("Error updating the entity: " + error);
+                    error: function (jqXHR, status, error) {
+                        console.error("approve failed: " + error);
+                        if (jqXHR.status == 401) {
+                            alert("Login token expired");
+                            window.location.href = "/Login/Index";
+                        }
+                        else {
+                            alert("approve failed: " + jqXHR.status);
+                        }
                     }
                 });
             });
@@ -629,10 +679,26 @@
             $(document).on("click", ".btn-detail", function (e) {
                 e.preventDefault();
                 var entityId = $(this).data("id");
-                $.get("/MarginCallMTM/Details", { id: entityId }, function (data) {
-                    $("#detailModal .modal-content").html(data);
-                    $("#detailModal").modal("show");
-                });
+                // $.get("/MarginCallMTM/Details", { id: entityId }, function (data) {
+                //     $("#detailModal .modal-content").html(data);
+                //     $("#detailModal").modal("show");
+                // });
+
+                $.get("/MarginCallMTM/Details", { id: entityId })
+                    .done(function (data) {
+                        $("#detailModal .modal-content").html(data);
+                        $("#detailModal").modal("show");
+                    })
+                    .fail(function (jqXHR, textStatus, errorThrown) {
+                        console.error("Error fetching approval modal:", textStatus, errorThrown);
+                        if (jqXHR.status == 401) {
+                            alert("Login token expired");
+                            window.location.href = "/Login/Index";
+                        }
+                        else {
+                            alert("Details failed: " + jqXHR.status);
+                        }
+                    });
             });
 
             /*-------------------------- Delete */

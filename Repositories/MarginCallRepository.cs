@@ -35,7 +35,7 @@ namespace MVCWebApp.Repositories
         {
             var updateCount = await _context
                 .Database
-                .ExecuteSqlRawAsync($"exec [dbo].[USP_MarginCall_MTM_Eddy_Update] @PortfolioID='{portfolioID}'");
+                .ExecuteSqlRawAsync($"exec [dbo].[USP_MarginCall_MTM_Update] @PortfolioID='{portfolioID}'");
 
             return updateCount == 1;
         }
@@ -43,7 +43,7 @@ namespace MVCWebApp.Repositories
         public IEnumerable<MarginCallDto> GetMarginCallMTM(MarginCallMode mode)
         {
             var result = _context.MarginCallMTM
-               .FromSqlInterpolated($"exec [dbo].[USP_MarginCall_MTM_Eddy] @Mode={(int)mode}")
+               .FromSqlInterpolated($"exec [dbo].[USP_MarginCall_MTM] @Mode={(int)mode}")
                .AsEnumerable()
                .Select(x => new MarginCallDto
                {
@@ -68,7 +68,7 @@ namespace MVCWebApp.Repositories
         public MarginCallDto GetMarginCallMTM(string portfolioID)
         {
             var result = _context.MarginCallMTM
-               .FromSqlInterpolated($"exec [dbo].[USP_MarginCall_MTM_Eddy_ID] @PortfolioID={portfolioID}")
+               .FromSqlInterpolated($"exec [dbo].[USP_MarginCall_MTM_ID] @PortfolioID={portfolioID}")
                .AsEnumerable()
                .Select(x => new MarginCallDto
                {
@@ -96,7 +96,7 @@ namespace MVCWebApp.Repositories
         {
             var updateCount = await _context
                 .Database
-                .ExecuteSqlRawAsync($"exec [dbo].[USP_MarginCall_EOD_Eddy_Update] @PortfolioID='{portfolioID}'");
+                .ExecuteSqlRawAsync($"exec [dbo].[USP_MarginCall_EOD_Update] @PortfolioID='{portfolioID}'");
 
             return updateCount == 1;
         }
@@ -104,7 +104,7 @@ namespace MVCWebApp.Repositories
         public IEnumerable<MarginCallDto> GetMarginCallEOD(MarginCallMode mode)
         {
             var result = _context.MarginCallEOD
-               .FromSqlInterpolated($"exec [dbo].[USP_MarginCall_EOD_Eddy] @Mode={(int)mode}")
+               .FromSqlInterpolated($"exec [dbo].[USP_MarginCall_EOD] @Mode={(int)mode}")
                .AsEnumerable()
                .Select(x => new MarginCallDto
                {
@@ -130,7 +130,7 @@ namespace MVCWebApp.Repositories
         public MarginCallDto GetMarginCallEOD(string portfolioID)
         {
             var result = _context.MarginCallEOD
-               .FromSqlInterpolated($"exec [dbo].[USP_MarginCall_EOD_Eddy_ID] @PortfolioID={portfolioID}")
+               .FromSqlInterpolated($"exec [dbo].[USP_MarginCall_EOD_ID] @PortfolioID={portfolioID}")
                .AsEnumerable()
                .Select(x => new MarginCallDto
                {
