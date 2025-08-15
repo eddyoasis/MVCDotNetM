@@ -5,6 +5,7 @@ using MVCWebApp.Constants;
 using MVCWebApp.Enums;
 using MVCWebApp.Helper;
 using MVCWebApp.Helper.Mapper;
+using MVCWebApp.Models.EmailGroups;
 using MVCWebApp.Models.EmailNotifications;
 using MVCWebApp.Models.MarginFormulas;
 using MVCWebApp.Services;
@@ -63,18 +64,20 @@ namespace MVCWebApp.Controllers
             }
             else if (entity.TypeID == (int)AuditLogTypeEnum.Formula)
             {
-                var sssasd = JsonConvert.DeserializeObject<MarginFormula>(entity.NewValue);
-                response = _mapper.MapDto<MarginFormulaViewModel>(sssasd);
+                var marginFormula = JsonConvert.DeserializeObject<MarginFormula>(entity.NewValue);
+                response = _mapper.MapDto<MarginFormulaViewModel>(marginFormula);
                 return PartialView("_DetailPartialFormula", response);
             }
             else if (entity.TypeID == (int)AuditLogTypeEnum.EmailNotifcation)
             {
-                response = JsonConvert.DeserializeObject<EmailNotificationViewModel>(entity.NewValue);
+                var emailNotification = JsonConvert.DeserializeObject<EmailNotification>(entity.NewValue);
+                response = _mapper.MapDto<EmailNotificationViewModel>(emailNotification);
                 return PartialView("_DetailPartialEmailNotification", response);
             }
             else if (entity.TypeID == (int)AuditLogTypeEnum.EmailGroup)
             {
-                response = JsonConvert.DeserializeObject<EmailGroupViewModel>(entity.NewValue);
+                var emailGroup = JsonConvert.DeserializeObject<EmailGroup>(entity.NewValue);
+                response = _mapper.MapDto<EmailGroupViewModel>(emailGroup);
                 return PartialView("_DetailPartialEmailGroup", response);
             }
             else

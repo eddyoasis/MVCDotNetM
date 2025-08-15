@@ -26,7 +26,6 @@
     <hr> <!-- Divider -->
     <div class="d-flex gap-2 mt-2">
         <button id="btnShowHideSearch" type="submit" class="btn btn-primary">Open Filter</button>
-        @* <button type="button" class="btn btn-success" id="btnCreate">Create</button> *@
     </div>
     <hr> <!-- Divider -->
     <!-- Search Section -->
@@ -34,25 +33,11 @@
         <h4>Search Audit Log</h4>
 
         <div class="d-flex gap-1">
-            @* <div class="form-group">
-                <label asp-for="TypeSelections" class="control-label"></label>
-                    <select id="optionTypeSelections" class="form-control" asp-items="@Model?.TypeSelections">
-                    </select>
-                <input asp-for="Type" class="form-control" hidden />
-            </div>
-            <div class="form-group">
-                <label for="MarginType">Name</label>
-                <input type="text" name="FormulaName" id="FormulaName" class="form-control" value="@Model?.Name" placeholder="Enter Name">
-            </div>
-            <div class="form-group">
-                <label for="MarginFormula">Formula</label>
-                <input type="text" name="Formula" id="Formula" class="form-control" value="@Model?.Formula" placeholder="Enter Formula">
-            </div> *@
+           
             <div class="form-group">
                 <label asp-for="TypeSelections" class="control-label"></label>
                 <select id="optionTypeSelections" class="form-control" asp-items="@Model?.TypeSelections">
                 </select>
-                @* <input asp-for="TypeID" class="form-control" hidden /> *@
             </div>
             <div class="form-group">
                 <label asp-for="ActionSelections" class="control-label"></label>
@@ -68,10 +53,6 @@
                 <label for="CreatedBy">CreatedBy</label>
                 <input type="text" name="CreatedBy" id="CreatedBy" class="form-control" value="@Model?.CreatedBy" placeholder="Enter CreatedBy">
             </div>
-@*             <div class="form-group">
-                <label for="ModifiedBy">ModifiedBy</label>
-                <input type="text" name="ModifiedBy" id="ModifiedBy" class="form-control" value="@Model?.ModifiedBy" placeholder="Enter ModifiedBy">
-            </div> *@
         </div>
 
         <div class="d-flex gap-1 mt-2 d-none"> @*hidden*@
