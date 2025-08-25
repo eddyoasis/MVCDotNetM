@@ -311,11 +311,7 @@
             $(document).on("click", "#btnCurrentMonth", function (e) {
 
                 let [year, month] = $("#dateTimeFrom").val().split("-");
-                console.log(year);
-                console.log(month);
-
                 let previousMonth = new Date(year, month - 2, 1); // -2 because months are 0-based
-                console.log(previousMonth);
 
                 let now = new Date();
                 let firstDay = new Date(now.getFullYear(), now.getMonth(), 1).toLocaleDateString('en-CA'); // YYYY-MM-DD format;
@@ -343,8 +339,6 @@
 
                 let [year, month] = $("#dateTimeFrom").val().split("-");
                 let nextMonth = new Date(year, month, 1); // -2 because months are 0-based
-
-                console.log(nextMonth);
 
                 let now = new Date();
                 let firstDay = nextMonth.toLocaleDateString('en-CA'); // YYYY-MM-DD format;
@@ -602,7 +596,6 @@
                 e.preventDefault();
                 $.get("/EmailNotification/Create")
                     .done(function (data, textStatus, jqXHR) {
-                        console.log("Success:", jqXHR.status);
                         $("#createModal .modal-content").html(data);
                         $("#createModal").modal("show");
                     })
@@ -623,7 +616,6 @@
                     data: form.serialize(),
                     success: function (result) {
                         if (result.success) {
-                            console.log(result);
                             $("#createModal").modal("hide");
 
                             alert('success create');

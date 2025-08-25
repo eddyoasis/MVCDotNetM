@@ -16,8 +16,14 @@ namespace MVCWebApp.Enums
         [Display(Name = "MTM")]
         MTM = 11,
 
-        [Display(Name = "Stock loss")]
-        StockLoss = 12,
+        [Display(Name = "MTM Stoploss")]
+        MTMStoploss = 12,
+
+        [Display(Name = "Day 2 Stoploss")]
+        Day2Stoploss = 121,
+
+        [Display(Name = "Day 3 Stoploss")]
+        Day3Stoploss = 122,
 
         [Display(Name = "MOC")]
         MOC = 13,
@@ -40,8 +46,14 @@ namespace MVCWebApp.Enums
         [Display(Name = "MTM")]
         MTM = 11,
 
-        [Display(Name = "Stock loss")]
-        StockLoss = 12,
+        [Display(Name = "MTM Stoploss")]
+        MTMStoploss = 12,
+
+        [Display(Name = "Day 2 Stoploss")]
+        Day2Stoploss = 121,
+
+        [Display(Name = "Day 3 Stoploss")]
+        Day3Stoploss = 122,
 
         [Display(Name = "MOC")]
         MOC = 13,

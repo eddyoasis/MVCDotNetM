@@ -25,7 +25,8 @@ namespace MVCWebApp.Controllers
             return View(new EmailNotificationSearchReq 
             { 
                 PageNumber = 1, 
-                PageSize = AppConstants.DefaultPageSize 
+                PageSize = AppConstants.DefaultPageSize,
+                TypeSelections = _typeSearchSelections
             });
         }
 

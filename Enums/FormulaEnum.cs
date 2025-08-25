@@ -7,8 +7,8 @@ namespace MVCWebApp.Enums
         [Display(Name = "Auto Margin")]
         AutoMargin = 1,
 
-        [Display(Name = "Stock Loss")]
-        StockLoss = 2
+        [Display(Name = "Stop Loss")]
+        StopLoss = 2
     }
 
     public enum FormulaTypeSearchEnum
@@ -19,7 +19,7 @@ namespace MVCWebApp.Enums
         [Display(Name = "Auto Margin")]
         AutoMargin = 1,
 
-        [Display(Name = "Stock Loss")]
-        StockLoss = 2
+        [Display(Name = "Stop Loss")]
+        StopLoss = 2
     }
 }

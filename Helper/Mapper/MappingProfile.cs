@@ -26,7 +26,11 @@ namespace MVCWebApp.Helper.Mapper
             CreateMap<MarginFormula, MarginFormulaEditReq>();
 
             CreateMap<MarginCall, MarginCallViewModel>();
-            CreateMap<MarginCallDto, MarginCallViewModel>();
+            CreateMap<MarginCallDto, MarginCallViewModel>()
+                .ForMember(dest => dest.Percentages, opt => opt.MapFrom(src => src.Percentages.ToString("0.00")))
+                .ForMember(dest => dest.Collateral, opt => opt.MapFrom(src => src.Collateral.ToString("0.00")))
+                .ForMember(dest => dest.VM, opt => opt.MapFrom(src => src.VM.ToString("0.00")))
+                .ForMember(dest => dest.MarginCallAmount, opt => opt.MapFrom(src => src.MarginCallAmount.ToString("0.00")));
 
             CreateMap<AuditLog, AuditLogViewModel>()
                .ForMember(dest => dest.Type, opt => opt.MapFrom(src => GetEnumStringValue<AuditLogTypeEnum>(src.TypeID)))

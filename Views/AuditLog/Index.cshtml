@@ -183,7 +183,6 @@
                 let now = new Date();
                 let firstDay = new Date(now.getFullYear(), now.getMonth(), 1).toLocaleDateString('en-CA'); // YYYY-MM-DD format;
                 let lastDay = new Date(now.getFullYear(), now.getMonth() + 1, 0).toLocaleDateString('en-CA');
-                // let lastDay = new Date(now.getFullYear(), now.getMonth() + 1, 0).toISOString().split("T")[0];
 
                 $("#dateTimeFrom").val(firstDay);
                 $("#dateTimeTo").val(lastDay);
@@ -206,8 +205,6 @@
 
                 let [year, month] = $("#dateTimeFrom").val().split("-");
                 let nextMonth = new Date(year, month, 1); // -2 because months are 0-based
-
-                console.log(nextMonth);
 
                 let now = new Date();
                 let firstDay = nextMonth.toLocaleDateString('en-CA'); // YYYY-MM-DD format;
@@ -298,129 +295,12 @@
                 });
             }
 
-            /*-------------------------- Create */
-
-            $(document).on("click", "#btnCreate", function (e) {
-                e.preventDefault();
-                $.get("/AuditLog/Create")
-                    .done(function (data, textStatus, jqXHR) {
-                        console.log("Success:", jqXHR.status); // Logs HTTP status code (e.g., 200)
-                        $("#createModal .modal-content").html(data);
-                        $("#createModal").modal("show");
-                    })
-                    .fail(function (jqXHR, textStatus, errorThrown) {
-                        console.log("Error:", jqXHR.status);  // Logs error status (e.g., 404, 500)
-                        if (jqXHR.status == 401) {
-                            alert("Login token expired");
-                            window.location.href = "/Login/Index";
-                        }
-                        else {
-                            alert("Failed to load. Status: " + jqXHR.status);
-                        }
-                    });
-            });
-
-            $(document).on("submit", "#createForm", function (e) {
-                e.preventDefault();
-
-                var form = $(this);
-                $.ajax({
-                    url: form.attr("action"),
-                    type: form.attr("method"),
-                    data: form.serialize(),
-                    success: function (result) {
-                        if (result.success) {
-                            console.log(result);
-                            $("#createModal").modal("hide");
-
-                            alert('success create');
-                            postSearchAuditLog(1);
-                        } else {
-                            $("#createModal .modal-content").html(result);
-                        }
-                    },
-                    error: function (jqXHR, status, error) {
-                        console.error("Submission error: " + error);
-                        if (jqXHR.status == 401) {
-                            alert("Login token expired");
-                            window.location.href = "/Login/Index";
-                        }
-                        else {
-                            alert("Failed to submit. Status: " + jqXHR.status);
-                        }
-                    }
-                });
-            });
-
-            /*-------------------------- Edit */
-            $(document).on("click", ".btn-edit", function (e) {
-                e.preventDefault();
-                var entityId = $(this).data("id");
-
-                // $.get("/AuditLog/Edit", { id: entityId }, function (data) {
-                //     $("#editModal .modal-content").html(data);
-                //     $("#editModal").modal("show");
-                // });
-
-                $.get("/AuditLog/Edit", { id: entityId })
-                    .done(function (data) {
-                        $("#editModal .modal-content").html(data);
-                        $("#editModal").modal("show");
-                    })
-                    .fail(function (jqXHR, textStatus, errorThrown) {
-                        console.error("Error fetching modal:", textStatus, errorThrown);
-                        if (jqXHR.status == 401) {
-                            alert("Login token expired");
-                            window.location.href = "/Login/Index";
-                        }
-                        else {
-                            alert("edit failed: " + jqXHR.status);
-                        }
-                    });
-            });
-
-            $(document).on("submit", "#editForm", function (e) {
-                e.preventDefault();
-                var form = $(this);
-                $.ajax({
-                    url: form.attr("action"),
-                    type: form.attr("method"),
-                    data: form.serialize(),
-                    success: function (result) {
-                        if (result.success) {
-                            $("#editModal").modal("hide");
-                            alert('success edit');
-                            postSearchAuditLog(1);
-
-                        } else {
-                            // Re-render the form with validation errors when needed
-                            $("#editModal .modal-content").html(result);
-                        }
-                    },
-                    error: function (jqXHR, status, error) {
-                        console.error("Error updating the entity: " + error);
-                        if (jqXHR.status == 401) {
-                            alert("Login token expired");
-                            window.location.href = "/Login/Index";
-                        }
-                        else {
-                            alert("Failed to submit. Status: " + jqXHR.status);
-                        }
-
-                    }
-                });
-            });
-
-            /*-------------------------- DetailMTM */
+            /*-------------------------- Detail */
             $(document).on("click", ".btn-detail", function (e) {
                 e.preventDefault();
                 var entityId = $(this).data("id");
-                // $.get("/AuditLog/DetailsMTM", { id: entityId }, function (data) {
-                //     $("#detailModal .modal-content").html(data);
-                //     $("#detailModal").modal("show");
-                // });
 
-                $.get("/AuditLog/DetailsMTM", { id: entityId })
+                $.get("/AuditLog/Details", { id: entityId })
                     .done(function (data) {
                         $("#detailModal .modal-content").html(data);
                         $("#detailModal").modal("show");
@@ -435,55 +315,6 @@
                             alert("detail failed: " + jqXHR.status);
                         }
                     });
-            });
-
-            // /*-------------------------- Detail */
-            // $(document).on("click", ".btn-detail", function (e) {
-            //     e.preventDefault();
-            //     var entityId = $(this).data("id");
-            //     $.get("/AuditLog/Details", { id: entityId }, function (data) {
-            //         $("#detailModal .modal-content").html(data);
-            //         $("#detailModal").modal("show");
-            //     });
-            // });
-
-            /*-------------------------- Delete */
-            $(document).on("click", ".btn-delete", function (e) {
-                e.preventDefault();
-                var entityId = $(this).data("id");
-                $.get("/AuditLog/Delete", { id: entityId }, function (data) {
-                    $("#deleteModal .modal-content").html(data);
-                    $("#deleteModal").modal("show");
-                });
-            });
-
-            $(document).on("submit", "#deleteForm", function (e) {
-                e.preventDefault();
-                var form = $(this);
-                $.ajax({
-                    url: form.attr("action"),
-                    type: form.attr("method"),
-                    data: form.serialize(),
-                    success: function (result) {
-                        if (result.success) {
-                            $("#deleteModal").modal("hide");
-                            alert('success delete');
-                            postSearchAuditLog(1);
-                        } else {
-                            $("#deleteModal .modal-content").html(result);
-                        }
-                    },
-                    error: function (jqXHR, status, error) {
-                        console.error("Error deleting the entity: " + error);
-                        if (jqXHR.status == 401) {
-                            alert("Login token expired");
-                            window.location.href = "/Login/Index";
-                        }
-                        else {
-                            alert("Failed to submit. Status: " + jqXHR.status);
-                        }
-                    }
-                });
             });
 
             /*-------------------------- Clear */
@@ -501,7 +332,7 @@
                 $("#CreatedBy").val('');
                 $("#ModifiedBy").val('');
 
-                $('#createdDate').prop('checked', true);
+                $('#allDatetime').prop('checked', true);
 
                 $("#dateTimeFrom").val(new Date().toISOString().split("T")[0]);
                 $("#dateTimeTo").val(new Date().toISOString().split("T")[0]);

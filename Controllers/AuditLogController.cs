@@ -42,7 +42,7 @@ namespace MVCWebApp.Controllers
         }
 
         [Authorize]
-        public async Task<IActionResult> DetailsMTM(int id)
+        public async Task<IActionResult> Details(int id)
         {
             object response = null;
 

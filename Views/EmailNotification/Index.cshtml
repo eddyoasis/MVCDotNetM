@@ -36,7 +36,13 @@
 
         <div class="d-flex gap-1">
             <div class="form-group">
-                <label for="MarginType">MarginType</label>
+                <label asp-for="TypeSelections" class="control-label"></label>
+                <select id="optionTypeSelections" class="form-control" asp-items="@Model?.TypeSelections">
+                </select>
+                <input asp-for="TypeID" class="form-control" hidden />
+            </div>
+            <div class="form-group">
+                <label for="MarginType">Name</label>
                 <input type="text" name="MarginType" id="MarginType" class="form-control" value="@Model?.MarginType" placeholder="Enter MarginType">
             </div>
             <div class="form-group">
@@ -176,7 +182,6 @@
                 e.preventDefault();
                 $.get("/EmailNotification/Create")
                     .done(function (data, textStatus, jqXHR) {
-                        console.log("Success:", jqXHR.status); // Logs HTTP status code (e.g., 200)
                         $("#createModal .modal-content").html(data);
                         $("#createModal").modal("show");
                     })
@@ -206,11 +211,7 @@
             $(document).on("click", "#btnCurrentMonth", function (e) {
 
                 let [year, month] = $("#dateTimeFrom").val().split("-");
-                console.log(year);
-                console.log(month);
-
                 let previousMonth = new Date(year, month - 2, 1); // -2 because months are 0-based
-                console.log(previousMonth);
 
                 let now = new Date();
                 let firstDay = new Date(now.getFullYear(), now.getMonth(), 1).toLocaleDateString('en-CA'); // YYYY-MM-DD format;
@@ -237,8 +238,6 @@
 
                 let [year, month] = $("#dateTimeFrom").val().split("-");
                 let nextMonth = new Date(year, month, 1); // -2 because months are 0-based
-
-                console.log(nextMonth);
 
                 let now = new Date();
                 let firstDay = nextMonth.toLocaleDateString('en-CA'); // YYYY-MM-DD format;
@@ -294,9 +293,9 @@
 
                 const selectedDateType = $('input[name="dateType"]:checked').val();
 
-                console.log(selectedDateType);
-
                 var requestData = {
+                    TypeID: $("#optionTypeSelections").val(),
+
                     MarginType: $("#MarginType").val(),
                     EmailTemplate: $("#EmailTemplate").val(),
 
@@ -345,7 +344,6 @@
                     data: form.serialize(),
                     success: function (result) {
                         if (result.success) {
-                            console.log(result);
                             $("#createModal").modal("hide");
 
                             alert('success create');
@@ -514,12 +512,13 @@
 
             function clearSearchFields() {
 
+                $("#optionTypeSelections").val(0);
                 $("#MarginType").val('');
                 $("#EmailTemplate").val('');
                 $("#CreatedBy").val('');
                 $("#ModifiedBy").val('');
 
-                $('#createdDate').prop('checked', true);
+                $('#allDatetime').prop('checked', true);
 
                 $("#dateTimeFrom").val(new Date().toISOString().split("T")[0]);
                 $("#dateTimeTo").val(new Date().toISOString().split("T")[0]);

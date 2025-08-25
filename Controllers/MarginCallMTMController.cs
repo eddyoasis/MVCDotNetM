@@ -89,7 +89,7 @@ namespace MVCWebApp.Controllers
             {
                 entity.EmailGroupSelections = 
                     emailGroups
-                    .Where(x=>x.TypeID == (int)EmailGroupTypeEnum.StockLoss)
+                    .Where(x=>x.TypeID == (int)EmailGroupTypeEnum.StopLoss)
                     .ToList();
             }
 
@@ -98,7 +98,7 @@ namespace MVCWebApp.Controllers
             {
                 entity.EmailTemplateList =
                         emailNotifications
-                        .Where(x => x.TypeID == (int)EmailNotificationTypeEnum.StockLoss)
+                        .Where(x => x.TypeID == (int)EmailNotificationTypeEnum.MTMStoploss)
                         .Select(x => new SelectListItem
                         {
                             Text = x.MarginType,
@@ -156,7 +156,7 @@ namespace MVCWebApp.Controllers
             {
                 model.EmailGroupSelections =
                     emailGroups
-                    .Where(x => x.TypeID == (int)EmailGroupTypeEnum.StockLoss)
+                    .Where(x => x.TypeID == (int)EmailGroupTypeEnum.StopLoss)
                     .ToList();
             }
 
@@ -165,7 +165,7 @@ namespace MVCWebApp.Controllers
             {
                 model.EmailTemplateList =
                         emailNotifications
-                        .Where(x => x.TypeID == (int)EmailNotificationTypeEnum.StockLoss)
+                        .Where(x => x.TypeID == (int)EmailNotificationTypeEnum.MTMStoploss)
                         .Select(x => new SelectListItem
                         {
                             Text = x.MarginType,

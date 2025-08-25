@@ -49,7 +49,7 @@
                 <input type="text" name="EmailTo" id="EmailTo" class="form-control" value="@Model?.EmailTo" placeholder="Enter EmailTo">
             </div>
             <div class="form-group">
-                <label for="EmailCC">Email To</label>
+                <label for="EmailCC">Email CC</label>
                 <input type="text" name="EmailCC" id="EmailCC" class="form-control" value="@Model?.EmailCC" placeholder="Enter EmailCC">
             </div>
             <div class="form-group">
@@ -190,7 +190,6 @@
                 let now = new Date();
                 let firstDay = new Date(now.getFullYear(), now.getMonth(), 1).toLocaleDateString('en-CA'); // YYYY-MM-DD format;
                 let lastDay = new Date(now.getFullYear(), now.getMonth() + 1, 0).toLocaleDateString('en-CA');
-                // let lastDay = new Date(now.getFullYear(), now.getMonth() + 1, 0).toISOString().split("T")[0];
 
                 $("#dateTimeFrom").val(firstDay);
                 $("#dateTimeTo").val(lastDay);
@@ -213,8 +212,6 @@
 
                 let [year, month] = $("#dateTimeFrom").val().split("-");
                 let nextMonth = new Date(year, month, 1); // -2 because months are 0-based
-
-                console.log(nextMonth);
 
                 let now = new Date();
                 let firstDay = nextMonth.toLocaleDateString('en-CA'); // YYYY-MM-DD format;
@@ -270,7 +267,7 @@
                 const selectedDateType = $('input[name="dateType"]:checked').val();
 
                 var requestData = {
-                    Type: $("#optionTypeSelections").val(),
+                    TypeID: $("#optionTypeSelections").val(),
                     
                     Name: $("#Name").val(),
                     EmailTo: $("#EmailTo").val(),
@@ -317,7 +314,6 @@
                 e.preventDefault();
                 $.get("/EmailGroup/Create")
                     .done(function (data, textStatus, jqXHR) {
-                        console.log("Success:", jqXHR.status); // Logs HTTP status code (e.g., 200)
                         $("#createModal .modal-content").html(data);
                         $("#createModal").modal("show");
                     })
@@ -343,7 +339,6 @@
                     data: form.serialize(),
                     success: function (result) {
                         if (result.success) {
-                            console.log(result);
                             $("#createModal").modal("hide");
 
                             alert('success create');
@@ -369,11 +364,6 @@
             $(document).on("click", ".btn-edit", function (e) {
                 e.preventDefault();
                 var entityId = $(this).data("id");
-
-                // $.get("/EmailGroup/Edit", { id: entityId }, function (data) {
-                //     $("#editModal .modal-content").html(data);
-                //     $("#editModal").modal("show");
-                // });
 
                 $.get("/EmailGroup/Edit", { id: entityId })
                     .done(function (data) {
@@ -427,10 +417,6 @@
             $(document).on("click", ".btn-detail", function (e) {
                 e.preventDefault();
                 var entityId = $(this).data("id");
-                // $.get("/EmailGroup/Details", { id: entityId }, function (data) {
-                //     $("#detailModal .modal-content").html(data);
-                //     $("#detailModal").modal("show");
-                // });
 
                 $.get("/EmailGroup/Details", { id: entityId })
                     .done(function (data) {
@@ -453,10 +439,6 @@
             $(document).on("click", ".btn-delete", function (e) {
                 e.preventDefault();
                 var entityId = $(this).data("id");
-                // $.get("/EmailGroup/Delete", { id: entityId }, function (data) {
-                //     $("#deleteModal .modal-content").html(data);
-                //     $("#deleteModal").modal("show");
-                // });
 
                 $.get("/EmailGroup/Delete", { id: entityId })
                     .done(function (data) {
@@ -512,12 +494,14 @@
 
             function clearSearchFields() {
 
-                $("#FormulaName").val('');
-                $("#Formula").val('');
+                $("#optionTypeSelections").val(0);
+                $("#Name").val('');
+                $("#EmailTo").val('');
+                $("#EmailCC").val('');
                 $("#CreatedBy").val('');
                 $("#ModifiedBy").val('');
 
-                $('#createdDate').prop('checked', true);
+                $('#allDatetime').prop('checked', true);
 
                 $("#dateTimeFrom").val(new Date().toISOString().split("T")[0]);
                 $("#dateTimeTo").val(new Date().toISOString().split("T")[0]);

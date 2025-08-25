@@ -44,7 +44,11 @@
                                 @if (isMaginModeAll == 1)
                                 {
                                     <button class="btn btn-sm btn-success btn-approve" data-id="@item.PortfolioID">Margin</button>
-                                    <button class="btn btn-sm btn-success btn-approveStockloss" data-id="@item.PortfolioID">Stockloss</button>
+                                    @if (item.Day != "1")
+                                    {
+                                        <button class="btn btn-sm btn-success btn-approveStockloss" data-id="@item.PortfolioID">StopLoss</button>
+                                    }
+                                    //<button class="btn btn-sm btn-success btn-approveStockloss" data-id="@item.PortfolioID">Stockloss</button>
                                     @if (item.Day == "3")
                                     {
                                         <button class="btn btn-sm btn-success btn-approveMOC" data-id="@item.PortfolioID">MOC</button>

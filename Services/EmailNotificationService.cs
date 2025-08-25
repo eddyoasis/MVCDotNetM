@@ -36,6 +36,7 @@ namespace MVCWebApp.Services
             var emailNotifications = emailNotificationRepository.GetAllQueryable();
 
             emailNotifications = emailNotifications.Where(x =>
+                (req.TypeID == 0 || req.TypeID == x.TypeID) &&
                 (req.MarginType.IsNullOrEmpty() || x.MarginType.ToLower().Contains(req.MarginType.ToLower())) &&
                 (req.EmailTemplate.IsNullOrEmpty() || x.EmailTemplate.ToLower().Contains(req.EmailTemplate.ToLower()))
             )
