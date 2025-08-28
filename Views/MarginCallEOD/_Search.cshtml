@@ -58,7 +58,7 @@
                                 {
                                     @if (item.Day != "1")
                                     {
-                                        <button style="width:170px;" class="btn btn-sm btn-success btn-approveStockloss" data-id="@item.PortfolioID" disabled="@item.StoplossTriggerFlag">StopLoss</button>
+                                        <button style="width:170px;" class="btn btn-sm btn-success btn-approveStoploss" data-id="@item.PortfolioID" disabled="@item.StoplossTriggerFlag">StopLoss</button>
                                         @(item.StoplossTriggerFlag == true ? $"{item.StoplossTriggerDatetime}" : "")
 
                                     }

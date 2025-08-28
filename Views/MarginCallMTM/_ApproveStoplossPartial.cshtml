@@ -1,12 +1,12 @@
 ﻿@model MarginCallViewModel
 
-@using (Html.BeginForm("ApproveStockloss", "MarginCallMTM", FormMethod.Post, new { id = "approveStocklossForm" }))
+@using (Html.BeginForm("ApproveStoploss", "MarginCallMTM", FormMethod.Post, new { id = "approveStoplossForm" }))
 {
     @Html.AntiForgeryToken()
     @Html.HiddenFor(m => m.PortfolioID)
 
     <div class="modal-header">
-        <h5 class="modal-title">Approve Stockloss</h5>
+        <h5 class="modal-title">Approve Stoploss</h5>
         <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
             <span>&times;</span>
         </button>

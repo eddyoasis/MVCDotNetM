@@ -178,7 +178,7 @@ namespace MVCWebApp.Controllers
         }
 
         [Authorize]
-        public async Task<IActionResult> ApproveStockloss(string id)
+        public async Task<IActionResult> ApproveStoploss(string id)
         {
             var entity = _marginCallService.GetMarginCallEOD(id);
             if (entity == null)
@@ -209,13 +209,13 @@ namespace MVCWebApp.Controllers
                         .ToList();
             }
 
-            return PartialView("_ApproveStocklossPartial", entity);
+            return PartialView("_ApproveStoplossPartial", entity);
         }
 
         [HttpPost]
         [Authorize]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> ApproveStockloss(MarginCallViewModel model)
+        public async Task<IActionResult> ApproveStoploss(MarginCallViewModel model)
         {
             if (model.PortfolioID.IsNotNullOrEmpty())
             {
@@ -235,7 +235,7 @@ namespace MVCWebApp.Controllers
                         var auditReq = new AuditLog
                         {
                             TypeID = (int)AuditLogTypeEnum.AutoMarginEOD,
-                            ActionID = (int)AuditLogActionEnum.ApproveStockloss,
+                            ActionID = (int)AuditLogActionEnum.ApproveStoploss,
                             Name = model.PortfolioID,
                             CreatedBy = Username,
                             CreatedAt = DateTime.Now,
@@ -276,7 +276,7 @@ namespace MVCWebApp.Controllers
                         .ToList();
             }
 
-            return PartialView("_ApproveStocklossPartial", model);
+            return PartialView("_ApproveStoplossPartial", model);
         }
 
         [Authorize]

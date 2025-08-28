@@ -594,16 +594,16 @@
                 });
             });
 
-            /*-------------------------- Approve Stockloss*/
-            $(document).on("click", ".btn-approveStockloss", function (e) {
+            /*-------------------------- Approve Stoploss*/
+            $(document).on("click", ".btn-approveStoploss", function (e) {
                 e.preventDefault();
                 var entityId = $(this).data("id");
-                // $.get("/MarginCallEOD/ApproveStockloss", { id: entityId }, function (data) {
+                // $.get("/MarginCallEOD/ApproveStoploss", { id: entityId }, function (data) {
                 //     $("#approveModal .modal-content").html(data);
                 //     $("#approveModal").modal("show");
                 // });
 
-                $.get("/MarginCallEOD/ApproveStockloss", { id: entityId })
+                $.get("/MarginCallEOD/ApproveStoploss", { id: entityId })
                     .done(function (data) {
                         $("#approveModal .modal-content").html(data);
                         $("#approveModal").modal("show");
@@ -615,12 +615,12 @@
                             window.location.href = "/Login/Index";
                         }
                         else {
-                            alert("ApproveStockloss failed: " + jqXHR.status);
+                            alert("ApproveStoploss failed: " + jqXHR.status);
                         }
                     });
             });
 
-            $(document).on("submit", "#approveStocklossForm", function (e) {
+            $(document).on("submit", "#approveStoplossForm", function (e) {
                 e.preventDefault();
                 var form = $(this);
                 $.ajax({
@@ -637,13 +637,13 @@
                         }
                     },
                     error: function (jqXHR, status, error) {
-                        console.error("approve Stockloss failed: " + error);
+                        console.error("approve Stoploss failed: " + error);
                         if (jqXHR.status == 401) {
                             alert("Login token expired");
                             window.location.href = "/Login/Index";
                         }
                         else {
-                            alert("approve Stockloss failed: " + jqXHR.status);
+                            alert("approve Stoploss failed: " + jqXHR.status);
                         }
                     }
                 });

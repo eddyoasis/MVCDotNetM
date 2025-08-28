@@ -19,7 +19,7 @@ namespace MVCWebApp.Enums
         Edit = 2,
         Delete = 3,
         Approve = 4,
-        ApproveStockloss = 5,
+        ApproveStoploss = 5,
         ApproveMOC = 6
     }
 }

@@ -8,11 +8,11 @@ namespace MVCWebApp.Repositories
     public interface IMarginCallRepository : IGenericRepository<MarginCall>
     {
         Task<bool> ApproveMarginCallMTM(string portfolioID);
-        IEnumerable<MarginCallDto> GetMarginCallMTM(MarginCallMode mode);
+        IEnumerable<MarginCallDto> GetMarginCallMTM(MarginCallMode mode, string portfolioID = null, string user = null);
         MarginCallDto GetMarginCallMTM(string portfolioID);
 
         Task<bool> ApproveMarginCallEOD(string portfolioID);
-        IEnumerable<MarginCallDto> GetMarginCallEOD(MarginCallMode mode);
+        IEnumerable<MarginCallDto> GetMarginCallEOD(MarginCallMode mode, string portfolioID = null, string user = null);
         MarginCallDto GetMarginCallEOD(string portfolioID);
 
         //Task<bool> ApproveWithSP(string portfolioID);
@@ -42,10 +42,10 @@ namespace MVCWebApp.Repositories
             return updateCount == 1;
         }
 
-        public IEnumerable<MarginCallDto> GetMarginCallMTM(MarginCallMode mode)
+        public IEnumerable<MarginCallDto> GetMarginCallMTM(MarginCallMode mode, string portfolioID = null, string user = null)
         {
             var result = _context.MarginCallMTM
-               .FromSqlInterpolated($"exec [dbo].[USP_MarginCall_MTM] @Mode={(int)mode}")
+               .FromSqlInterpolated($"exec [dbo].[USP_MarginCall_MTM] @Mode={(int)mode}, @ClientCode={portfolioID}, @User={user}")
                .AsEnumerable()
                .Select(ToMarginCallDTO);
 
@@ -73,10 +73,10 @@ namespace MVCWebApp.Repositories
             return updateCount == 1;
         }
 
-        public IEnumerable<MarginCallDto> GetMarginCallEOD(MarginCallMode mode)
+        public IEnumerable<MarginCallDto> GetMarginCallEOD(MarginCallMode mode, string portfolioID = null, string user = null)
         {
             var result = _context.MarginCallEOD
-               .FromSqlInterpolated($"exec [dbo].[USP_MarginCall_EOD] @Mode={(int)mode}")
+               .FromSqlInterpolated($"exec [dbo].[USP_MarginCall_EOD] @Mode={(int)mode}, @ClientCode={portfolioID}, @User={user}")
                .AsEnumerable()
                .Select(ToMarginCallDTO);
 

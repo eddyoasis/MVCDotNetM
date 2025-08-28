@@ -27,7 +27,7 @@ namespace MVCWebApp.Services
 
 
         Task<bool> ApproveMarginCallMTM(MarginCallViewModel model);
-        Task<bool> ApproveMarginCallMTMStockloss(MarginCallViewModel model);
+        Task<bool> ApproveMarginCallMTMStoploss(MarginCallViewModel model);
         MarginCallViewModel GetMarginCallMTM(string portfolioID);
         IEnumerable<MarginCallViewModel> GetMarginCallMTMAll(MarginCallSearchReq req);
     }
@@ -106,6 +106,7 @@ namespace MVCWebApp.Services
                     (req.Selected_MarginMode == (int)MarginCallMode.StoplossAvailable && (x.Day != "1" && !x.StoplossTriggerFlag)) ||
                     (req.Selected_MarginMode == (int)MarginCallMode.MOCAvailable && (x.Day == "3" && !x.MOCTriggerFlag))
                 ) &&
+                (req.SelectedDay == 0 || x.Day == req.SelectedDay.ToString()) &&
                 (req.SearchByDateType == 1 ||
                      ((req.DateFrom == DateTime.MinValue || req.DateTo == DateTime.MinValue) ||
                             (req.SearchByDateType == 2 ?
@@ -184,7 +185,7 @@ namespace MVCWebApp.Services
             return isSuccess;
         }
 
-        public async Task<bool> ApproveMarginCallMTMStockloss(MarginCallViewModel model)
+        public async Task<bool> ApproveMarginCallMTMStoploss(MarginCallViewModel model)
         {
             var isSuccess = await _marginCallRepository.ApproveMarginCallMTM(model.PortfolioID);
             if (isSuccess)
