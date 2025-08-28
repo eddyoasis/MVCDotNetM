@@ -70,8 +70,11 @@ namespace MVCWebApp.Services
             var isSuccess = await _marginCallRepository.ApproveMarginCallEOD(model.PortfolioID);
             if (isSuccess)
             {
-                List<string> recipientsTo = ["eddy.wang@kgi.com"];
-                List<string> recipientsCC = ["eddy.wang@kgi.com"];
+                var emailTo = model.EmailTo.Split("\r\n");
+                var emailCC = model.EmailCC?.Split("\r\n");
+
+                List<string> recipientsTo = emailTo.ToList();
+                List<string> recipientsCC = emailCC == null ? new List<string>() : emailCC.ToList();
                 var subject = model.EmailTemplateSubject;
                 var body = model.EmailTemplateValue;
 
@@ -93,6 +96,12 @@ namespace MVCWebApp.Services
                 req.Selected_MarginMode == 1 ? MarginCallMode.All : MarginCallMode.TriggeredToday);
 
             marginCalls = marginCalls.Where(x =>
+                (req.SearchByStatusType == 0 ||
+                    (req.SearchByStatusType == 1 && !x.MarginCallTriggerFlag) ||
+                    (req.SearchByStatusType == 2 && (x.Day != "1" && !x.StoplossTriggerFlag)) ||
+                    (req.SearchByStatusType == 3 && (x.Day == "3" && !x.MOCTriggerFlag))
+                ) &&
+                req.SelectedDay == 0 || x.Day == req.SelectedDay.ToString() &&
                 (req.SearchByDateType == 1 ||
                      ((req.DateFrom == DateTime.MinValue || req.DateTo == DateTime.MinValue) ||
                             (req.SearchByDateType == 2 ?
@@ -104,9 +113,18 @@ namespace MVCWebApp.Services
                     ((req.PercentagesFrom > 0 && req.PercentagesTo <= 0) && x.Percentages >= req.PercentagesFrom) ||
                     ((req.PercentagesFrom <= 0 && req.PercentagesTo > 0) && x.Percentages <= req.PercentagesTo) ||
                     (x.Percentages >= req.PercentagesFrom && x.Percentages <= req.PercentagesTo)) &&
-                (req.Collateral == 0 || x.Collateral == req.Collateral) &&
-                (req.VM == 0 || x.VM == req.VM) &&
-                (req.IM == 0 || x.VM == req.IM) &&
+                ((req.CollateralFrom <= 0 && req.CollateralTo <= 0) ||
+                    ((req.CollateralFrom > 0 && req.CollateralTo <= 0) && x.Collateral >= req.CollateralFrom) ||
+                    ((req.CollateralFrom <= 0 && req.CollateralTo > 0) && x.Collateral <= req.CollateralTo) ||
+                    (x.Collateral >= req.CollateralFrom && x.Collateral <= req.CollateralTo)) &&
+                ((req.VMFrom <= 0 && req.VMTo <= 0) ||
+                    ((req.VMFrom > 0 && req.VMTo <= 0) && x.VM >= req.VMFrom) ||
+                    ((req.VMFrom <= 0 && req.VMTo > 0) && x.VM <= req.VMTo) ||
+                    (x.VM >= req.VMFrom && x.VM <= req.VMTo)) &&
+                ((req.IMFrom <= 0 && req.IMTo <= 0) ||
+                    ((req.IMFrom > 0 && req.IMTo <= 0) && x.IM >= req.IMFrom) ||
+                    ((req.IMFrom <= 0 && req.IMTo > 0) && x.IM <= req.IMTo) ||
+                    (x.IM >= req.IMFrom && x.IM <= req.IMTo)) &&
                 (req.Selected_Collateral_Ccy == "All" || req.Selected_Collateral_Ccy == x.Collateral_Ccy) &&
                 (req.Selected_IM_Ccy == "All" || req.Selected_IM_Ccy == x.IM_Ccy) &&
                 (req.Selected_VM_Ccy == "All" || req.Selected_VM_Ccy == x.VM_Ccy)
@@ -149,8 +167,11 @@ namespace MVCWebApp.Services
             var isSuccess = await _marginCallRepository.ApproveMarginCallMTM(model.PortfolioID);
             if (isSuccess)
             {
-                List<string> recipientsTo = ["eddy.wang@kgi.com"];
-                List<string> recipientsCC = ["eddy.wang@kgi.com"];
+                var emailTo = model.EmailTo.Split("\r\n");
+                var emailCC = model.EmailCC?.Split("\r\n");
+
+                List<string> recipientsTo = emailTo.ToList();
+                List<string> recipientsCC = emailCC == null ? new List<string>() : emailCC.ToList();
                 var subject = model.EmailTemplateSubject;
                 var body = model.EmailTemplateValue;
 
@@ -183,6 +204,10 @@ namespace MVCWebApp.Services
                 req.Selected_MarginMode == 1 ? MarginCallMode.All : MarginCallMode.TriggeredToday);
 
             marginCalls = marginCalls.Where(x =>
+                (req.SearchByStatusType == 0 ||
+                    (req.SearchByStatusType == 1 && !x.MarginCallTriggerFlag) ||
+                    (req.SearchByStatusType == 2 && !x.StoplossTriggerFlag)
+                ) && 
                 (req.SearchByDateType == 1 ||
                      ((req.DateFrom == DateTime.MinValue || req.DateTo == DateTime.MinValue) ||
                             (req.SearchByDateType == 2 ?
@@ -194,9 +219,18 @@ namespace MVCWebApp.Services
                     ((req.PercentagesFrom > 0 && req.PercentagesTo <= 0) && x.Percentages >= req.PercentagesFrom) ||
                     ((req.PercentagesFrom <= 0 && req.PercentagesTo > 0) && x.Percentages <= req.PercentagesTo) ||
                     (x.Percentages >= req.PercentagesFrom && x.Percentages <= req.PercentagesTo)) &&
-                (req.Collateral == 0 || x.Collateral == req.Collateral) &&
-                (req.VM == 0 || x.VM == req.VM) &&
-                (req.IM == 0 || x.VM == req.IM) &&
+                ((req.CollateralFrom <= 0 && req.CollateralTo <= 0) ||
+                    ((req.CollateralFrom > 0 && req.CollateralTo <= 0) && x.Collateral >= req.CollateralFrom) ||
+                    ((req.CollateralFrom <= 0 && req.CollateralTo > 0) && x.Collateral <= req.CollateralTo) ||
+                    (x.Collateral >= req.CollateralFrom && x.Collateral <= req.CollateralTo)) &&
+                ((req.VMFrom <= 0 && req.VMTo <= 0) ||
+                    ((req.VMFrom > 0 && req.VMTo <= 0) && x.VM >= req.VMFrom) ||
+                    ((req.VMFrom <= 0 && req.VMTo > 0) && x.VM <= req.VMTo) ||
+                    (x.VM >= req.VMFrom && x.VM <= req.VMTo)) &&
+                ((req.IMFrom <= 0 && req.IMTo <= 0) ||
+                    ((req.IMFrom > 0 && req.IMTo <= 0) && x.IM >= req.IMFrom) ||
+                    ((req.IMFrom <= 0 && req.IMTo > 0) && x.IM <= req.IMTo) ||
+                    (x.IM >= req.IMFrom && x.IM <= req.IMTo)) &&
                 (req.Selected_Collateral_Ccy == "All" || req.Selected_Collateral_Ccy == x.Collateral_Ccy) &&
                 (req.Selected_IM_Ccy == "All" || req.Selected_IM_Ccy == x.IM_Ccy) &&
                 (req.Selected_VM_Ccy == "All" || req.Selected_VM_Ccy == x.VM_Ccy)

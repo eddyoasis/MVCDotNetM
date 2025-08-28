@@ -28,7 +28,9 @@
                     <th>Remarks</th>
                     <th>InsertedDatetime</th>
                     <th>ModifiedDatetime</th> *@
-                    <th>Action</th>
+                    <th>MarginCall</th>
+                    <th>Stoploss</th>
+                    <th>Detail</th>
                    @*  <th>Action(Margin)</th>
                     <th>Action(Stockloss)</th> *@
                 </tr>
@@ -60,21 +62,26 @@
                             <div class="d-flex flex-wrap gap-1">
                                 @if (isMaginModeAll == 1)
                                 {
-                                    <button class="btn btn-sm btn-success btn-approve" data-id="@item.PortfolioID">Margin</button>
-                                    <button class="btn btn-sm btn-success btn-approveStockloss" data-id="@item.PortfolioID">StopLoss</button>
+                                    @* <button class="btn btn-sm btn-success btn-approve" data-id="@item.PortfolioID">Margin</button> *@
+                                    <button style="width:170px;" class="btn btn-sm btn-success btn-approve" data-id="@item.PortfolioID" disabled="@item.MarginCallTriggerFlag">Margin</button>
+                                    <span>@item.MarginCallTriggerDatetime</span>
                                 }
-                                <button class="btn btn-sm btn-info btn-detail" data-id="@item.PortfolioID">Details</button>
                             </div>
                         </td>
-                        @* <td>
+                        <td>
                             <div class="d-flex flex-wrap gap-1">
                                 @if (isMaginModeAll == 1)
                                 {
-                                    <button class="btn btn-sm btn-success btn-approveStockloss" data-id="@item.PortfolioID">Approve</button>
+                                    <button style="width:170px;" class="btn btn-sm btn-success btn-approveStockloss" data-id="@item.PortfolioID" disabled="@item.StoplossTriggerFlag">StopLoss</button>
+                                    <span>@item.StoplossTriggerDatetime</span>
                                 }
+                            </div>
+                        </td>
+                        <td>
+                            <div class="d-flex flex-wrap gap-1">
                                 <button class="btn btn-sm btn-info btn-detail" data-id="@item.PortfolioID">Details</button>
                             </div>
-                        </td> *@
+                        </td>
                     </tr>
                 }
             </tbody>

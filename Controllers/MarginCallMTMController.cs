@@ -186,6 +186,9 @@ namespace MVCWebApp.Controllers
                 return NotFound();
             }
 
+            entity.EmailTo = $"{id}@mail.com";
+
+
             var emailGroups = await _emailGroupService.GetAllAsync();
             if (emailGroups.Any())
             {

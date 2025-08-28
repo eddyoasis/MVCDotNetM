@@ -22,7 +22,10 @@
                     <th>VM_Ccy</th>
                     <th>IM</th>
                     <th>IM_Ccy</th>
-                    <th>Action</th>
+                    <th>MarginCall</th>
+                    <th>Stoploss</th>
+                    <th>MOC</th>
+                    <th>Detail</th>
                 </tr>
             </thead>
             <tbody>
@@ -43,19 +46,35 @@
                             <div class="d-flex flex-wrap gap-1">
                                 @if (isMaginModeAll == 1)
                                 {
-                                    <button class="btn btn-sm btn-success btn-approve" data-id="@item.PortfolioID">Margin</button>
+                                    <button style="width:170px;" class="btn btn-sm btn-success btn-approve" data-id="@item.PortfolioID" disabled="@item.MarginCallTriggerFlag">Margin</button>
+                                    <span>@item.MarginCallTriggerDatetime</span>
+                                }
+                            </div>
+                        </td>
+                        <td>
+                            <div class="d-flex flex-wrap gap-1">
+                                @if (isMaginModeAll == 1)
+                                {
                                     @if (item.Day != "1")
                                     {
-                                        <button class="btn btn-sm btn-success btn-approveStockloss" data-id="@item.PortfolioID">StopLoss</button>
-                                    }
-                                    //<button class="btn btn-sm btn-success btn-approveStockloss" data-id="@item.PortfolioID">Stockloss</button>
-                                    @if (item.Day == "3")
-                                    {
-                                        <button class="btn btn-sm btn-success btn-approveMOC" data-id="@item.PortfolioID">MOC</button>
+                                        <button style="width:170px;" class="btn btn-sm btn-success btn-approveStockloss" data-id="@item.PortfolioID" disabled="@item.StoplossTriggerFlag">StopLoss</button>
+                                        <span>@item.StoplossTriggerDatetime</span>
                                     }
                                 }
-                                <button class="btn btn-sm btn-info btn-detail" data-id="@item.PortfolioID">Details</button>
                             </div>
+                        </td>
+                        <td>
+                            @if (isMaginModeAll == 1)
+                            {
+                                @if (item.Day == "3")
+                                {
+                                    <button style="width:170px;" class="btn btn-sm btn-success btn-approveMOC" data-id="@item.PortfolioID" disabled="@item.MOCTriggerFlag">MOC</button>
+                                    <span>@item.MOCTriggerDatetime</span>
+                                }
+                            }
+                        </td>
+                        <td>
+                            <button class="btn btn-sm btn-info btn-detail" data-id="@item.PortfolioID">Details</button>
                         </td>
                     </tr>
                 }

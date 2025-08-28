@@ -45,22 +45,7 @@ namespace MVCWebApp.Repositories
             var result = _context.MarginCallMTM
                .FromSqlInterpolated($"exec [dbo].[USP_MarginCall_MTM] @Mode={(int)mode}")
                .AsEnumerable()
-               .Select(x => new MarginCallDto
-               {
-                   VM = double.TryParse(x.VM, out var vm) ? vm : 0.0,
-                   IM = double.TryParse(x.IM, out var im) ? im : 0.0,
-                   Percentages = double.TryParse(x.Percentages.Replace("%", ""), out var percentages) ? percentages : 0.0,
-                   Collateral = double.TryParse(x.Collateral, out var collateral) ? collateral : 0.0,
-                   IM_Ccy = x.IM_Ccy,
-                   Collateral_Ccy = x.Collateral_Ccy,
-                   InsertedDatetime = x.InsertedDatetime,
-                   ModifiedDatetime = x.ModifiedDatetime,
-                   PortfolioID = x.PortfolioID,
-                   Remarks = x.Remarks,
-                   Type = x.Type,
-                   VM_Ccy = x.VM_Ccy,
-                   MarginCallAmount = x.MarginCallAmount
-               });
+               .Select(ToMarginCallDTO);
 
             return result;
         }
@@ -70,22 +55,7 @@ namespace MVCWebApp.Repositories
             var result = _context.MarginCallMTM
                .FromSqlInterpolated($"exec [dbo].[USP_MarginCall_MTM_ID] @PortfolioID={portfolioID}")
                .AsEnumerable()
-               .Select(x => new MarginCallDto
-               {
-                   VM = double.TryParse(x.VM, out var vm) ? vm : 0.0,
-                   IM = double.TryParse(x.IM, out var im) ? im : 0.0,
-                   Percentages = double.TryParse(x.Percentages.Replace("%", ""), out var percentages) ? percentages : 0.0,
-                   Collateral = double.TryParse(x.Collateral, out var collateral) ? collateral : 0.0,
-                   IM_Ccy = x.IM_Ccy,
-                   Collateral_Ccy = x.Collateral_Ccy,
-                   InsertedDatetime = x.InsertedDatetime,
-                   ModifiedDatetime = x.ModifiedDatetime,
-                   PortfolioID = x.PortfolioID,
-                   Remarks = x.Remarks,
-                   Type = x.Type,
-                   VM_Ccy = x.VM_Ccy,
-                   MarginCallAmount = x.MarginCallAmount
-               })
+               .Select(ToMarginCallDTO)
                .FirstOrDefault();
 
             return result;
@@ -106,23 +76,7 @@ namespace MVCWebApp.Repositories
             var result = _context.MarginCallEOD
                .FromSqlInterpolated($"exec [dbo].[USP_MarginCall_EOD] @Mode={(int)mode}")
                .AsEnumerable()
-               .Select(x => new MarginCallDto
-               {
-                   VM = double.TryParse(x.VM, out var vm) ? vm : 0.0,
-                   IM = double.TryParse(x.IM, out var im) ? im : 0.0,
-                   Percentages = double.TryParse(x.Percentages.Replace("%", ""), out var percentages) ? percentages : 0.0,
-                   Collateral = double.TryParse(x.Collateral, out var collateral) ? collateral : 0.0,
-                   IM_Ccy = x.IM_Ccy,
-                   Collateral_Ccy = x.Collateral_Ccy,
-                   InsertedDatetime = x.InsertedDatetime,
-                   ModifiedDatetime = x.ModifiedDatetime,
-                   PortfolioID = x.PortfolioID,
-                   Remarks = x.Remarks,
-                   Type = x.Type,
-                   VM_Ccy = x.VM_Ccy,
-                   MarginCallAmount = x.MarginCallAmount,
-                   Day = x.Day
-               });
+               .Select(ToMarginCallDTO);
 
             return result;
         }
@@ -132,23 +86,7 @@ namespace MVCWebApp.Repositories
             var result = _context.MarginCallEOD
                .FromSqlInterpolated($"exec [dbo].[USP_MarginCall_EOD_ID] @PortfolioID={portfolioID}")
                .AsEnumerable()
-               .Select(x => new MarginCallDto
-               {
-                   VM = double.TryParse(x.VM, out var vm) ? vm : 0.0,
-                   IM = double.TryParse(x.IM, out var im) ? im : 0.0,
-                   Percentages = double.TryParse(x.Percentages.Replace("%", ""), out var percentages) ? percentages : 0.0,
-                   Collateral = double.TryParse(x.Collateral, out var collateral) ? collateral : 0.0,
-                   IM_Ccy = x.IM_Ccy,
-                   Collateral_Ccy = x.Collateral_Ccy,
-                   InsertedDatetime = x.InsertedDatetime,
-                   ModifiedDatetime = x.ModifiedDatetime,
-                   PortfolioID = x.PortfolioID,
-                   Remarks = x.Remarks,
-                   Type = x.Type,
-                   VM_Ccy = x.VM_Ccy,
-                   MarginCallAmount = x.MarginCallAmount,
-                   Day = x.Day
-               })
+               .Select(ToMarginCallDTO)
                .FirstOrDefault();
 
             return result;
@@ -209,5 +147,59 @@ namespace MVCWebApp.Repositories
                 .Where(ccy => !string.IsNullOrEmpty(ccy))
                 .ToListAsync();
 
+        /*-------------------------------------------------    Private     ----------*/
+        public MarginCallDto ToMarginCallDTO(MarginCallMTM entity) //MTM
+        {
+            return new MarginCallDto
+            {
+                VM = double.TryParse(entity.VM, out var vm) ? vm : 0.0,
+                IM = double.TryParse(entity.IM, out var im) ? im : 0.0,
+                Percentages = double.TryParse(entity.Percentages.Replace("%", ""), out var percentages) ? percentages : 0.0,
+                Collateral = double.TryParse(entity.Collateral, out var collateral) ? collateral : 0.0,
+                IM_Ccy = entity.IM_Ccy,
+                Collateral_Ccy = entity.Collateral_Ccy,
+                InsertedDatetime = entity.InsertedDatetime,
+                ModifiedDatetime = entity.ModifiedDatetime,
+                PortfolioID = entity.PortfolioID,
+                Remarks = entity.Remarks,
+                Type = entity.Type,
+                VM_Ccy = entity.VM_Ccy,
+                MarginCallAmount = entity.MarginCallAmount,
+                MarginCallTriggerFlag = entity.MarginCallTriggerFlag == true,
+                StoplossTriggerFlag = entity.StoplossTriggerFlag == true,
+                MOCTriggerFlag = entity.MOCTriggerFlag == true,
+                MarginCallTriggerDatetime = DateTime.Now.AddDays(-1),
+                StoplossTriggerDatetime = entity.StoplossTriggerDatetime,
+                MOCTriggerDatetime = entity.MOCTriggerDatetime,
+                EmailTo = entity.EmailTo
+            };
+        }
+
+        public MarginCallDto ToMarginCallDTO(MarginCallEOD entity) //EOD
+        {
+            return new MarginCallDto
+            {
+                VM = double.TryParse(entity.VM, out var vm) ? vm : 0.0,
+                IM = double.TryParse(entity.IM, out var im) ? im : 0.0,
+                Percentages = double.TryParse(entity.Percentages.Replace("%", ""), out var percentages) ? percentages : 0.0,
+                Collateral = double.TryParse(entity.Collateral, out var collateral) ? collateral : 0.0,
+                IM_Ccy = entity.IM_Ccy,
+                Collateral_Ccy = entity.Collateral_Ccy,
+                InsertedDatetime = entity.InsertedDatetime,
+                ModifiedDatetime = entity.ModifiedDatetime,
+                PortfolioID = entity.PortfolioID,
+                Remarks = entity.Remarks,
+                Type = entity.Type,
+                VM_Ccy = entity.VM_Ccy,
+                MarginCallAmount = entity.MarginCallAmount,
+                MarginCallTriggerFlag = entity.MarginCallTriggerFlag != true,
+                StoplossTriggerFlag = entity.StoplossTriggerFlag == true,
+                MOCTriggerFlag = entity.MOCTriggerFlag == true,
+                MarginCallTriggerDatetime = DateTime.Now.AddDays(-1),
+                StoplossTriggerDatetime = entity.StoplossTriggerDatetime,
+                MOCTriggerDatetime = entity.MOCTriggerDatetime,
+                Day = entity.Day
+            };
+        }
     }
 }

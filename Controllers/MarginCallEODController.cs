@@ -35,6 +35,7 @@ namespace MVCWebApp.Controllers
             var vmCcy = ConverterHelper.ToSelectList(await _marginCallService.GetAllVMCcy());
 
             var marginCallOrderByColumns = ConverterHelper.ToSelectList<MarginCallOrderByColumn>();
+            var marginCallEODDays = ConverterHelper.ToSelectList<MarginCallEODDay>();
 
             return View(new MarginCallSearchReq
             {
@@ -47,7 +48,8 @@ namespace MVCWebApp.Controllers
                 MarginCallFlag = yesNoEnum,
                 MTMTriggerFlag = yesNoEnum,
                 SelectedMarginCallFlag = 2,
-                MarginCallOrderByColumns = marginCallOrderByColumns
+                MarginCallOrderByColumns = marginCallOrderByColumns,
+                Day = marginCallEODDays
             });
         }
 

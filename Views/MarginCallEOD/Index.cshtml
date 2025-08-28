@@ -37,6 +37,14 @@
                 <input type="text" name="PortfolioID" id="PortfolioID" class="form-control" value="@Model?.PortfolioID" placeholder="Enter PortfolioID">
             </div>
             <div class="form-group mt-2">
+                <label class="mr-2">Day</label>
+                <select id="optionDay" class="form-control" asp-items="@Model?.Day">
+                </select>
+            </div>
+        </div>
+
+        <div class="d-flex flex-wrap gap-2">
+            <div class="form-group mt-2">
                 <label>Percentages(From)</label>
                 <input type="number" name="PercentagesFrom" id="PercentagesFrom" class="form-control" value="@Model?.PercentagesFrom" placeholder="Enter Percentages(From)">
             </div>
@@ -48,16 +56,34 @@
 
         <div class="d-flex flex-wrap gap-2">
             <div class="form-group mt-2">
-                <label>Collateral</label>
-                <input type="number" name="Collateral" id="Collateral" class="form-control" value="@Model?.Collateral" placeholder="Enter Collateral">
+                <label>Collateral(From)</label>
+                <input type="number" name="CollateralFrom" id="CollateralFrom" class="form-control" value="@Model?.CollateralFrom" placeholder="Enter CollateralFrom">
             </div>
             <div class="form-group mt-2">
-                <label>VM</label>
-                <input type="number" name="VM" id="VM" class="form-control" value="@Model?.VM" placeholder="Enter VM">
+                <label>Collateral(To)</label>
+                <input type="number" name="CollateralTo" id="CollateralTo" class="form-control" value="@Model?.CollateralTo" placeholder="Enter CollateralTo">
+            </div>
+        </div>
+
+        <div class="d-flex flex-wrap gap-2">
+            <div class="form-group mt-2">
+                <label>VM(From)</label>
+                <input type="number" name="VMFrom" id="VMFrom" class="form-control" value="@Model?.VMFrom" placeholder="Enter VMFrom">
             </div>
             <div class="form-group mt-2">
-                <label>IM</label>
-                <input type="number" name="IM" id="IM" class="form-control" value="@Model?.IM" placeholder="Enter IM">
+                <label>VM(To)</label>
+                <input type="number" name="VMTo" id="VMTo" class="form-control" value="@Model?.VMTo" placeholder="Enter VMTo">
+            </div>
+        </div>
+
+        <div class="d-flex flex-wrap gap-2">
+            <div class="form-group mt-2">
+                <label>IM(From)</label>
+                <input type="number" name="IMFrom" id="IMFrom" class="form-control" value="@Model?.IMFrom" placeholder="Enter IMFrom">
+            </div>
+            <div class="form-group mt-2">
+                <label>IM(To)</label>
+                <input type="number" name="IMTo" id="IMTo" class="form-control" value="@Model?.IMTo" placeholder="Enter IMTo">
             </div>
         </div>
 
@@ -214,7 +240,29 @@
         </section>
 
         <section class="p-2 border rounded bg-white shadow-sm">
+            <div class="form-group mt-2">
+                <div class="d-flex gap-1">
+                    <div class="form-check">
+                        <input class="form-check-input" type="radio" id="triggerModeAll" name="triggerMode" value=0>
+                        <label class="form-check-label" for="triggerModeAll">All</label>
+                    </div>
+                    <div class="form-check">
+                        <input class="form-check-input" type="radio" id="triggerModeMargin" name="triggerMode" value=1 checked>
+                        <label class="form-check-label" for="triggerModeMargin">Margin</label>
+                    </div>
+                    <div class="form-check">
+                        <input class="form-check-input" type="radio" id="triggerModeStoploss" name="triggerMode" value=2>
+                        <label class="form-check-label" for="triggerModeStoploss">Stoploss</label>
+                    </div>
+                    <div class="form-check">
+                        <input class="form-check-input" type="radio" id="triggerModeMOC" name="triggerMode" value=3>
+                        <label class="form-check-label" for="triggerModeMOC">MOC</label>
+                    </div>
+                </div>
+            </div>
+        </section>
 
+        <section class="p-2 border rounded bg-white shadow-sm">
             <div class="d-flex flex-wrap gap-2">
                 <div class="form-group mt-2">
                     <label>Order by</label>
@@ -248,6 +296,31 @@
 
     <script>
         $(document).ready(function () {
+            /*-------------------------- trigger mode */
+            $(document).on("change", "#triggerModeAll", function (e) {
+                event.preventDefault();
+
+                postSearchMarginCalls(1)
+            });
+
+            $(document).on("change", "#triggerModeMargin", function (e) {
+                event.preventDefault();
+
+                postSearchMarginCalls(1)
+            });
+
+            $(document).on("change", "#triggerModeStoploss", function (e) {
+                event.preventDefault();
+
+                postSearchMarginCalls(1)
+            });
+
+            $(document).on("change", "#triggerModeMOC", function (e) {
+                event.preventDefault();
+
+                postSearchMarginCalls(1)
+            });
+
             /*-------------------------- margin mode */
             $(document).on("change", "#marginModeAll", function (e) {
                 event.preventDefault();
@@ -378,24 +451,30 @@
                 const selectedDateType = $('input[name="dateType"]:checked').val();
                 const selectedOderByType = $('input[name="oderByType"]:checked').val();
                 const selectedMarginMode = $('input[name="marginMode"]:checked').val();
+                const selectedTriggerMode = $('input[name="triggerMode"]:checked').val();
 
                 var requestData = {
                     PortfolioID: $("#PortfolioID").val(),
                     PercentagesFrom: $("#PercentagesFrom").val() || 0,
                     PercentagesTo: $("#PercentagesTo").val() || 0,
-                    Collateral: $("#Collateral").val() || 0,
+                    CollateralFrom: $("#CollateralFrom").val() || 0,
+                    CollateralTo: $("#CollateralTo").val() || 0,
                     Selected_Collateral_Ccy: $("#optionCollateral_Ccy").val(),
-                    VM: $("#VM").val() || 0,
+                    VMFrom: $("#VMFrom").val() || 0,
+                    VMTo: $("#VMTo").val() || 0,
                     Selected_VM_Ccy: $("#optionVM_Ccy").val(),
-                    IM: $("#IM").val() || 0,
+                    IMFrom: $("#IMFrom").val() || 0,
+                    IMTo: $("#IMTo").val() || 0,
                     Selected_IM_Ccy: $("#optionIM_Ccy").val(),
                     Type: $("#Type").val(),
                     Remarks: $("#Remarks").val(),
 
-                    SearchByOrderByType: selectedOderByType,
+                    SelectedDay: $("#optionDay").val(),
                     Selected_MarginCallOrderByColumn: $("#optionMarginCallOrderByColumns").val(),
 
+                    SearchByOrderByType: selectedOderByType,
                     Selected_MarginMode: selectedMarginMode,
+                    SearchByStatusType: selectedTriggerMode,
 
                     SearchByDateType:
                         selectedDateType === 'AllDatetime' ? 1 :
@@ -795,12 +874,15 @@
                 $("#PortfolioID").val('');
                 $("#PercentagesFrom").val(0);
                 $("#PercentagesTo").val(0);
-                $("#Collateral").val(0);
-                $("#Collateral").val(0);
+                $("#CollateralFrom").val(0);
+                $("#CollateralTo").val(0);
+                $("#optionDay").val(0);
                 $("#optionCollateral_Ccy").val('All');
-                $("#VM").val(0);
+                $("#VMFrom").val(0);
+                $("#VMTo").val(0);
                 $("#optionVM_Ccy").val('All');
-                $("#IM").val(0);
+                $("#IMFrom").val(0);
+                $("#IMTo").val(0);
                 $("#optionIM_Ccy").val('All');
                 $("#Type").val('');
                 $("#Remarks").val('');

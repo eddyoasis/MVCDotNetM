@@ -47,6 +47,14 @@ namespace MVCWebApp.Enums
         TriggeredToday = 3
     }
 
+    public enum MarginCallEODDay
+    {
+        All = 0,
+        Day1 = 1,
+        Day2 = 2,
+        Day3 = 3
+    }
+
     public enum MarginCallOrderByColumn
     {
         PortfolioID = 1,
