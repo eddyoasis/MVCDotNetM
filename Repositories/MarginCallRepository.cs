@@ -18,6 +18,8 @@ namespace MVCWebApp.Repositories
         //Task<bool> ApproveWithSP(string portfolioID);
         //Task<MarginCall> GetByPortfolioID(string portfolioID);
 
+        ClientEmailDBResult GetClientEmail(string portfolioID);
+
         Task<IEnumerable<string>> GetAllCollateralCcyMTM();
         Task<IEnumerable<string>> GetAllIMCcyMTM();
         Task<IEnumerable<string>> GetAllVMCcyMTM();
@@ -93,6 +95,21 @@ namespace MVCWebApp.Repositories
         }
 
         /*-------------------------------------------------    General     ----------*/
+        public ClientEmailDBResult GetClientEmail(string portfolioID)
+        {
+            var result = _context.ClientEmailDBResult
+               .FromSqlInterpolated($"exec [dbo].[USP_Email_Recipients] @PortfolioID={portfolioID}")
+               .AsEnumerable()
+               .Select(x => new ClientEmailDBResult
+               {
+                   Portfolio = x.Portfolio,
+                   Email = x.Email.Replace(";", "\r\n")
+               })
+               .FirstOrDefault();
+
+            return result;
+        }
+
         public async Task<bool> ApproveWithSP(string portfolioID)
         {
             var updateCount = await _context
@@ -167,10 +184,8 @@ namespace MVCWebApp.Repositories
                 MarginCallAmount = entity.MarginCallAmount,
                 MarginCallTriggerFlag = entity.MarginCallTriggerFlag == true,
                 StoplossTriggerFlag = entity.StoplossTriggerFlag == true,
-                MOCTriggerFlag = entity.MOCTriggerFlag == true,
-                MarginCallTriggerDatetime = DateTime.Now.AddDays(-1),
+                MarginCallTriggerDatetime = entity.MarginCallTriggerDatetime,
                 StoplossTriggerDatetime = entity.StoplossTriggerDatetime,
-                MOCTriggerDatetime = entity.MOCTriggerDatetime,
                 EmailTo = entity.EmailTo
             };
         }
@@ -192,10 +207,10 @@ namespace MVCWebApp.Repositories
                 Type = entity.Type,
                 VM_Ccy = entity.VM_Ccy,
                 MarginCallAmount = entity.MarginCallAmount,
-                MarginCallTriggerFlag = entity.MarginCallTriggerFlag != true,
+                MarginCallTriggerFlag = entity.MarginCallTriggerFlag == true,
                 StoplossTriggerFlag = entity.StoplossTriggerFlag == true,
                 MOCTriggerFlag = entity.MOCTriggerFlag == true,
-                MarginCallTriggerDatetime = DateTime.Now.AddDays(-1),
+                MarginCallTriggerDatetime = entity.MarginCallTriggerDatetime,
                 StoplossTriggerDatetime = entity.StoplossTriggerDatetime,
                 MOCTriggerDatetime = entity.MOCTriggerDatetime,
                 Day = entity.Day

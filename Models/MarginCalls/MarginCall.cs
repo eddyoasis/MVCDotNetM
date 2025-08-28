@@ -58,4 +58,11 @@ namespace MVCWebApp.Models.MarginCalls
         public string Day { get; set; }
         public string? EmailTo { get; set; }
     }
+
+    public class ClientEmailDBResult
+    {
+        public string Portfolio { get; set; }
+        public string Email { get; set; }
+
+    }
 }

@@ -62,9 +62,8 @@
                             <div class="d-flex flex-wrap gap-1">
                                 @if (isMaginModeAll == 1)
                                 {
-                                    @* <button class="btn btn-sm btn-success btn-approve" data-id="@item.PortfolioID">Margin</button> *@
                                     <button style="width:170px;" class="btn btn-sm btn-success btn-approve" data-id="@item.PortfolioID" disabled="@item.MarginCallTriggerFlag">Margin</button>
-                                    <span>@item.MarginCallTriggerDatetime</span>
+                                    @(item.MarginCallTriggerFlag ==true? $"{item.MarginCallTriggerDatetime}" : "")
                                 }
                             </div>
                         </td>
@@ -73,7 +72,8 @@
                                 @if (isMaginModeAll == 1)
                                 {
                                     <button style="width:170px;" class="btn btn-sm btn-success btn-approveStockloss" data-id="@item.PortfolioID" disabled="@item.StoplossTriggerFlag">StopLoss</button>
-                                    <span>@item.StoplossTriggerDatetime</span>
+                                    @* <span>@item.MarginCallTriggerFlag && @item.StoplossTriggerDatetime</span> *@
+                                    @(item.StoplossTriggerFlag == true ? $"{item.StoplossTriggerDatetime}" : "")
                                 }
                             </div>
                         </td>

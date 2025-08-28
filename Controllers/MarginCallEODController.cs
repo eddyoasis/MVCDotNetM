@@ -58,7 +58,7 @@ namespace MVCWebApp.Controllers
         {
             var paginatedResult = _marginCallService.GetMarginCallEODAll(req);
 
-            ViewData["isMaginModeAll"] = req.Selected_MarginMode == 1 ? 1 : 0;
+            ViewData["isMaginModeAll"] = req.Selected_MarginMode != (int)MarginCallMode.TriggeredToday ? 1 : 0;
 
             return PartialView("_Search", paginatedResult);
         }
@@ -287,6 +287,8 @@ namespace MVCWebApp.Controllers
             {
                 return NotFound();
             }
+
+            entity.EmailTo = _marginCallService.GetClientEmail(id).Email;
 
             var emailGroups = await _emailGroupService.GetAllAsync();
             if (emailGroups.Any())

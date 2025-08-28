@@ -228,18 +228,30 @@
             <div class="form-group mt-2">
                 <div class="d-flex gap-1">
                     <div class="form-check">
-                        <input class="form-check-input" type="radio" id="marginModeAll" name="marginMode" value=1 checked>
+                        <input class="form-check-input" type="radio" id="marginModeAll" name="marginMode" value=2 checked>
                         <label class="form-check-label" for="marginModeAll">All</label>
                     </div>
                     <div class="form-check">
-                        <input class="form-check-input" type="radio" id="marginModeTriggered" name="marginMode" value=2>
+                        <input class="form-check-input" type="radio" id="marginModeMargin" name="marginMode" value=11>
+                        <label class="form-check-label" for="marginModeMargin">Margin Available</label>
+                    </div>
+                    <div class="form-check">
+                        <input class="form-check-input" type="radio" id="marginModeStoploss" name="marginMode" value=12>
+                        <label class="form-check-label" for="marginModeStoploss">Stoploss Available</label>
+                    </div>
+                    <div class="form-check">
+                        <input class="form-check-input" type="radio" id="marginModeMOC" name="marginMode" value=13>
+                        <label class="form-check-label" for="marginModeMOC">MOC Available</label>
+                    </div>
+                    <div class="form-check">
+                        <input class="form-check-input" type="radio" id="marginModeTriggered" name="marginMode" value=3>
                         <label class="form-check-label" for="marginModeTriggered">Triggered Today</label>
                     </div>
                 </div>
             </div>
         </section>
 
-        <section class="p-2 border rounded bg-white shadow-sm">
+       @*  <section class="p-2 border rounded bg-white shadow-sm">
             <div class="form-group mt-2">
                 <div class="d-flex gap-1">
                     <div class="form-check">
@@ -260,7 +272,7 @@
                     </div>
                 </div>
             </div>
-        </section>
+        </section> *@
 
         <section class="p-2 border rounded bg-white shadow-sm">
             <div class="d-flex flex-wrap gap-2">
@@ -297,29 +309,29 @@
     <script>
         $(document).ready(function () {
             /*-------------------------- trigger mode */
-            $(document).on("change", "#triggerModeAll", function (e) {
-                event.preventDefault();
+            // $(document).on("change", "#triggerModeAll", function (e) {
+            //     event.preventDefault();
 
-                postSearchMarginCalls(1)
-            });
+            //     postSearchMarginCalls(1)
+            // });
 
-            $(document).on("change", "#triggerModeMargin", function (e) {
-                event.preventDefault();
+            // $(document).on("change", "#triggerModeMargin", function (e) {
+            //     event.preventDefault();
 
-                postSearchMarginCalls(1)
-            });
+            //     postSearchMarginCalls(1)
+            // });
 
-            $(document).on("change", "#triggerModeStoploss", function (e) {
-                event.preventDefault();
+            // $(document).on("change", "#triggerModeStoploss", function (e) {
+            //     event.preventDefault();
 
-                postSearchMarginCalls(1)
-            });
+            //     postSearchMarginCalls(1)
+            // });
 
-            $(document).on("change", "#triggerModeMOC", function (e) {
-                event.preventDefault();
+            // $(document).on("change", "#triggerModeMOC", function (e) {
+            //     event.preventDefault();
 
-                postSearchMarginCalls(1)
-            });
+            //     postSearchMarginCalls(1)
+            // });
 
             /*-------------------------- margin mode */
             $(document).on("change", "#marginModeAll", function (e) {
@@ -329,6 +341,24 @@
             });
 
             $(document).on("change", "#marginModeTriggered", function (e) {
+                event.preventDefault();
+
+                postSearchMarginCalls(1)
+            });
+
+            $(document).on("change", "#marginModeMargin", function (e) {
+                event.preventDefault();
+
+                postSearchMarginCalls(1)
+            });
+
+            $(document).on("change", "#marginModeStoploss", function (e) {
+                event.preventDefault();
+
+                postSearchMarginCalls(1)
+            });
+
+            $(document).on("change", "#marginModeMOC", function (e) {
                 event.preventDefault();
 
                 postSearchMarginCalls(1)
@@ -451,7 +481,7 @@
                 const selectedDateType = $('input[name="dateType"]:checked').val();
                 const selectedOderByType = $('input[name="oderByType"]:checked').val();
                 const selectedMarginMode = $('input[name="marginMode"]:checked').val();
-                const selectedTriggerMode = $('input[name="triggerMode"]:checked').val();
+                // const selectedTriggerMode = $('input[name="triggerMode"]:checked').val();
 
                 var requestData = {
                     PortfolioID: $("#PortfolioID").val(),
@@ -474,7 +504,7 @@
 
                     SearchByOrderByType: selectedOderByType,
                     Selected_MarginMode: selectedMarginMode,
-                    SearchByStatusType: selectedTriggerMode,
+                    // SearchByStatusType: selectedTriggerMode,
 
                     SearchByDateType:
                         selectedDateType === 'AllDatetime' ? 1 :

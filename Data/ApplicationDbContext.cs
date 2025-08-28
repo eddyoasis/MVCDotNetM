@@ -18,9 +18,12 @@ namespace MVCWebApp.Data
         public DbSet<LoginAttempt> LoginAttempt { get; set; }
         public DbSet<AuditLog> AuditLog { get; set; }
         public DbSet<EmailGroup> EmailGroup { get; set; }
+        public DbSet<ClientEmailDBResult> ClientEmailDBResult { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
+            modelBuilder.Entity<ClientEmailDBResult>().HasNoKey().ToView(null);
+
             // Declare that this entity has no primary key
             modelBuilder.Entity<MarginCall>()
                 .HasNoKey()

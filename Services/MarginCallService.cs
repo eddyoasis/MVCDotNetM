@@ -11,6 +11,8 @@ namespace MVCWebApp.Services
 {
     public interface IMarginCallService
     {
+        ClientEmailDBResult GetClientEmail(string portfolioID);
+
         Task<IEnumerable<string>> GetAllCollateralCcy();
         Task<IEnumerable<string>> GetAllVMCcy();
         Task<IEnumerable<string>> GetAllIMCcy();
@@ -43,6 +45,9 @@ namespace MVCWebApp.Services
 
             return _mapper.MapDto<MarginCallViewModel>(entity);
         }
+
+        public ClientEmailDBResult GetClientEmail(string portfolioID) =>
+             _marginCallRepository.GetClientEmail(portfolioID);
 
         public async Task<IEnumerable<string>> GetAllCollateralCcyMTM() =>
             await _marginCallRepository.GetAllCollateralCcyMTM();
@@ -93,15 +98,14 @@ namespace MVCWebApp.Services
         public IEnumerable<MarginCallViewModel> GetMarginCallEODAll(MarginCallSearchReq req)
         {
             var marginCalls = _marginCallRepository.GetMarginCallEOD(
-                req.Selected_MarginMode == 1 ? MarginCallMode.All : MarginCallMode.TriggeredToday);
+                req.Selected_MarginMode == (int)MarginCallMode.TriggeredToday ? MarginCallMode.TriggeredToday : MarginCallMode.All);
 
             marginCalls = marginCalls.Where(x =>
-                (req.SearchByStatusType == 0 ||
-                    (req.SearchByStatusType == 1 && !x.MarginCallTriggerFlag) ||
-                    (req.SearchByStatusType == 2 && (x.Day != "1" && !x.StoplossTriggerFlag)) ||
-                    (req.SearchByStatusType == 3 && (x.Day == "3" && !x.MOCTriggerFlag))
+                ((req.Selected_MarginMode == (int)MarginCallMode.All || req.Selected_MarginMode == (int)MarginCallMode.TriggeredToday) ||
+                    (req.Selected_MarginMode == (int)MarginCallMode.MarginAvailable && !x.MarginCallTriggerFlag) ||
+                    (req.Selected_MarginMode == (int)MarginCallMode.StoplossAvailable && (x.Day != "1" && !x.StoplossTriggerFlag)) ||
+                    (req.Selected_MarginMode == (int)MarginCallMode.MOCAvailable && (x.Day == "3" && !x.MOCTriggerFlag))
                 ) &&
-                req.SelectedDay == 0 || x.Day == req.SelectedDay.ToString() &&
                 (req.SearchByDateType == 1 ||
                      ((req.DateFrom == DateTime.MinValue || req.DateTo == DateTime.MinValue) ||
                             (req.SearchByDateType == 2 ?
@@ -201,12 +205,12 @@ namespace MVCWebApp.Services
         public IEnumerable<MarginCallViewModel> GetMarginCallMTMAll(MarginCallSearchReq req)
         {
             var marginCalls = _marginCallRepository.GetMarginCallMTM(
-                req.Selected_MarginMode == 1 ? MarginCallMode.All : MarginCallMode.TriggeredToday);
+                req.Selected_MarginMode == (int)MarginCallMode.TriggeredToday ? MarginCallMode.TriggeredToday : MarginCallMode.All);
 
             marginCalls = marginCalls.Where(x =>
-                (req.SearchByStatusType == 0 ||
-                    (req.SearchByStatusType == 1 && !x.MarginCallTriggerFlag) ||
-                    (req.SearchByStatusType == 2 && !x.StoplossTriggerFlag)
+                ((req.Selected_MarginMode == (int)MarginCallMode.All || req.Selected_MarginMode == (int)MarginCallMode.TriggeredToday) ||
+                    (req.Selected_MarginMode == (int)MarginCallMode.MarginAvailable && !x.MarginCallTriggerFlag) ||
+                    (req.Selected_MarginMode == (int)MarginCallMode.StoplossAvailable && !x.StoplossTriggerFlag)
                 ) && 
                 (req.SearchByDateType == 1 ||
                      ((req.DateFrom == DateTime.MinValue || req.DateTo == DateTime.MinValue) ||
