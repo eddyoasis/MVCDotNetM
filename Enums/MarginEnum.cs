@@ -44,11 +44,13 @@ namespace MVCWebApp.Enums
     public enum MarginCallMode
     {
         All = 2, //for DB Value
-        //TriggeredToday = 100, //for DB Value (removed)
         ResetFlag = 3, //for DB Value
         MarginAvailable = 11,
         StoplossAvailable = 12,
-        MOCAvailable = 13
+        MOCAvailable = 13,
+        TriggeredTodayMargin = 41,
+        TriggeredTodayStoploss = 42,
+        TriggeredTodayMOC = 43
     }
 
     public enum MarginCallEODDay

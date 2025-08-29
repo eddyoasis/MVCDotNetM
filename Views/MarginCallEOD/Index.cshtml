@@ -231,48 +231,49 @@
                         <input class="form-check-input" type="radio" id="marginModeAll" name="marginMode" value=2 checked>
                         <label class="form-check-label" for="marginModeAll">All</label>
                     </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="p-2 border rounded bg-white shadow-sm">
+            <span>Available</span>
+            <div class="form-group mt-2">
+                <div class="d-flex gap-1">
                     <div class="form-check">
                         <input class="form-check-input" type="radio" id="marginModeMargin" name="marginMode" value=11>
-                        <label class="form-check-label" for="marginModeMargin">Margin Available</label>
+                        <label class="form-check-label" for="marginModeMargin">Margin</label>
                     </div>
                     <div class="form-check">
                         <input class="form-check-input" type="radio" id="marginModeStoploss" name="marginMode" value=12>
-                        <label class="form-check-label" for="marginModeStoploss">Stoploss Available</label>
+                        <label class="form-check-label" for="marginModeStoploss">Stoploss</label>
                     </div>
                     <div class="form-check">
                         <input class="form-check-input" type="radio" id="marginModeMOC" name="marginMode" value=13>
-                        <label class="form-check-label" for="marginModeMOC">MOC Available</label>
-                    </div>
-                    <div class="form-check">
-                        <input class="form-check-input" type="radio" id="marginModeTriggered" name="marginMode" value=3>
-                        <label class="form-check-label" for="marginModeTriggered">Triggered Today</label>
+                        <label class="form-check-label" for="marginModeMOC">MOC</label>
                     </div>
                 </div>
             </div>
         </section>
 
-       @*  <section class="p-2 border rounded bg-white shadow-sm">
+        <section class="p-2 border rounded bg-white shadow-sm">
+            <span>Triggered Today</span>
             <div class="form-group mt-2">
                 <div class="d-flex gap-1">
                     <div class="form-check">
-                        <input class="form-check-input" type="radio" id="triggerModeAll" name="triggerMode" value=0>
-                        <label class="form-check-label" for="triggerModeAll">All</label>
+                        <input class="form-check-input" type="radio" id="marginModeTriggeredTodayMargin" name="marginMode" value=41>
+                        <label class="form-check-label" for="marginModeTriggeredTodayMargin">Margin</label>
                     </div>
                     <div class="form-check">
-                        <input class="form-check-input" type="radio" id="triggerModeMargin" name="triggerMode" value=1 checked>
-                        <label class="form-check-label" for="triggerModeMargin">Margin</label>
+                        <input class="form-check-input" type="radio" id="marginModeTriggeredTodayStoploss" name="marginMode" value=42>
+                        <label class="form-check-label" for="marginModeTriggeredTodayStoploss">Stoploss</label>
                     </div>
                     <div class="form-check">
-                        <input class="form-check-input" type="radio" id="triggerModeStoploss" name="triggerMode" value=2>
-                        <label class="form-check-label" for="triggerModeStoploss">Stoploss</label>
-                    </div>
-                    <div class="form-check">
-                        <input class="form-check-input" type="radio" id="triggerModeMOC" name="triggerMode" value=3>
-                        <label class="form-check-label" for="triggerModeMOC">MOC</label>
+                        <input class="form-check-input" type="radio" id="marginModeTriggeredTodayMOC" name="marginMode" value=43>
+                        <label class="form-check-label" for="marginModeTriggeredTodayMOC">MOC</label>
                     </div>
                 </div>
             </div>
-        </section> *@
+        </section>
 
         <section class="p-2 border rounded bg-white shadow-sm">
             <div class="d-flex flex-wrap gap-2">
@@ -345,12 +346,6 @@
                 postSearchMarginCalls(1)
             });
 
-            $(document).on("change", "#marginModeTriggered", function (e) {
-                event.preventDefault();
-
-                postSearchMarginCalls(1)
-            });
-
             $(document).on("change", "#marginModeMargin", function (e) {
                 event.preventDefault();
 
@@ -366,6 +361,21 @@
             $(document).on("change", "#marginModeMOC", function (e) {
                 event.preventDefault();
 
+                postSearchMarginCalls(1)
+            });
+
+            $(document).on("change", "#marginModeTriggeredTodayMargin", function (e) {
+                event.preventDefault();
+                postSearchMarginCalls(1)
+            });
+
+            $(document).on("change", "#marginModeTriggeredTodayStoploss", function (e) {
+                event.preventDefault();
+                postSearchMarginCalls(1)
+            });
+
+            $(document).on("change", "#marginModeTriggeredTodayMOC", function (e) {
+                event.preventDefault();
                 postSearchMarginCalls(1)
             });
 
