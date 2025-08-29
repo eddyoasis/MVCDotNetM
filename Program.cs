@@ -38,6 +38,7 @@ builder.Configuration
 
 builder.Services.Configure<SmtpAppSetting>(builder.Configuration.GetSection("SmtpSettings"));
 builder.Services.Configure<LDAPAppSetting>(builder.Configuration.GetSection("LDAPAppSettings"));
+builder.Services.Configure<DocumentAppSetting>(builder.Configuration.GetSection("DocumentAppSettings"));
 
 
 // Add services to the container.

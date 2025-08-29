@@ -18,19 +18,19 @@ namespace MVCWebApp.Models.MarginCalls
         public string IM_Ccy { get; set; }
         public double MarginCallAmount { get; set; }
         public string? MarginCallFlag { get; set; }
-        public bool? EODTriggerFlag { get; set; }
-        public bool? MTMTriggerFlag { get; set; }
-        public bool? MarginCallTriggerFlag { get; set; }
-        public bool? StoplossTriggerFlag { get; set; }
-        public bool? MOCTriggerFlag { get; set; }
+        public string MTMTriggerFlag { get; set; }
+        public string StoplossFlag { get; set; }
         public string? Type { get; set; }
         public string? Remarks { get; set; }
         public string? EmailTo { get; set; }
         public DateTime InsertedDatetime { get; set; }
         public DateTime? ModifiedDatetime { get; set; }
-        public DateTime? MarginCallTriggerDatetime { get; set; }
-        public DateTime? StoplossTriggerDatetime { get; set; }
-        public DateTime? MOCTriggerDatetime { get; set; }
+
+        [Column("MTMTriggerDatetime")]
+        public DateTime? MTMTriggerDatetime { get; set; }
+
+        [Column("StopLossDatetime")]
+        public DateTime? StopLossDatetime { get; set; }
     }
 
     public class MarginCallMTMDto : MarginCallDto

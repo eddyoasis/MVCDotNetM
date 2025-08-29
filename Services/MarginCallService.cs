@@ -21,11 +21,14 @@ namespace MVCWebApp.Services
         Task<IEnumerable<string>> GetAllVMCcyMTM();
         Task<IEnumerable<string>> GetAllIMCcyMTM();
 
+        Task<bool> ResetFlagEOD(string portfolioID);
         Task<bool> ApproveMarginCallEOD(MarginCallViewModel model);
+        Task<bool> ApproveMarginCallEODStoploss(MarginCallViewModel model);
+        Task<bool> ApproveMarginCallEODMOC(MarginCallViewModel model);
         MarginCallViewModel GetMarginCallEOD(string portfolioID);
         IEnumerable<MarginCallViewModel> GetMarginCallEODAll(MarginCallSearchReq req);
 
-
+        Task<bool> ResetFlagMTM(string portfolioID);
         Task<bool> ApproveMarginCallMTM(MarginCallViewModel model);
         Task<bool> ApproveMarginCallMTMStoploss(MarginCallViewModel model);
         MarginCallViewModel GetMarginCallMTM(string portfolioID);
@@ -70,9 +73,51 @@ namespace MVCWebApp.Services
 
 
         /*-------------------------------------------------    EOD     ----------*/
+        public async Task<bool> ResetFlagEOD(string portfolioID)
+        {
+            var isSuccess = await _marginCallRepository.ResetFlagEOD(portfolioID, Username);
+            return isSuccess;
+        }
+
         public async Task<bool> ApproveMarginCallEOD(MarginCallViewModel model)
         {
-            var isSuccess = await _marginCallRepository.ApproveMarginCallEOD(model.PortfolioID);
+            var isSuccess = await _marginCallRepository.ApproveMarginCallEOD(model.PortfolioID, (int)MarginApprovalType.Margin);
+            if (isSuccess)
+            {
+                var emailTo = model.EmailTo.Split("\r\n");
+                var emailCC = model.EmailCC?.Split("\r\n");
+
+                List<string> recipientsTo = emailTo.ToList();
+                List<string> recipientsCC = emailCC == null ? new List<string>() : emailCC.ToList();
+                var subject = model.EmailTemplateSubject;
+                var body = model.EmailTemplateValue;
+
+                await _taskQueueService.AddSendEmailQueue(recipientsTo, recipientsCC, subject, body);
+            }
+            return isSuccess;
+        }
+
+        public async Task<bool> ApproveMarginCallEODStoploss(MarginCallViewModel model)
+        {
+            var isSuccess = await _marginCallRepository.ApproveMarginCallEOD(model.PortfolioID, (int)MarginApprovalType.Stoploss);
+            if (isSuccess)
+            {
+                var emailTo = model.EmailTo.Split("\r\n");
+                var emailCC = model.EmailCC?.Split("\r\n");
+
+                List<string> recipientsTo = emailTo.ToList();
+                List<string> recipientsCC = emailCC == null ? new List<string>() : emailCC.ToList();
+                var subject = model.EmailTemplateSubject;
+                var body = model.EmailTemplateValue;
+
+                await _taskQueueService.AddSendEmailQueue(recipientsTo, recipientsCC, subject, body);
+            }
+            return isSuccess;
+        }
+
+        public async Task<bool> ApproveMarginCallEODMOC(MarginCallViewModel model)
+        {
+            var isSuccess = await _marginCallRepository.ApproveMarginCallEOD(model.PortfolioID, (int)MarginApprovalType.MOC);
             if (isSuccess)
             {
                 var emailTo = model.EmailTo.Split("\r\n");
@@ -97,11 +142,10 @@ namespace MVCWebApp.Services
 
         public IEnumerable<MarginCallViewModel> GetMarginCallEODAll(MarginCallSearchReq req)
         {
-            var marginCalls = _marginCallRepository.GetMarginCallEOD(
-                req.Selected_MarginMode == (int)MarginCallMode.TriggeredToday ? MarginCallMode.TriggeredToday : MarginCallMode.All);
+            var marginCalls = _marginCallRepository.GetMarginCallEOD(MarginCallMode.All);
 
             marginCalls = marginCalls.Where(x =>
-                ((req.Selected_MarginMode == (int)MarginCallMode.All || req.Selected_MarginMode == (int)MarginCallMode.TriggeredToday) ||
+                (req.Selected_MarginMode == (int)MarginCallMode.All ||
                     (req.Selected_MarginMode == (int)MarginCallMode.MarginAvailable && !x.MarginCallTriggerFlag) ||
                     (req.Selected_MarginMode == (int)MarginCallMode.StoplossAvailable && (x.Day != "1" && !x.StoplossTriggerFlag)) ||
                     (req.Selected_MarginMode == (int)MarginCallMode.MOCAvailable && (x.Day == "3" && !x.MOCTriggerFlag))
@@ -167,9 +211,15 @@ namespace MVCWebApp.Services
         }
 
         /*-------------------------------------------------    MTM     ----------*/
+        public async Task<bool> ResetFlagMTM(string portfolioID)
+        {
+            var isSuccess = await _marginCallRepository.ResetFlagMTM(portfolioID, Username);
+            return isSuccess;
+        }
+
         public async Task<bool> ApproveMarginCallMTM(MarginCallViewModel model)
         {
-            var isSuccess = await _marginCallRepository.ApproveMarginCallMTM(model.PortfolioID);
+            var isSuccess = await _marginCallRepository.ApproveMarginCallMTM(model.PortfolioID, (int)MarginApprovalType.Margin);
             if (isSuccess)
             {
                 var emailTo = model.EmailTo.Split("\r\n");
@@ -187,7 +237,7 @@ namespace MVCWebApp.Services
 
         public async Task<bool> ApproveMarginCallMTMStoploss(MarginCallViewModel model)
         {
-            var isSuccess = await _marginCallRepository.ApproveMarginCallMTM(model.PortfolioID);
+            var isSuccess = await _marginCallRepository.ApproveMarginCallMTM(model.PortfolioID, (int)MarginApprovalType.Stoploss);
             if (isSuccess)
             {
                 var emailTo = model.EmailTo.Split("\r\n");
@@ -205,11 +255,10 @@ namespace MVCWebApp.Services
 
         public IEnumerable<MarginCallViewModel> GetMarginCallMTMAll(MarginCallSearchReq req)
         {
-            var marginCalls = _marginCallRepository.GetMarginCallMTM(
-                req.Selected_MarginMode == (int)MarginCallMode.TriggeredToday ? MarginCallMode.TriggeredToday : MarginCallMode.All);
+            var marginCalls = _marginCallRepository.GetMarginCallMTM(MarginCallMode.All);
 
             marginCalls = marginCalls.Where(x =>
-                ((req.Selected_MarginMode == (int)MarginCallMode.All || req.Selected_MarginMode == (int)MarginCallMode.TriggeredToday) ||
+                (req.Selected_MarginMode == (int)MarginCallMode.All ||
                     (req.Selected_MarginMode == (int)MarginCallMode.MarginAvailable && !x.MarginCallTriggerFlag) ||
                     (req.Selected_MarginMode == (int)MarginCallMode.StoplossAvailable && !x.StoplossTriggerFlag)
                 ) && 

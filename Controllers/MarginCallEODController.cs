@@ -58,9 +58,49 @@ namespace MVCWebApp.Controllers
         {
             var paginatedResult = _marginCallService.GetMarginCallEODAll(req);
 
-            ViewData["isMaginModeAll"] = req.Selected_MarginMode != (int)MarginCallMode.TriggeredToday ? 1 : 0;
+            ViewData["isMaginModeAll"] = 1;
 
             return PartialView("_Search", paginatedResult);
+        }
+
+        [Authorize]
+        public async Task<IActionResult> ResetFlag(string id)
+        {
+            if (id.IsNotNullOrEmpty())
+            {
+                try
+                {
+                    var entity = _marginCallService.GetMarginCallEOD(id);
+                    if (entity == null)
+                    {
+                        return NotFound();
+                    }
+
+                    var isSuccess = await _marginCallService.ResetFlagEOD(id);
+                    if (isSuccess)
+                    {
+                        var auditReq = new AuditLog
+                        {
+                            TypeID = (int)AuditLogTypeEnum.AutoMarginEOD,
+                            ActionID = (int)AuditLogActionEnum.ResetFlag,
+                            Name = entity.PortfolioID,
+                            CreatedBy = Username,
+                            CreatedAt = DateTime.Now,
+                            NewValue = JsonConvert.SerializeObject(entity)
+                        };
+
+                        await _auditLogService.AddAsync(auditReq);
+
+                        return Json(new { success = true });
+                    }
+                }
+                catch (Exception ex)
+                {
+                    ModelState.AddModelError("", "Error Reset flag: " + ex.Message);
+                }
+            }
+
+            return Json(new { success = false });
         }
 
         [Authorize]
@@ -127,7 +167,7 @@ namespace MVCWebApp.Controllers
 
                     _mapper.Map(entity, model);
 
-                    var isSuccess = await _marginCallService.ApproveMarginCallEOD(model);
+                    var isSuccess = await _marginCallService.ApproveMarginCallEODMOC(model);
                     if (isSuccess)
                     {
                         var auditReq = new AuditLog
@@ -229,7 +269,7 @@ namespace MVCWebApp.Controllers
 
                     _mapper.Map(entity, model);
 
-                    var isSuccess = await _marginCallService.ApproveMarginCallEOD(model);
+                    var isSuccess = await _marginCallService.ApproveMarginCallEODStoploss(model);
                     if (isSuccess)
                     {
                         var auditReq = new AuditLog

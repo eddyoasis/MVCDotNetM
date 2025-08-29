@@ -9,6 +9,7 @@ using Serilog;
 using System;
 using System.Net.Http.Headers;
 using System.Net.Mail;
+using System.Net.Mime;
 using System.Text;
 
 namespace MVCWebApp.Services
@@ -19,11 +20,15 @@ namespace MVCWebApp.Services
         Task SendEmailAsync(List<string> recipientsTo, List<string> recipientsCC, string subject, string body);
     }
 
-    public class EmailService(IOptionsSnapshot<SmtpAppSetting> _smtpAppSetting) : IEmailService
+    public class EmailService(
+        IOptionsSnapshot<SmtpAppSetting> _smtpAppSetting,
+        IOptionsSnapshot<DocumentAppSetting> _documentAppSetting
+        ) : IEmailService
     {
         public async Task SendEmailAsync(List<string> recipientsTo, List<string> recipientsCC, string subject, string body)
         {
             var smtpAppSetting = _smtpAppSetting.Value;
+            var documentAppSetting = _documentAppSetting.Value;
 
             // --- Email Configuration ---
             string smtpHost = smtpAppSetting.Host;
@@ -43,6 +48,13 @@ namespace MVCWebApp.Services
                 if(recipientsCC.Any())
                 {
                     mailMessage.CC.AddRange(recipientsCC.Select(e => new MailAddress(e)));
+                }
+
+                // Attach the file
+                if (File.Exists(documentAppSetting.DocumentPath))
+                {
+                    Attachment attachment = new Attachment(documentAppSetting.DocumentPath, MediaTypeNames.Application.Octet);
+                    mailMessage.Attachments.Add(attachment);
                 }
 
                 // Set subject (optional)

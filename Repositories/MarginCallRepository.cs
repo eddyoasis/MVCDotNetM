@@ -7,16 +7,15 @@ namespace MVCWebApp.Repositories
 {
     public interface IMarginCallRepository : IGenericRepository<MarginCall>
     {
-        Task<bool> ApproveMarginCallMTM(string portfolioID);
+        Task<bool> ResetFlagMTM(string portfolioID, string user);
+        Task<bool> ApproveMarginCallMTM(string portfolioID, int approvalType);
         IEnumerable<MarginCallDto> GetMarginCallMTM(MarginCallMode mode, string portfolioID = null, string user = null);
         MarginCallDto GetMarginCallMTM(string portfolioID);
 
-        Task<bool> ApproveMarginCallEOD(string portfolioID);
+        Task<bool> ResetFlagEOD(string portfolioID, string user);
+        Task<bool> ApproveMarginCallEOD(string portfolioID, int approvalType);
         IEnumerable<MarginCallDto> GetMarginCallEOD(MarginCallMode mode, string portfolioID = null, string user = null);
         MarginCallDto GetMarginCallEOD(string portfolioID);
-
-        //Task<bool> ApproveWithSP(string portfolioID);
-        //Task<MarginCall> GetByPortfolioID(string portfolioID);
 
         ClientEmailDBResult GetClientEmail(string portfolioID);
 
@@ -33,11 +32,27 @@ namespace MVCWebApp.Repositories
         (ApplicationDbContext _context) : GenericRepository<MarginCall>(_context), IMarginCallRepository
     {
         /*-------------------------------------------------    MTM     ----------*/
-        public async Task<bool> ApproveMarginCallMTM(string portfolioID)
+        public async Task<bool> ResetFlagMTM(string portfolioID, string user)
+        {
+            try
+            {
+                var updateCount = await _context
+               .Database
+               .ExecuteSqlRawAsync($"exec [dbo].[USP_MarginCall_MTM] @Mode={(int)MarginCallMode.ResetFlag}, @ClientCode='{portfolioID}', @User='{user}'");
+
+                return updateCount == 1;
+            }
+            catch (Exception ex)
+            {
+                return false;
+            }
+        }
+
+        public async Task<bool> ApproveMarginCallMTM(string portfolioID, int approvalType)
         {
             var updateCount = await _context
                 .Database
-                .ExecuteSqlRawAsync($"exec [dbo].[USP_MarginCall_MTM_Update] @PortfolioID='{portfolioID}'");
+                .ExecuteSqlRawAsync($"exec [dbo].[USP_MarginCall_MTM_Update] @PortfolioID='{portfolioID}', @ApprovalType={approvalType}");
 
             return updateCount == 1;
         }
@@ -64,11 +79,27 @@ namespace MVCWebApp.Repositories
         }
 
         /*-------------------------------------------------    EOD     ----------*/
-        public async Task<bool> ApproveMarginCallEOD(string portfolioID)
+        public async Task<bool> ResetFlagEOD(string portfolioID, string user)
+        {
+            try
+            {
+                var updateCount = await _context
+               .Database
+               .ExecuteSqlRawAsync($"exec [dbo].[USP_MarginCall_EOD] @Mode={(int)MarginCallMode.ResetFlag}, @ClientCode='{portfolioID}', @User='{user}'");
+
+                return updateCount == 1;
+            }
+            catch (Exception ex)
+            {
+                return false;
+            }
+        }
+
+        public async Task<bool> ApproveMarginCallEOD(string portfolioID, int approvalType)
         {
             var updateCount = await _context
                 .Database
-                .ExecuteSqlRawAsync($"exec [dbo].[USP_MarginCall_EOD_Update] @PortfolioID='{portfolioID}'");
+                .ExecuteSqlRawAsync($"exec [dbo].[USP_MarginCall_EOD_Update] @PortfolioID='{portfolioID}', @ApprovalType={approvalType}");
 
             return updateCount == 1;
         }
@@ -182,10 +213,10 @@ namespace MVCWebApp.Repositories
                 Type = entity.Type,
                 VM_Ccy = entity.VM_Ccy,
                 MarginCallAmount = entity.MarginCallAmount,
-                MarginCallTriggerFlag = entity.MarginCallTriggerFlag == true,
-                StoplossTriggerFlag = entity.StoplossTriggerFlag == true,
-                MarginCallTriggerDatetime = entity.MarginCallTriggerDatetime,
-                StoplossTriggerDatetime = entity.StoplossTriggerDatetime,
+                MarginCallTriggerFlag = entity.MTMTriggerFlag == "Y",
+                StoplossTriggerFlag = entity.StoplossFlag == "Y",
+                MarginCallTriggerDatetime = entity.MTMTriggerDatetime,
+                StoplossTriggerDatetime = entity.StopLossDatetime,
                 EmailTo = entity.EmailTo
             };
         }
@@ -207,12 +238,12 @@ namespace MVCWebApp.Repositories
                 Type = entity.Type,
                 VM_Ccy = entity.VM_Ccy,
                 MarginCallAmount = entity.MarginCallAmount,
-                MarginCallTriggerFlag = entity.MarginCallTriggerFlag == true,
-                StoplossTriggerFlag = entity.StoplossTriggerFlag == true,
-                MOCTriggerFlag = entity.MOCTriggerFlag == true,
-                MarginCallTriggerDatetime = entity.MarginCallTriggerDatetime,
-                StoplossTriggerDatetime = entity.StoplossTriggerDatetime,
-                MOCTriggerDatetime = entity.MOCTriggerDatetime,
+                MarginCallTriggerFlag = entity.EODTriggerFlag == "Y",
+                StoplossTriggerFlag = entity.StoplossFlag == "Y",
+                MOCTriggerFlag = entity.MOCFlag == "Y",
+                MarginCallTriggerDatetime = entity.EODTriggerDatetime,
+                StoplossTriggerDatetime = entity.StopLossDatetime,
+                MOCTriggerDatetime = entity.MOCDatetime,
                 Day = entity.Day
             };
         }

@@ -308,30 +308,35 @@
 
     <script>
         $(document).ready(function () {
-            /*-------------------------- trigger mode */
-            // $(document).on("change", "#triggerModeAll", function (e) {
-            //     event.preventDefault();
 
-            //     postSearchMarginCalls(1)
-            // });
+            /*-------------------------- Reset flag */
+            $(document).on("click", ".btn-resetFlag", function (e) {
+                e.preventDefault();
+                var entityId = $(this).data("id");
+                console.log(entityId);
+                $.ajax({
+                    url: "/MarginCallEOD/ResetFlag",
+                    type: "POST",
+                    contentType: "application/x-www-form-urlencoded; charset=UTF-8",
+                    data: { id: entityId },
+                    success: function (data) {
+                        alert('success reset flag');
+                        event.preventDefault();
+                        postSearchMarginCalls(1)
+                    },
+                    error: function (jqXHR, textStatus, errorThrown) {
+                        console.error("Error reset flag:", textStatus, errorThrown);
+                        if (jqXHR.status == 401) {
+                            alert("Login token expired");
+                            window.location.href = "/Login/Index";
+                        }
+                        else {
+                            alert("reset flag failed: " + jqXHR.status);
+                        }
+                    }
+                });
 
-            // $(document).on("change", "#triggerModeMargin", function (e) {
-            //     event.preventDefault();
-
-            //     postSearchMarginCalls(1)
-            // });
-
-            // $(document).on("change", "#triggerModeStoploss", function (e) {
-            //     event.preventDefault();
-
-            //     postSearchMarginCalls(1)
-            // });
-
-            // $(document).on("change", "#triggerModeMOC", function (e) {
-            //     event.preventDefault();
-
-            //     postSearchMarginCalls(1)
-            // });
+            });
 
             /*-------------------------- margin mode */
             $(document).on("change", "#marginModeAll", function (e) {

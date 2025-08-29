@@ -26,6 +26,7 @@
                     <th>Stoploss</th>
                     <th>MOC</th>
                     <th>Detail</th>
+                    <th>ResetFlag</th>
                 </tr>
             </thead>
             <tbody>
@@ -78,6 +79,15 @@
                         </td>
                         <td>
                             <button class="btn btn-sm btn-info btn-detail" data-id="@item.PortfolioID">Details</button>
+                        </td>
+                        <td>
+                            <div class="d-flex flex-wrap gap-1">
+                                @if (@item.MarginCallTriggerFlag == true || @item.StoplossTriggerFlag == true || @item.MOCTriggerFlag == true)
+                                {
+                                    <button class="btn btn-sm btn-info btn-resetFlag" data-id="@item.PortfolioID">Reset</button>
+
+                                }
+                            </div>
                         </td>
                     </tr>
                 }

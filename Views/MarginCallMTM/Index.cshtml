@@ -331,47 +331,90 @@
             //     postSearchMarginCalls(1)
             // });
 
+            /*-------------------------- Reset flag */
+            $(document).on("click", ".btn-resetFlag", function (e) {
+                e.preventDefault();
+                var entityId = $(this).data("id");
+                console.log(entityId);
+                $.ajax({
+                    url: "/MarginCallMTM/ResetFlag",
+                    type: "POST",
+                    contentType: "application/x-www-form-urlencoded; charset=UTF-8",
+                    data: { id: entityId },
+                    success: function (data) {
+                        alert('success reset flag');
+                        event.preventDefault();
+                        postSearchMarginCalls(1)
+                    },
+                    error: function (jqXHR, textStatus, errorThrown) {
+                        console.error("Error reset flag:", textStatus, errorThrown);
+                        if (jqXHR.status == 401) {
+                            alert("Login token expired");
+                            window.location.href = "/Login/Index";
+                        }
+                        else {
+                            alert("reset flag failed: " + jqXHR.status);
+                        }
+                    }
+                });
+
+            });
+
+            // $(document).on("click", ".btn-resetFlag", function (e) {
+            //     e.preventDefault();
+            //     var entityId = $(this).data("id");
+            //     console.log(entityId);
+            //     $.post("/MarginCallMTM/ResetFlag", { id: entityId })
+            //         .done(function (data) {
+            //             alert('success reset flag');
+            //         })
+            //         .fail(function (jqXHR, textStatus, errorThrown) {
+            //             console.error("Error fetching approval modal:", textStatus, errorThrown);
+            //             if (jqXHR.status == 401) {
+            //                 alert("Login token expired");
+            //                 window.location.href = "/Login/Index";
+            //             }
+            //             else {
+            //                 alert("approve failed: " + jqXHR.status);
+            //             }
+            //         });
+            // });
+
+
             /*-------------------------- margin mode */
             $(document).on("change", "#marginModeAll", function (e) {
                 event.preventDefault();
-
                 postSearchMarginCalls(1)
             });
 
             $(document).on("change", "#marginModeTriggered", function (e) {
                 event.preventDefault();
-
                 postSearchMarginCalls(1)
             });
 
             $(document).on("change", "#marginModeMargin", function (e) {
                 event.preventDefault();
-
                 postSearchMarginCalls(1)
             });
 
             $(document).on("change", "#marginModeStoploss", function (e) {
                 event.preventDefault();
-
                 postSearchMarginCalls(1)
             });
 
             /*-------------------------- Order by changes */
             $(document).on("change", "#optionMarginCallOrderByColumns", function (e) {
                 event.preventDefault();
-
                 postSearchMarginCalls(1)
             });
 
             $(document).on("change", "#asc", function (e) {
                 event.preventDefault();
-
                 postSearchMarginCalls(1)
             });
 
             $(document).on("change", "#desc", function (e) {
                 event.preventDefault();
-
                 postSearchMarginCalls(1)
             });
 

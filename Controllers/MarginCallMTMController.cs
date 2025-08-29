@@ -58,10 +58,52 @@ namespace MVCWebApp.Controllers
         {
             var paginatedResult = _marginCallService.GetMarginCallMTMAll(req);
 
-            ViewData["isMaginModeAll"] = req.Selected_MarginMode != (int)MarginCallMode.TriggeredToday ? 1 : 0;
+            //ViewData["isMaginModeAll"] = req.Selected_MarginMode == (int)MarginCallMode.All ? 1 : 0;
+            ViewData["isMaginModeAll"] = 1;
 
             return PartialView("_Search", paginatedResult);
         }
+
+        [Authorize]
+        public async Task<IActionResult> ResetFlag(string id)
+        {
+            if (id.IsNotNullOrEmpty())
+            {
+                try
+                {
+                    var entity = _marginCallService.GetMarginCallMTM(id);
+                    if (entity == null)
+                    {
+                        return NotFound();
+                    }
+
+                    var isSuccess = await _marginCallService.ResetFlagMTM(id);
+                    if (isSuccess)
+                    {
+                        var auditReq = new AuditLog
+                        {
+                            TypeID = (int)AuditLogTypeEnum.AutoMarginMTM,
+                            ActionID = (int)AuditLogActionEnum.ResetFlag,
+                            Name = entity.PortfolioID,
+                            CreatedBy = Username,
+                            CreatedAt = DateTime.Now,
+                            NewValue = JsonConvert.SerializeObject(entity)
+                        };
+
+                        await _auditLogService.AddAsync(auditReq);
+
+                        return Json(new { success = true });
+                    }
+                }
+                catch (Exception ex)
+                {
+                    ModelState.AddModelError("", "Error Reset flag: " + ex.Message);
+                }
+            }
+
+            return Json(new { success = false });
+        }
+
 
         [Authorize]
         public async Task<IActionResult> Details(string id)

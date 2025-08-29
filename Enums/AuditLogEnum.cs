@@ -20,6 +20,7 @@ namespace MVCWebApp.Enums
         Delete = 3,
         Approve = 4,
         ApproveStoploss = 5,
-        ApproveMOC = 6
+        ApproveMOC = 6,
+        ResetFlag = 7
     }
 }
