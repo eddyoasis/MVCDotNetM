@@ -7,12 +7,10 @@ using MVCWebApp.Enums;
 using MVCWebApp.Helper;
 using MVCWebApp.Helper.Mapper;
 using MVCWebApp.Models.AuditLogs;
-using MVCWebApp.Models.EmailGroups;
 using MVCWebApp.Models.MarginCalls;
 using MVCWebApp.Services;
 using MVCWebApp.ViewModels;
 using Newtonsoft.Json;
-using Org.BouncyCastle.Ocsp;
 
 namespace MVCWebApp.Controllers
 {
@@ -148,6 +146,10 @@ namespace MVCWebApp.Controllers
                         })
                         .ToList();
             }
+
+
+            var stoplossOrderDetail = _marginCallService.GetStoplossOrderDetail(id, true);
+            entity.StoplossOrderDetail = stoplossOrderDetail?.Action;
 
             return PartialView("_ApproveStoplossPartial", entity);
         }

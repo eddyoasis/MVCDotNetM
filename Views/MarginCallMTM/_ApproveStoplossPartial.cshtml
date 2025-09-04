@@ -191,7 +191,8 @@
                 ccy: marginCallModel.VM_Ccy,
                 Collateral: marginCallModel.Collateral,
                 Percentages: marginCallModel.Percentages,
-                MarginCallAmount: marginCallModel.MarginCallAmount
+                MarginCallAmount: marginCallModel.MarginCallAmount == 0 ? "0.00" : marginCallModel.MarginCallAmount,
+                OrderDetail: marginCallModel.StoplossOrderDetail
             };
             const result = parseTemplate(template, model);
             textbox.value = result;

@@ -13,6 +13,8 @@ namespace MVCWebApp.ViewModels
 
     public class MarginCallViewModel : MarginCall
     {
+        public string StoplossOrderDetail { get; set; }
+
         public List<SelectListItem> EmailTemplateList { get; set; }
 
         [Display(Name = "EmailTemplate Selection")]
@@ -23,7 +25,6 @@ namespace MVCWebApp.ViewModels
 
         [Display(Name = "EmailTemplate Body")]
         public string EmailTemplateValue { get; set; }
-
 
 
         public List<EmailGroup> EmailGroupSelections { get; set; }

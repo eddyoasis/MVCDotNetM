@@ -15,6 +15,7 @@ namespace MVCWebApp.Models.MarginCalls
         public string VM { get; set; }
         public string VM_Ccy { get; set; }
         public string IM { get; set; }
+        public string IMProduct { get; set; }
         public string IM_Ccy { get; set; }
         public double MarginCallAmount { get; set; }
         public string? MarginCallFlag { get; set; }
@@ -43,6 +44,7 @@ namespace MVCWebApp.Models.MarginCalls
         public double VM { get; set; }
         public string VM_Ccy { get; set; }
         public double IM { get; set; }
+        public string IMProduct { get; set; }
         public string IM_Ccy { get; set; }
         public double MarginCallAmount { get; set; }
         public string? Type { get; set; }
@@ -63,6 +65,11 @@ namespace MVCWebApp.Models.MarginCalls
     {
         public string Portfolio { get; set; }
         public string Email { get; set; }
+    }
 
+    public class StoplossOrderDetailDBResult
+    {
+        public string? PortfolioID { get; set; }
+        public string? Action { get; set; }
     }
 }

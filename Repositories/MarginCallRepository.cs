@@ -17,6 +17,7 @@ namespace MVCWebApp.Repositories
         IEnumerable<MarginCallDto> GetMarginCallEOD(MarginCallMode mode, string portfolioID = null, string user = null);
         MarginCallDto GetMarginCallEOD(string portfolioID);
 
+        StoplossOrderDetailDBResult GetStoplossOrderDetail(string portfolioID, bool isMTM);
         ClientEmailDBResult GetClientEmail(string portfolioID);
 
         Task<IEnumerable<string>> GetAllCollateralCcyMTM();
@@ -126,6 +127,16 @@ namespace MVCWebApp.Repositories
         }
 
         /*-------------------------------------------------    General     ----------*/
+        public StoplossOrderDetailDBResult GetStoplossOrderDetail(string portfolioID, bool isMTM)
+        {
+            var result = _context.StoplossOrderDetailDBResult
+               .FromSqlInterpolated($"exec [dbo].[USP_StopLoss] @Mode={(isMTM ? 3 : 4)}")
+               .AsEnumerable()
+               .FirstOrDefault(x => x.PortfolioID == portfolioID);
+
+            return result ?? new StoplossOrderDetailDBResult { Action = "-" };
+        }
+
         public ClientEmailDBResult GetClientEmail(string portfolioID)
         {
             var result = _context.ClientEmailDBResult
@@ -217,7 +228,8 @@ namespace MVCWebApp.Repositories
                 StoplossTriggerFlag = entity.StoplossFlag == "Y",
                 MarginCallTriggerDatetime = entity.MTMTriggerDatetime,
                 StoplossTriggerDatetime = entity.StopLossDatetime,
-                EmailTo = entity.EmailTo
+                EmailTo = entity.EmailTo,
+                IMProduct = "IM Product"
             };
         }
 
@@ -244,7 +256,8 @@ namespace MVCWebApp.Repositories
                 MarginCallTriggerDatetime = entity.EODTriggerDatetime,
                 StoplossTriggerDatetime = entity.StopLossDatetime,
                 MOCTriggerDatetime = entity.MOCDatetime,
-                Day = entity.Day
+                Day = entity.Day,
+                IMProduct = "IM Product"
             };
         }
     }

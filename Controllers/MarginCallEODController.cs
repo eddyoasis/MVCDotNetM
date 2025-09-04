@@ -249,6 +249,9 @@ namespace MVCWebApp.Controllers
                         .ToList();
             }
 
+            var stoplossOrderDetail = _marginCallService.GetStoplossOrderDetail(id, true);
+            entity.StoplossOrderDetail = stoplossOrderDetail?.Action;
+
             return PartialView("_ApproveStoplossPartial", entity);
         }
 

@@ -39,4 +39,10 @@
     <Folder Include="Documents\" />
   </ItemGroup>
 
+  <ItemGroup>
+    <None Update="Documents\ContractVerify.csv">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+
 </Project>
