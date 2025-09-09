@@ -132,9 +132,12 @@ namespace MVCWebApp.Repositories
             var result = _context.StoplossOrderDetailDBResult
                .FromSqlInterpolated($"exec [dbo].[USP_StopLoss] @Mode={(isMTM ? 3 : 4)}")
                .AsEnumerable()
-               .FirstOrDefault(x => x.PortfolioID == portfolioID);
+               .Where(x => x.PortfolioID == portfolioID);
 
-            return result ?? new StoplossOrderDetailDBResult { Action = "-" };
+            var action = result.Any() ?
+                string.Join(Environment.NewLine, result.Select(x => x.Action)) : "-";
+
+            return new StoplossOrderDetailDBResult { Action = action };
         }
 
         public ClientEmailDBResult GetClientEmail(string portfolioID)
