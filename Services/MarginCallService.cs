@@ -11,7 +11,6 @@ namespace MVCWebApp.Services
 {
     public interface IMarginCallService
     {
-        StoplossOrderDetailDBResult GetStoplossOrderDetail(string portfolioID, bool isMTM);
         ClientEmailDBResult GetClientEmail(string portfolioID);
 
         Task<IEnumerable<string>> GetAllCollateralCcy();
@@ -22,6 +21,9 @@ namespace MVCWebApp.Services
         Task<IEnumerable<string>> GetAllVMCcyMTM();
         Task<IEnumerable<string>> GetAllIMCcyMTM();
 
+
+        IEnumerable<IMProductEODDBResult> GetEODIMProduct(string portfolioID);
+        StoplossOrderDetailDBResult GetEODStoplossOrderDetail(string portfolioID);
         Task<bool> ResetFlagEOD(string portfolioID);
         Task<bool> ApproveMarginCallEOD(MarginCallViewModel model);
         Task<bool> ApproveMarginCallEODStoploss(MarginCallViewModel model);
@@ -29,6 +31,8 @@ namespace MVCWebApp.Services
         MarginCallViewModel GetMarginCallEOD(string portfolioID);
         IEnumerable<MarginCallViewModel> GetMarginCallEODAll(MarginCallSearchReq req);
 
+        IEnumerable<IMProductMTMDBResult> GetMTMIMProduct(string portfolioID);
+        StoplossOrderDetailDBResult GetMTMStoplossOrderDetail(string portfolioID);
         Task<bool> ResetFlagMTM(string portfolioID);
         Task<bool> ApproveMarginCallMTM(MarginCallViewModel model);
         Task<bool> ApproveMarginCallMTMStoploss(MarginCallViewModel model);
@@ -43,8 +47,17 @@ namespace MVCWebApp.Services
         IMapModel _mapper
         ) : BaseService, IMarginCallService
     {
-        public StoplossOrderDetailDBResult GetStoplossOrderDetail(string portfolioID, bool isMTM) =>
-            _marginCallRepository.GetStoplossOrderDetail(portfolioID, isMTM);
+        public IEnumerable<IMProductMTMDBResult> GetMTMIMProduct(string portfolioID) =>
+            _marginCallRepository.GetMTMIMProduct(portfolioID);
+
+        public IEnumerable<IMProductEODDBResult> GetEODIMProduct(string portfolioID) =>
+            _marginCallRepository.GetEODIMProduct(portfolioID);
+
+        public StoplossOrderDetailDBResult GetMTMStoplossOrderDetail(string portfolioID) =>
+            _marginCallRepository.GetStoplossOrderDetail(portfolioID, true);
+
+        public StoplossOrderDetailDBResult GetEODStoplossOrderDetail(string portfolioID) =>
+            _marginCallRepository.GetStoplossOrderDetail(portfolioID, false);
 
         public ClientEmailDBResult GetClientEmail(string portfolioID) =>
              _marginCallRepository.GetClientEmail(portfolioID);
@@ -212,17 +225,17 @@ namespace MVCWebApp.Services
         }
 
         /*-------------------------------------------------    MTM     ----------*/
+        public async Task<bool> ResetFlagMTM(string portfolioID)
+        {
+            var isSuccess = await _marginCallRepository.ResetFlagMTM(portfolioID, Username);
+            return isSuccess;
+        }
+
         public MarginCallViewModel GetMarginCallMTM(string portfolioID)
         {
             var entity = _marginCallRepository.GetMarginCallMTM(portfolioID);
 
             return _mapper.MapDto<MarginCallViewModel>(entity);
-        }
-
-        public async Task<bool> ResetFlagMTM(string portfolioID)
-        {
-            var isSuccess = await _marginCallRepository.ResetFlagMTM(portfolioID, Username);
-            return isSuccess;
         }
 
         public async Task<bool> ApproveMarginCallMTM(MarginCallViewModel model)

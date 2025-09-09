@@ -64,6 +64,18 @@ namespace MVCWebApp.Controllers
         }
 
         [Authorize]
+        public async Task<IActionResult> StoplossIMDetail(string id)
+        {
+            var result = _marginCallService.GetEODIMProduct(id);
+            if (result == null)
+            {
+                return NotFound();
+            }
+
+            return PartialView("_StoplossIMDetailPartial", result);
+        }
+
+        [Authorize]
         public async Task<IActionResult> ResetFlag(string id)
         {
             if (id.IsNotNullOrEmpty())
@@ -249,7 +261,7 @@ namespace MVCWebApp.Controllers
                         .ToList();
             }
 
-            var stoplossOrderDetail = _marginCallService.GetStoplossOrderDetail(id, true);
+            var stoplossOrderDetail = _marginCallService.GetEODStoplossOrderDetail(id);
             entity.StoplossOrderDetail = stoplossOrderDetail?.Action;
 
             return PartialView("_ApproveStoplossPartial", entity);

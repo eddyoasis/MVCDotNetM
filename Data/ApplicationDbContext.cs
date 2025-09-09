@@ -20,11 +20,15 @@ namespace MVCWebApp.Data
         public DbSet<EmailGroup> EmailGroup { get; set; }
         public DbSet<ClientEmailDBResult> ClientEmailDBResult { get; set; }
         public DbSet<StoplossOrderDetailDBResult> StoplossOrderDetailDBResult { get; set; }
+        public DbSet<IMProductMTMDBResult> IMProductMTMDBResult { get; set; }
+        public DbSet<IMProductEODDBResult> IMProductEODDBResult { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            modelBuilder.Entity<ClientEmailDBResult>().HasNoKey().ToView(null);
+            modelBuilder.Entity<IMProductMTMDBResult>().HasNoKey().ToView(null);
+            modelBuilder.Entity<IMProductEODDBResult>().HasNoKey().ToView(null);
             modelBuilder.Entity<StoplossOrderDetailDBResult>().HasNoKey().ToView(null);
+            modelBuilder.Entity<ClientEmailDBResult>().HasNoKey().ToView(null);
 
             // Declare that this entity has no primary key
             modelBuilder.Entity<MarginCall>()

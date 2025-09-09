@@ -7,11 +7,13 @@ namespace MVCWebApp.Repositories
 {
     public interface IMarginCallRepository : IGenericRepository<MarginCall>
     {
+        IEnumerable<IMProductMTMDBResult> GetMTMIMProduct(string portfolioID);
         Task<bool> ResetFlagMTM(string portfolioID, string user);
         Task<bool> ApproveMarginCallMTM(string portfolioID, int approvalType);
         IEnumerable<MarginCallDto> GetMarginCallMTM(MarginCallMode mode, string portfolioID = null, string user = null);
         MarginCallDto GetMarginCallMTM(string portfolioID);
 
+        IEnumerable<IMProductEODDBResult> GetEODIMProduct(string portfolioID);
         Task<bool> ResetFlagEOD(string portfolioID, string user);
         Task<bool> ApproveMarginCallEOD(string portfolioID, int approvalType);
         IEnumerable<MarginCallDto> GetMarginCallEOD(MarginCallMode mode, string portfolioID = null, string user = null);
@@ -33,6 +35,16 @@ namespace MVCWebApp.Repositories
         (ApplicationDbContext _context) : GenericRepository<MarginCall>(_context), IMarginCallRepository
     {
         /*-------------------------------------------------    MTM     ----------*/
+        public IEnumerable<IMProductMTMDBResult> GetMTMIMProduct(string portfolioID)
+        {
+            var result = _context.IMProductMTMDBResult
+               .FromSqlInterpolated($"exec [dbo].[USP_IMProduct] @Mode=1")
+               .AsEnumerable()
+               .Where(x => x.PortfolioId == portfolioID);
+
+            return result;
+        }
+
         public async Task<bool> ResetFlagMTM(string portfolioID, string user)
         {
             try
@@ -80,6 +92,16 @@ namespace MVCWebApp.Repositories
         }
 
         /*-------------------------------------------------    EOD     ----------*/
+        public IEnumerable<IMProductEODDBResult> GetEODIMProduct(string portfolioID)
+        {
+            var result = _context.IMProductEODDBResult
+               .FromSqlInterpolated($"exec [dbo].[USP_IMProduct] @Mode=2")
+               .AsEnumerable()
+               .Where(x => x.ClientCode == portfolioID);
+
+            return result;
+        }
+
         public async Task<bool> ResetFlagEOD(string portfolioID, string user)
         {
             try
@@ -127,6 +149,8 @@ namespace MVCWebApp.Repositories
         }
 
         /*-------------------------------------------------    General     ----------*/
+        
+
         public StoplossOrderDetailDBResult GetStoplossOrderDetail(string portfolioID, bool isMTM)
         {
             var result = _context.StoplossOrderDetailDBResult
