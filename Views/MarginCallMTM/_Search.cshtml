@@ -21,7 +21,7 @@
                     <th>VM_Ccy</th>
                     <th>IM</th>
                     <th>IM_Ccy</th>
-                    <th>IM_Product</th>
+                    @* <th>IM_Product</th> *@
                     @* <th>MarginCallFlag</th>
                     <th>EODTriggerFlag</th>
                     <th>MTMTriggerFlag</th>
@@ -53,7 +53,7 @@
                         </td> *@
                         <td>@item.IM</td>
                         <td>@item.IM_Ccy</td>
-                        <td>@item.IMProduct</td>
+                        @* <td>@item.IMProduct</td> *@
                         @* <td>@item.MarginCallFlag</td>
                         <td>@item.EODTriggerFlag</td>
                         <td>@item.MTMTriggerFlag</td>
@@ -87,7 +87,7 @@
                         </td>
                         <td>
                             <div class="d-flex flex-wrap gap-1">
-                                @if (@item.MarginCallTriggerFlag == true || @item.StoplossTriggerFlag == true)
+                                @if (@item.IsAvailableReset == true)
                                 {
                                     <button class="btn btn-sm btn-info btn-resetFlag" data-id="@item.PortfolioID">Reset</button>
 

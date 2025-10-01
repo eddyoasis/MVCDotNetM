@@ -259,6 +259,10 @@
                         <input class="form-check-input" type="radio" id="marginModeStoploss" name="marginMode" value=12>
                         <label class="form-check-label" for="marginModeStoploss">Stoploss</label>
                     </div>
+                    <div class="form-check">
+                        <input class="form-check-input" type="radio" id="marginModeReset" name="marginMode" value=14>
+                        <label class="form-check-label" for="marginModeReset">Reset</label>
+                    </div>
                 </div>
             </div>
         </section>
@@ -413,6 +417,11 @@
             });
 
             $(document).on("change", "#marginModeStoploss", function (e) {
+                event.preventDefault();
+                postSearchMarginCalls(1)
+            });
+
+            $(document).on("change", "#marginModeReset", function (e) {
                 event.preventDefault();
                 postSearchMarginCalls(1)
             });

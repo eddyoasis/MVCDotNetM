@@ -10,6 +10,7 @@ namespace MVCWebApp.Middlewares
     {
         List<string> _whiteList = 
             ["/Login/Index",
+            "/Test/TestPOST",
             "/Margin/Logout",
             "/Login",
             "/Login/Login"];

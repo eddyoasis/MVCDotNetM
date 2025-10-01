@@ -48,6 +48,7 @@ namespace MVCWebApp.Enums
         MarginAvailable = 11,
         StoplossAvailable = 12,
         MOCAvailable = 13,
+        ResetFlagAvailable = 14,
         TriggeredTodayMargin = 41,
         TriggeredTodayStoploss = 42,
         TriggeredTodayMOC = 43

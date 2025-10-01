@@ -24,6 +24,7 @@ namespace MVCWebApp.Models.MarginCalls
         public bool? MarginCallTriggerFlag { get; set; }
         public bool? StoplossTriggerFlag { get; set; }
         public bool? MOCTriggerFlag { get; set; }
+        public bool IsAvailableReset { get; set; }
         public string? Type { get; set; }
         public string? Remarks { get; set; }
         public DateTime InsertedDatetime { get; set; }
@@ -52,6 +53,7 @@ namespace MVCWebApp.Models.MarginCalls
         public bool MarginCallTriggerFlag { get; set; }
         public bool StoplossTriggerFlag { get; set; }
         public bool MOCTriggerFlag { get; set; }
+        public bool IsAvailableReset { get; set; }
         public DateTime InsertedDatetime { get; set; }
         public DateTime? ModifiedDatetime { get; set; }
         public DateTime? MarginCallTriggerDatetime { get; set; }
@@ -76,17 +78,17 @@ namespace MVCWebApp.Models.MarginCalls
     public class IMProductMTMDBResult
     {
         public string PortfolioId { get; set; }
-        public string ExchangeCode { get; set; }
-        public string ContractCode { get; set; }
-        public string CCY { get; set; }
-        public string IMProduct { get; set; }
+        public string? ExchangeCode { get; set; }
+        public string? ContractCode { get; set; }
+        public string? CCY { get; set; }
+        public decimal? IMProduct { get; set; }
     }
 
     public class IMProductEODDBResult
     {
-        public string ClientCode { get; set; }
-        public string ExchangeCode { get; set; }
-        public string ContractCode { get; set; }
+        public string PortfolioId { get; set; }
+        public string? ExchangeCode { get; set; }
+        public string? ContractCode { get; set; }
         public string? CCY { get; set; }
         public decimal? IMProduct { get; set; }
     }

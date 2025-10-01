@@ -160,6 +160,7 @@ namespace MVCWebApp.Services
                     (req.Selected_MarginMode == (int)MarginCallMode.StoplossAvailable && (x.Day != "1" && !x.StoplossTriggerFlag)) ||
                     (req.Selected_MarginMode == (int)MarginCallMode.MOCAvailable && (x.Day == "3" && !x.MOCTriggerFlag)) ||
                     (req.Selected_MarginMode == (int)MarginCallMode.MOCAvailable && (x.Day == "3" && !x.MOCTriggerFlag)) ||
+                    (req.Selected_MarginMode == (int)MarginCallMode.ResetFlagAvailable && x.IsAvailableReset) ||
                     (req.Selected_MarginMode == (int)MarginCallMode.TriggeredTodayMargin && (x.MarginCallTriggerFlag && x.MarginCallTriggerDatetime?.Date == DateTime.Today.Date)) ||
                     (req.Selected_MarginMode == (int)MarginCallMode.TriggeredTodayStoploss && (x.StoplossTriggerFlag && x.StoplossTriggerDatetime?.Date == DateTime.Today.Date)) ||
                     (req.Selected_MarginMode == (int)MarginCallMode.TriggeredTodayMOC && (x.MOCTriggerFlag && x.MOCTriggerDatetime?.Date == DateTime.Today.Date))
@@ -282,6 +283,7 @@ namespace MVCWebApp.Services
                 (req.Selected_MarginMode == (int)MarginCallMode.All ||
                     (req.Selected_MarginMode == (int)MarginCallMode.MarginAvailable && !x.MarginCallTriggerFlag) ||
                     (req.Selected_MarginMode == (int)MarginCallMode.StoplossAvailable && !x.StoplossTriggerFlag) ||
+                    (req.Selected_MarginMode == (int)MarginCallMode.ResetFlagAvailable && x.IsAvailableReset) ||
                     (req.Selected_MarginMode == (int)MarginCallMode.TriggeredTodayMargin && (x.MarginCallTriggerFlag && x.MarginCallTriggerDatetime?.Date == DateTime.Today.Date)) ||
                     (req.Selected_MarginMode == (int)MarginCallMode.TriggeredTodayStoploss && (x.StoplossTriggerFlag && x.StoplossTriggerDatetime?.Date == DateTime.Today.Date))
                 ) && 

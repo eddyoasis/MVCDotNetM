@@ -53,7 +53,7 @@ namespace MVCWebApp.Repositories
                .Database
                .ExecuteSqlRawAsync($"exec [dbo].[USP_MarginCall_MTM] @Mode={(int)MarginCallMode.ResetFlag}, @ClientCode='{portfolioID}', @User='{user}'");
 
-                return updateCount == 1;
+                return true;
             }
             catch (Exception ex)
             {
@@ -97,7 +97,7 @@ namespace MVCWebApp.Repositories
             var result = _context.IMProductEODDBResult
                .FromSqlInterpolated($"exec [dbo].[USP_IMProduct] @Mode=2")
                .AsEnumerable()
-               .Where(x => x.ClientCode == portfolioID);
+               .Where(x => x.PortfolioId == portfolioID);
 
             return result;
         }
@@ -110,7 +110,7 @@ namespace MVCWebApp.Repositories
                .Database
                .ExecuteSqlRawAsync($"exec [dbo].[USP_MarginCall_EOD] @Mode={(int)MarginCallMode.ResetFlag}, @ClientCode='{portfolioID}', @User='{user}'");
 
-                return updateCount == 1;
+                return true;
             }
             catch (Exception ex)
             {
@@ -253,6 +253,7 @@ namespace MVCWebApp.Repositories
                 MarginCallAmount = entity.MarginCallAmount,
                 MarginCallTriggerFlag = entity.MTMTriggerFlag == "Y",
                 StoplossTriggerFlag = entity.StoplossFlag == "Y",
+                IsAvailableReset = entity.MTMTriggerFlag == "Y" || entity.StoplossFlag == "Y",
                 MarginCallTriggerDatetime = entity.MTMTriggerDatetime,
                 StoplossTriggerDatetime = entity.StopLossDatetime,
                 EmailTo = entity.EmailTo,
@@ -280,6 +281,7 @@ namespace MVCWebApp.Repositories
                 MarginCallTriggerFlag = entity.EODTriggerFlag == "Y",
                 StoplossTriggerFlag = entity.StoplossFlag == "Y",
                 MOCTriggerFlag = entity.MOCFlag == "Y",
+                IsAvailableReset = entity.EODTriggerFlag == "Y" || entity.StoplossFlag == "Y" || entity.MOCFlag == "Y",
                 MarginCallTriggerDatetime = entity.EODTriggerDatetime,
                 StoplossTriggerDatetime = entity.StopLossDatetime,
                 MOCTriggerDatetime = entity.MOCDatetime,
