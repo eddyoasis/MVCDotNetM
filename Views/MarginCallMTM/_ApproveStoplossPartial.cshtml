@@ -2,32 +2,6 @@
 
 @using (Html.BeginForm("ApproveStoploss", "MarginCallMTM", FormMethod.Post, new { id = "approveStoplossForm" }))
 {
-    <head>
-        <style>
-            .modal-backdrop.blur-backdrop {
-                backdrop-filter: blur(5px);
-                background-color: rgba(0, 0, 0, 0.3);
-            }
-
-            .blur-background {
-                filter: blur(5px);
-                position: relative;
-                transition: filter 0.3s ease;
-            }
-
-            .modalSub {
-                position: absolute;
-                top: 50%;
-                left: 50%;
-                transform: translate(-50%, -50%);
-                z-index: 1051; /* Higher than Bootstrap modal backdrop (usually 1050) */
-                background: white;
-                padding: 20px;
-                border-radius: 8px;
-            }
-        </style>
-    </head>
-    
     @Html.AntiForgeryToken()
     @Html.HiddenFor(m => m.PortfolioID)
 
@@ -164,7 +138,7 @@
         @*--------------------------------------------------------------- modal*@
         <div class="modal fade" id="stoplossIMModal" tabindex="-1" role="dialog" aria-hidden="true">
             <div class="modal-dialog modal-lg">
-                <div class="modal-content">
+                <div class="modal-content-sub">
                 </div>
             </div>
         </div>
@@ -186,7 +160,7 @@
             var entityId = $(this).data("id");
             $.get("/MarginCallMTM/StoplossIMDetail", { id: entityId })
                 .done(function (data) {
-                    $("#stoplossIMModal .modal-content").html(data);
+                    $("#stoplossIMModal .modal-content-sub").html(data);
                     $("#stoplossIMModal").modal("show");
                 })
                 .fail(function (jqXHR, textStatus, errorThrown) {
