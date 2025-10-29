@@ -16,10 +16,12 @@
                     <th>Percentages</th>
                     <th>MarginCallAmount</th>
                     <th>Day</th>
-                    <th>Collateral</th>
+                    <th>TNE</th>
+                    <th>TNE_Ccy</th>
+                    @* <th>Collateral</th>
                     <th>Collateral_Ccy</th>
                     <th>VM</th>
-                    <th>VM_Ccy</th>
+                    <th>VM_Ccy</th> *@
                     <th>IM</th>
                     <th>IM_Ccy</th>
                     <th>MarginCall</th>
@@ -37,10 +39,12 @@
                         <td>@item.Percentages</td>
                         <td>@item.MarginCallAmount</td>
                         <td>@item.Day</td>
-                        <td>@item.Collateral</td>
+                        <td>@item.TNE</td>
+                        <td>@item.TNE_Ccy</td>
+                        @* <td>@item.Collateral</td>
                         <td>@item.Collateral_Ccy</td>
                         <td>@item.VM</td>
-                        <td>@item.VM_Ccy</td>
+                        <td>@item.VM_Ccy</td> *@
                         <td>@item.IM</td>
                         <td>@item.IM_Ccy</td>
                         <td>
@@ -48,41 +52,34 @@
                                 @if (isMaginModeAll == 1)
                                 {
                                     <button style="width:170px;" class="btn btn-sm btn-success btn-approve" data-id="@item.PortfolioID" disabled="@item.MarginCallTriggerFlag">Margin</button>
-                                    @(item.MarginCallTriggerFlag == true ? $"{item.MarginCallTriggerDatetime}" : "")
-
+                                    @(item.MarginCallTriggerFlag ? $"{item.MarginCallTriggerDatetime}" : "")
                                 }
                             </div>
                         </td>
                         <td>
                             <div class="d-flex flex-wrap gap-1">
-                                @if (isMaginModeAll == 1)
+                                @if (isMaginModeAll == 1 && @item.StoplossFlag)
                                 {
-                                    @if (item.Day != "1")
-                                    {
-                                        <button style="width:170px;" class="btn btn-sm btn-success btn-approveStoploss" data-id="@item.PortfolioID" disabled="@item.StoplossTriggerFlag">StopLoss</button>
-                                        @(item.StoplossTriggerFlag == true ? $"{item.StoplossTriggerDatetime}" : "")
-
-                                    }
+                                    <button style="width:170px;" class="btn btn-sm btn-success btn-approveStoploss" data-id="@item.PortfolioID" disabled="@item.StoplossTriggerFlag">StopLoss</button>
+                                    @(item.StoplossTriggerFlag ? $"{item.StoplossTriggerDatetime}" : "")
                                 }
                             </div>
                         </td>
                         <td>
-                            @if (isMaginModeAll == 1)
-                            {
-                                @if (item.Day == "3")
+                            <div class="d-flex flex-wrap gap-1">
+                                @if (isMaginModeAll == 1 && @item.MOCFlag)
                                 {
                                     <button style="width:170px;" class="btn btn-sm btn-success btn-approveMOC" data-id="@item.PortfolioID" disabled="@item.MOCTriggerFlag">MOC</button>
-                                    @(item.MOCTriggerFlag == true ? $"{item.MOCTriggerDatetime}" : "")
-
+                                    @(item.MOCTriggerFlag ? $"{item.MOCTriggerDatetime}" : "")
                                 }
-                            }
+                            </div>
                         </td>
                         <td>
                             <button class="btn btn-sm btn-info btn-detail" data-id="@item.PortfolioID">Details</button>
                         </td>
                         <td>
                             <div class="d-flex flex-wrap gap-1">
-                                @if (@item.MarginCallTriggerFlag == true || @item.StoplossTriggerFlag == true || @item.MOCTriggerFlag == true)
+                                @if (@item.MarginCallTriggerFlag || @item.StoplossTriggerFlag || @item.MOCTriggerFlag)
                                 {
                                     <button class="btn btn-sm btn-info btn-resetFlag" data-id="@item.PortfolioID">Reset</button>
 

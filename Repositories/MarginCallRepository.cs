@@ -1,6 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using MVCWebApp.Data;
 using MVCWebApp.Enums;
+using MVCWebApp.Helper;
 using MVCWebApp.Models.MarginCalls;
 
 namespace MVCWebApp.Repositories
@@ -20,6 +21,7 @@ namespace MVCWebApp.Repositories
         MarginCallDto GetMarginCallEOD(string portfolioID);
 
         StoplossOrderDetailDBResult GetStoplossOrderDetail(string portfolioID, bool isMTM);
+        MOCOrderDetailDBResult GetMOCOrderDetail(string portfolioID);
         ClientEmailDBResult GetClientEmail(string portfolioID);
 
         Task<IEnumerable<string>> GetAllCollateralCcyMTM();
@@ -29,6 +31,7 @@ namespace MVCWebApp.Repositories
         Task<IEnumerable<string>> GetAllCollateralCcy();
         Task<IEnumerable<string>> GetAllIMCcy();
         Task<IEnumerable<string>> GetAllVMCcy();
+        Task<IEnumerable<string>> GetAllTNECcyEOD();
     }
 
     public class MarginCallRepository
@@ -148,8 +151,20 @@ namespace MVCWebApp.Repositories
             return result;
         }
 
+        public MOCOrderDetailDBResult GetMOCOrderDetail(string portfolioID)
+        {
+            var result = _context.MOCOrderDetailDBResult
+               .FromSqlInterpolated($"exec [dbo].[USP_StopLoss] @Mode=8")
+               .AsEnumerable()
+               .Where(x => x.PortfolioID == portfolioID);
+
+            var remarks = result.Any(x => x.Remarks.IsNotNullOrEmpty()) ?
+                string.Join(Environment.NewLine, result.Select(x => x.Remarks)) : "-";
+
+            return new MOCOrderDetailDBResult { Remarks = remarks };
+        }
+
         /*-------------------------------------------------    General     ----------*/
-        
 
         public StoplossOrderDetailDBResult GetStoplossOrderDetail(string portfolioID, bool isMTM)
         {
@@ -158,7 +173,7 @@ namespace MVCWebApp.Repositories
                .AsEnumerable()
                .Where(x => x.PortfolioID == portfolioID);
 
-            var action = result.Any() ?
+            var action = result.Any(x=> x.Action.IsNotNullOrEmpty()) ?
                 string.Join(Environment.NewLine, result.Select(x => x.Action)) : "-";
 
             return new StoplossOrderDetailDBResult { Action = action };
@@ -233,6 +248,13 @@ namespace MVCWebApp.Repositories
                 .Where(ccy => !string.IsNullOrEmpty(ccy))
                 .ToListAsync();
 
+        public async Task<IEnumerable<string>> GetAllTNECcyEOD() =>
+            await _context.MarginCallEOD
+                .Select(x => x.TNE_Ccy)
+                .Distinct()
+                .Where(ccy => !string.IsNullOrEmpty(ccy))
+                .ToListAsync();
+
         /*-------------------------------------------------    Private     ----------*/
         public MarginCallDto ToMarginCallDTO(MarginCallMTM entity) //MTM
         {
@@ -265,26 +287,27 @@ namespace MVCWebApp.Repositories
         {
             return new MarginCallDto
             {
-                VM = double.TryParse(entity.VM, out var vm) ? vm : 0.0,
-                IM = double.TryParse(entity.IM, out var im) ? im : 0.0,
                 Percentages = double.TryParse(entity.Percentages.Replace("%", ""), out var percentages) ? percentages : 0.0,
-                Collateral = double.TryParse(entity.Collateral, out var collateral) ? collateral : 0.0,
+                IM = entity.IM,
                 IM_Ccy = entity.IM_Ccy,
-                Collateral_Ccy = entity.Collateral_Ccy,
+                TNE = entity.TNE,
+                TNE_Ccy = entity.TNE_Ccy,
                 InsertedDatetime = entity.InsertedDatetime,
                 ModifiedDatetime = entity.ModifiedDatetime,
                 PortfolioID = entity.PortfolioID,
                 Remarks = entity.Remarks,
                 Type = entity.Type,
-                VM_Ccy = entity.VM_Ccy,
                 MarginCallAmount = entity.MarginCallAmount,
+                MarginCallFlag = entity.MarginCallFlag == "Y",
+                StoplossFlag = entity.StoplossFlag == "Y",
+                MOCFlag = entity.MOCFlag == "Y",
                 MarginCallTriggerFlag = entity.EODTriggerFlag == "Y",
-                StoplossTriggerFlag = entity.StoplossFlag == "Y",
-                MOCTriggerFlag = entity.MOCFlag == "Y",
+                StoplossTriggerFlag = entity.StoplossTriggerFlag == "Y",
+                MOCTriggerFlag = entity.MOCTriggerFlag == "Y",
                 IsAvailableReset = entity.EODTriggerFlag == "Y" || entity.StoplossFlag == "Y" || entity.MOCFlag == "Y",
                 MarginCallTriggerDatetime = entity.EODTriggerDatetime,
-                StoplossTriggerDatetime = entity.StopLossDatetime,
-                MOCTriggerDatetime = entity.MOCDatetime,
+                StoplossTriggerDatetime = entity.StopLossTriggerDatetime,
+                MOCTriggerDatetime = entity.MOCTriggerDatetime,
                 Day = entity.Day,
                 IMProduct = "IM Product"
             };

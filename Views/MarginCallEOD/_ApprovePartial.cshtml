@@ -37,29 +37,41 @@
             </div>
         </div>
         <div class="form-group mt-3">
-            <label asp-for="Collateral" class="control-label"></label>
+            <label asp-for="TNE" class="control-label"></label>
             <div class="col-md-10">
-                <input asp-for="Collateral" class="form-control" disabled />
+                <input asp-for="TNE" class="form-control" disabled />
             </div>
         </div>
         <div class="form-group mt-3">
-            <label asp-for="Collateral_Ccy" class="control-label"></label>
+            <label asp-for="TNE_Ccy" class="control-label"></label>
             <div class="col-md-10">
-                <input type="text" asp-for="Collateral_Ccy" class="form-control" disabled />
+                <input type="text" asp-for="TNE_Ccy" class="form-control" disabled />
             </div>
         </div>
-        <div class="form-group mt-3">
-            <label asp-for="VM" class="control-label"></label>
-            <div class="col-md-10">
-                <input asp-for="VM" class="form-control" disabled />
-            </div>
-        </div>
-        <div class="form-group mt-3">
-            <label asp-for="VM_Ccy" class="control-label"></label>
-            <div class="col-md-10">
-                <input asp-for="VM_Ccy" class="form-control" disabled />
-            </div>
-        </div>
+        @* <div class="form-group mt-3">
+    <label asp-for="Collateral" class="control-label"></label>
+    <div class="col-md-10">
+    <input asp-for="Collateral" class="form-control" disabled />
+    </div>
+    </div>
+    <div class="form-group mt-3">
+    <label asp-for="Collateral_Ccy" class="control-label"></label>
+    <div class="col-md-10">
+    <input type="text" asp-for="Collateral_Ccy" class="form-control" disabled />
+    </div>
+    </div>
+    <div class="form-group mt-3">
+    <label asp-for="VM" class="control-label"></label>
+    <div class="col-md-10">
+    <input asp-for="VM" class="form-control" disabled />
+    </div>
+    </div>
+    <div class="form-group mt-3">
+    <label asp-for="VM_Ccy" class="control-label"></label>
+    <div class="col-md-10">
+    <input asp-for="VM_Ccy" class="form-control" disabled />
+    </div>
+    </div> *@
         <div class="form-group mt-3">
             <label asp-for="IM" class="control-label"></label>
             <div class="col-md-10">
@@ -194,8 +206,8 @@
             const template = textbox.value;
             const model = {
                 PortfolioID: marginCallModel.PortfolioID,
-                ccy: marginCallModel.VM_Ccy,
-                Collateral: marginCallModel.Collateral,
+                ccy: marginCallModel.TNE_Ccy,
+                Collateral: marginCallModel.TNE,
                 Percentages: marginCallModel.Percentages,
                 MarginCallAmount: marginCallModel.MarginCallAmount
             };

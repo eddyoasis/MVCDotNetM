@@ -30,6 +30,7 @@ namespace MVCWebApp.Controllers
             var marginCallSearchStatusEnum = ConverterHelper.ToSelectList<MarginCallSearchStatusEnum>();
             var yesNoEnum = ConverterHelper.ToSelectList<YesNoEnum>();
 
+            var tneCcy = ConverterHelper.ToSelectList(await _marginCallService.GetAllTNECcyEOD());
             var collateralCcy = ConverterHelper.ToSelectList(await _marginCallService.GetAllCollateralCcy());
             var imCcy = ConverterHelper.ToSelectList(await _marginCallService.GetAllIMCcy());
             var vmCcy = ConverterHelper.ToSelectList(await _marginCallService.GetAllVMCcy());
@@ -42,6 +43,7 @@ namespace MVCWebApp.Controllers
                 PageNumber = 1,
                 PageSize = AppConstants.DefaultPageSize,
                 Collateral_Ccy = collateralCcy,
+                TNE_Ccy = tneCcy,
                 IM_Ccy = imCcy,
                 VM_Ccy = vmCcy,
                 EODTriggerFlag = yesNoEnum,
@@ -158,6 +160,9 @@ namespace MVCWebApp.Controllers
                         })
                         .ToList();
             }
+
+            var MOCOrderDetail = _marginCallService.GetMOCOrderDetail(id);
+            entity.MOCOrderDetail = MOCOrderDetail?.Remarks;
 
             return PartialView("_ApproveMOCPartial", entity);
         }

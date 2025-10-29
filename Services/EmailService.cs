@@ -1,16 +1,10 @@
 ﻿using FluentEmail.Core;
-using Google.Apis.Gmail.v1.Data;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
-using MimeKit;
 using MVCWebApp.Configurations;
 using Newtonsoft.Json;
 using Serilog;
-using System;
-using System.Net.Http.Headers;
 using System.Net.Mail;
 using System.Net.Mime;
-using System.Text;
 
 namespace MVCWebApp.Services
 {

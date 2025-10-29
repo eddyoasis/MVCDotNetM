@@ -20,10 +20,11 @@ namespace MVCWebApp.Services
         Task<IEnumerable<string>> GetAllCollateralCcyMTM();
         Task<IEnumerable<string>> GetAllVMCcyMTM();
         Task<IEnumerable<string>> GetAllIMCcyMTM();
-
+        Task<IEnumerable<string>> GetAllTNECcyEOD();
 
         IEnumerable<IMProductEODDBResult> GetEODIMProduct(string portfolioID);
         StoplossOrderDetailDBResult GetEODStoplossOrderDetail(string portfolioID);
+        MOCOrderDetailDBResult GetMOCOrderDetail(string portfolioID);
         Task<bool> ResetFlagEOD(string portfolioID);
         Task<bool> ApproveMarginCallEOD(MarginCallViewModel model);
         Task<bool> ApproveMarginCallEODStoploss(MarginCallViewModel model);
@@ -32,6 +33,7 @@ namespace MVCWebApp.Services
         IEnumerable<MarginCallViewModel> GetMarginCallEODAll(MarginCallSearchReq req);
 
         IEnumerable<IMProductMTMDBResult> GetMTMIMProduct(string portfolioID);
+        
         StoplossOrderDetailDBResult GetMTMStoplossOrderDetail(string portfolioID);
         Task<bool> ResetFlagMTM(string portfolioID);
         Task<bool> ApproveMarginCallMTM(MarginCallViewModel model);
@@ -52,6 +54,9 @@ namespace MVCWebApp.Services
 
         public IEnumerable<IMProductEODDBResult> GetEODIMProduct(string portfolioID) =>
             _marginCallRepository.GetEODIMProduct(portfolioID);
+
+        public MOCOrderDetailDBResult GetMOCOrderDetail(string portfolioID) =>
+            _marginCallRepository.GetMOCOrderDetail(portfolioID);
 
         public StoplossOrderDetailDBResult GetMTMStoplossOrderDetail(string portfolioID) =>
             _marginCallRepository.GetStoplossOrderDetail(portfolioID, true);
@@ -77,9 +82,11 @@ namespace MVCWebApp.Services
         public async Task<IEnumerable<string>> GetAllVMCcy() =>
             await _marginCallRepository.GetAllVMCcy();
 
+        public async Task<IEnumerable<string>> GetAllTNECcyEOD() =>
+            await _marginCallRepository.GetAllTNECcyEOD();
+
         public async Task<IEnumerable<string>> GetAllIMCcy() =>
             await _marginCallRepository.GetAllIMCcy();
-
 
 
         /*-------------------------------------------------    EOD     ----------*/
@@ -156,10 +163,9 @@ namespace MVCWebApp.Services
 
             marginCalls = marginCalls.Where(x =>
                 (req.Selected_MarginMode == (int)MarginCallMode.All ||
-                    (req.Selected_MarginMode == (int)MarginCallMode.MarginAvailable && !x.MarginCallTriggerFlag) ||
-                    (req.Selected_MarginMode == (int)MarginCallMode.StoplossAvailable && (x.Day != "1" && !x.StoplossTriggerFlag)) ||
-                    (req.Selected_MarginMode == (int)MarginCallMode.MOCAvailable && (x.Day == "3" && !x.MOCTriggerFlag)) ||
-                    (req.Selected_MarginMode == (int)MarginCallMode.MOCAvailable && (x.Day == "3" && !x.MOCTriggerFlag)) ||
+                    (req.Selected_MarginMode == (int)MarginCallMode.MarginAvailable && (x.MarginCallFlag && !x.MarginCallTriggerFlag)) ||
+                    (req.Selected_MarginMode == (int)MarginCallMode.StoplossAvailable && (x.StoplossFlag && !x.StoplossTriggerFlag)) ||
+                    (req.Selected_MarginMode == (int)MarginCallMode.MOCAvailable && (x.MOCFlag && !x.MOCTriggerFlag)) ||
                     (req.Selected_MarginMode == (int)MarginCallMode.ResetFlagAvailable && x.IsAvailableReset) ||
                     (req.Selected_MarginMode == (int)MarginCallMode.TriggeredTodayMargin && (x.MarginCallTriggerFlag && x.MarginCallTriggerDatetime?.Date == DateTime.Today.Date)) ||
                     (req.Selected_MarginMode == (int)MarginCallMode.TriggeredTodayStoploss && (x.StoplossTriggerFlag && x.StoplossTriggerDatetime?.Date == DateTime.Today.Date)) ||
@@ -177,14 +183,18 @@ namespace MVCWebApp.Services
                     ((req.PercentagesFrom > 0 && req.PercentagesTo <= 0) && x.Percentages >= req.PercentagesFrom) ||
                     ((req.PercentagesFrom <= 0 && req.PercentagesTo > 0) && x.Percentages <= req.PercentagesTo) ||
                     (x.Percentages >= req.PercentagesFrom && x.Percentages <= req.PercentagesTo)) &&
-                ((req.CollateralFrom <= 0 && req.CollateralTo <= 0) ||
-                    ((req.CollateralFrom > 0 && req.CollateralTo <= 0) && x.Collateral >= req.CollateralFrom) ||
-                    ((req.CollateralFrom <= 0 && req.CollateralTo > 0) && x.Collateral <= req.CollateralTo) ||
-                    (x.Collateral >= req.CollateralFrom && x.Collateral <= req.CollateralTo)) &&
-                ((req.VMFrom <= 0 && req.VMTo <= 0) ||
-                    ((req.VMFrom > 0 && req.VMTo <= 0) && x.VM >= req.VMFrom) ||
-                    ((req.VMFrom <= 0 && req.VMTo > 0) && x.VM <= req.VMTo) ||
-                    (x.VM >= req.VMFrom && x.VM <= req.VMTo)) &&
+                //((req.CollateralFrom <= 0 && req.CollateralTo <= 0) ||
+                //    ((req.CollateralFrom > 0 && req.CollateralTo <= 0) && x.Collateral >= req.CollateralFrom) ||
+                //    ((req.CollateralFrom <= 0 && req.CollateralTo > 0) && x.Collateral <= req.CollateralTo) ||
+                //    (x.Collateral >= req.CollateralFrom && x.Collateral <= req.CollateralTo)) &&
+                //((req.VMFrom <= 0 && req.VMTo <= 0) ||
+                //    ((req.VMFrom > 0 && req.VMTo <= 0) && x.VM >= req.VMFrom) ||
+                //    ((req.VMFrom <= 0 && req.VMTo > 0) && x.VM <= req.VMTo) ||
+                //    (x.VM >= req.VMFrom && x.VM <= req.VMTo)) &&
+                ((req.TNEFrom <= 0 && req.TNETo <= 0) ||
+                    ((req.TNEFrom > 0 && req.TNETo <= 0) && x.TNE >= req.TNEFrom) ||
+                    ((req.TNEFrom <= 0 && req.TNETo > 0) && x.TNE <= req.TNETo) ||
+                    (x.TNE >= req.TNEFrom && x.TNE <= req.TNETo)) &&
                 ((req.IMFrom <= 0 && req.IMTo <= 0) ||
                     ((req.IMFrom > 0 && req.IMTo <= 0) && x.IM >= req.IMFrom) ||
                     ((req.IMFrom <= 0 && req.IMTo > 0) && x.IM <= req.IMTo) ||

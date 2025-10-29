@@ -54,7 +54,7 @@
             </div>
         </div>
 
-        <div class="d-flex flex-wrap gap-2">
+        @* <div class="d-flex flex-wrap gap-2">
             <div class="form-group mt-2">
                 <label>Collateral(From)</label>
                 <input type="number" name="CollateralFrom" id="CollateralFrom" class="form-control" value="@Model?.CollateralFrom" placeholder="Enter CollateralFrom">
@@ -73,6 +73,17 @@
             <div class="form-group mt-2">
                 <label>VM(To)</label>
                 <input type="number" name="VMTo" id="VMTo" class="form-control" value="@Model?.VMTo" placeholder="Enter VMTo">
+            </div>
+        </div> *@
+
+        <div class="d-flex flex-wrap gap-2">
+            <div class="form-group mt-2">
+                <label>TNE(From)</label>
+                <input type="number" name="TNEFrom" id="TNEFrom" class="form-control" value="@Model?.TNEFrom" placeholder="Enter TNEFrom">
+            </div>
+            <div class="form-group mt-2">
+                <label>TNE(To)</label>
+                <input type="number" name="TNETo" id="TNETo" class="form-control" value="@Model?.TNETo" placeholder="Enter TNETo">
             </div>
         </div>
 
@@ -101,7 +112,7 @@
 
         <div class="d-flex flex-wrap gap-2 d-none">
             @*Hidden*@
-            <div class="form-group mt-2">
+           @*  <div class="form-group mt-2">
                 <label class="mr-2">Collateral_Ccy</label>
                 <select id="optionCollateral_Ccy" class="form-control" asp-items="@Model?.Collateral_Ccy">
                 </select>
@@ -109,6 +120,11 @@
             <div class="form-group mt-2">
                 <label class="mr-2">VM_Ccy</label>
                 <select id="optionVM_Ccy" class="form-control" asp-items="@Model?.VM_Ccy">
+                </select>
+            </div> *@
+            <div class="form-group mt-2">
+                <label class="mr-2">TNE_Ccy</label>
+                <select id="optionTNE_Ccy" class="form-control" asp-items="@Model?.TNE_Ccy">
                 </select>
             </div>
             <div class="form-group mt-2">
@@ -502,12 +518,15 @@
                     PortfolioID: $("#PortfolioID").val(),
                     PercentagesFrom: $("#PercentagesFrom").val() || 0,
                     PercentagesTo: $("#PercentagesTo").val() || 0,
-                    CollateralFrom: $("#CollateralFrom").val() || 0,
-                    CollateralTo: $("#CollateralTo").val() || 0,
-                    Selected_Collateral_Ccy: $("#optionCollateral_Ccy").val(),
-                    VMFrom: $("#VMFrom").val() || 0,
-                    VMTo: $("#VMTo").val() || 0,
-                    Selected_VM_Ccy: $("#optionVM_Ccy").val(),
+                    // CollateralFrom: $("#CollateralFrom").val() || 0,
+                    // CollateralTo: $("#CollateralTo").val() || 0,
+                    // Selected_Collateral_Ccy: $("#optionCollateral_Ccy").val(),
+                    // VMFrom: $("#VMFrom").val() || 0,
+                    // VMTo: $("#VMTo").val() || 0,
+                    // Selected_VM_Ccy: $("#optionVM_Ccy").val(),
+                    TNEFrom: $("#TNEFrom").val() || 0,
+                    TNETo: $("#TNETo").val() || 0,
+                    Selected_TNE_Ccy: $("#optionTNE_Ccy").val(),
                     IMFrom: $("#IMFrom").val() || 0,
                     IMTo: $("#IMTo").val() || 0,
                     Selected_IM_Ccy: $("#optionIM_Ccy").val(),
@@ -919,13 +938,16 @@
                 $("#PortfolioID").val('');
                 $("#PercentagesFrom").val(0);
                 $("#PercentagesTo").val(0);
-                $("#CollateralFrom").val(0);
-                $("#CollateralTo").val(0);
                 $("#optionDay").val(0);
-                $("#optionCollateral_Ccy").val('All');
-                $("#VMFrom").val(0);
-                $("#VMTo").val(0);
-                $("#optionVM_Ccy").val('All');
+                // $("#CollateralFrom").val(0);
+                // $("#CollateralTo").val(0);
+                // $("#optionCollateral_Ccy").val('All');
+                // $("#VMFrom").val(0);
+                // $("#VMTo").val(0);
+                // $("#optionVM_Ccy").val('All');
+                $("#TNEFrom").val(0);
+                $("#TNETo").val(0);
+                $("#optionTNE_Ccy").val('All');
                 $("#IMFrom").val(0);
                 $("#IMTo").val(0);
                 $("#optionIM_Ccy").val('All');

@@ -9,17 +9,22 @@ namespace MVCWebApp.Models.MarginCalls
         //public int ID { get; set; }
         public string PortfolioID { get; set; }
         public string Percentages { get; set; }
-        public string Collateral { get; set; }
-        public string Collateral_Ccy { get; set; }
-        public string VM { get; set; }
-        public string VM_Ccy { get; set; }
-        public string IM { get; set; }
+        //public string Collateral { get; set; }
+        //public string Collateral_Ccy { get; set; }
+        public double TNE { get; set; }
+        public string TNE_Ccy { get; set; }
+        //public string VM { get; set; }
+        //public string VM_Ccy { get; set; }
+        public double IM { get; set; }
         public string IM_Ccy { get; set; }
         public double MarginCallAmount { get; set; }
         public string? MarginCallFlag { get; set; }
-        public string EODTriggerFlag { get; set; }
-        public string StoplossFlag { get; set; }
-        public string MOCFlag { get; set; }
+        public string? StoplossFlag { get; set; }
+        public string? MOCFlag { get; set; }
+        public string? EODTriggerFlag { get; set; }
+        public string? StoplossTriggerFlag { get; set; }
+        public string? MOCTriggerFlag { get; set; }
+
         public string? Type { get; set; }
         public string? Remarks { get; set; }
         public DateTime InsertedDatetime { get; set; }
@@ -28,11 +33,11 @@ namespace MVCWebApp.Models.MarginCalls
         [Column("EODTriggerDatetime")]
         public DateTime? EODTriggerDatetime { get; set; }
 
-        [Column("StopLossDatetime")]
-        public DateTime? StopLossDatetime { get; set; }
+        [Column("StopLossTriggerDatetime")]
+        public DateTime? StopLossTriggerDatetime { get; set; }
 
-        [Column("MOCDatetime")]
-        public DateTime? MOCDatetime { get; set; }
+        [Column("MOCTriggerDatetime")]
+        public DateTime? MOCTriggerDatetime { get; set; }
 
         public string Day { get; set; }
         public string? EmailTo { get; set; }

@@ -53,7 +53,7 @@
                         <td>@item.ModifiedDatetime</td> *@
                         <td>
                             <div class="d-flex flex-wrap gap-1">
-                                @if (item.MarginCallFlag == "N")
+                                @if (item.MarginCallFlag)
                                 {
                                     <button class="btn btn-sm btn-success btn-approve" data-id="@item.PortfolioID">Approve</button>
                                     @* <button class="btn btn-sm btn-danger btn-reject" data-id="@item.PortfolioID">Reject</button> *@

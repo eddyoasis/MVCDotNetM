@@ -19,6 +19,10 @@ namespace MVCWebApp.Models.MarginCalls
         public double IMTo { get; set; }
         public List<SelectListItem> IM_Ccy { get; set; }
         public string Selected_IM_Ccy { get; set; }
+        public double TNEFrom { get; set; }
+        public double TNETo { get; set; }
+        public List<SelectListItem> TNE_Ccy { get; set; }
+        public string Selected_TNE_Ccy { get; set; }
         public List<SelectListItem> MarginCallFlag { get; set; }
         public int SelectedMarginCallFlag { get; set; }
         public List<SelectListItem> EODTriggerFlag { get; set; }

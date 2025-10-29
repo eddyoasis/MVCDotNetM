@@ -12,18 +12,22 @@ namespace MVCWebApp.Models.MarginCalls
         public string Percentages { get; set; }
         public string Collateral { get; set; }
         public string Collateral_Ccy { get; set; }
+        public double TNE { get; set; }
+        public string TNE_Ccy { get; set; }
         public string VM { get; set; }
         public string VM_Ccy { get; set; }
-        public string IM { get; set; }
+        public double IM { get; set; }
         public string IMProduct { get; set; }
         public string IM_Ccy { get; set; }
         public double MarginCallAmount { get; set; }
-        public string? MarginCallFlag { get; set; }
+        public bool MarginCallFlag { get; set; }
+        public bool StoplossFlag { get; set; }
+        public bool MOCFlag { get; set; }
         public bool? EODTriggerFlag { get; set; }
         public bool? MTMTriggerFlag { get; set; }
-        public bool? MarginCallTriggerFlag { get; set; }
-        public bool? StoplossTriggerFlag { get; set; }
-        public bool? MOCTriggerFlag { get; set; }
+        public bool MarginCallTriggerFlag { get; set; }
+        public bool StoplossTriggerFlag { get; set; }
+        public bool MOCTriggerFlag { get; set; }
         public bool IsAvailableReset { get; set; }
         public string? Type { get; set; }
         public string? Remarks { get; set; }
@@ -42,6 +46,8 @@ namespace MVCWebApp.Models.MarginCalls
         public double Percentages { get; set; }
         public double Collateral { get; set; }
         public string Collateral_Ccy { get; set; }
+        public double TNE { get; set; }
+        public string TNE_Ccy { get; set; }
         public double VM { get; set; }
         public string VM_Ccy { get; set; }
         public double IM { get; set; }
@@ -50,6 +56,9 @@ namespace MVCWebApp.Models.MarginCalls
         public double MarginCallAmount { get; set; }
         public string? Type { get; set; }
         public string? Remarks { get; set; }
+        public bool MarginCallFlag { get; set; }
+        public bool StoplossFlag { get; set; }
+        public bool MOCFlag { get; set; }
         public bool MarginCallTriggerFlag { get; set; }
         public bool StoplossTriggerFlag { get; set; }
         public bool MOCTriggerFlag { get; set; }
@@ -73,6 +82,12 @@ namespace MVCWebApp.Models.MarginCalls
     {
         public string? PortfolioID { get; set; }
         public string? Action { get; set; }
+    }
+
+    public class MOCOrderDetailDBResult
+    {
+        public string? PortfolioID { get; set; }
+        public string? Remarks { get; set; }
     }
 
     public class IMProductMTMDBResult

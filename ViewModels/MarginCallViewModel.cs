@@ -14,6 +14,7 @@ namespace MVCWebApp.ViewModels
     public class MarginCallViewModel : MarginCall
     {
         public string StoplossOrderDetail { get; set; }
+        public string MOCOrderDetail { get; set; }
 
         public List<SelectListItem> EmailTemplateList { get; set; }
 
